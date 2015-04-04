@@ -1,6 +1,6 @@
 package de.rwth.i9.palm.analytics.algorithm.corephrase;
 
-public interface ICorePhrase
+public interface CorePhrase
 {
 
 }

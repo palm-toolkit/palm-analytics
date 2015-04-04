@@ -1,6 +1,6 @@
 package de.rwth.i9.palm.analytics.opennlp;
 
-public interface IOpenNLP
+public interface OpenNLP
 {
 	/**
 	 * Break the given content/corpus into sentences.

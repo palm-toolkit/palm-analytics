@@ -14,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import de.rwth.i9.palm.analytics.api.IAnalytics;
+import de.rwth.i9.palm.analytics.api.PalmAnalytics;
 import de.rwth.i9.palm.analytics.config.AppConfig;
 
 /**
@@ -29,7 +29,7 @@ import de.rwth.i9.palm.analytics.config.AppConfig;
 public class OpenNLPTests
 {
 	@Autowired
-	IAnalytics iAnalytics;
+	PalmAnalytics iAnalytics;
 
 	@Before
 	public void init()

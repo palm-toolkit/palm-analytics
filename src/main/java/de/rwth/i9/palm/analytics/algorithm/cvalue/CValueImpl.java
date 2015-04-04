@@ -1,6 +1,6 @@
 package de.rwth.i9.palm.analytics.algorithm.cvalue;
 
-public class CValueImpl implements ICValue
+public class CValueImpl implements CValue
 {
 
 	@Override

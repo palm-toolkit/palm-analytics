@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
-import de.rwth.i9.palm.analytics.api.AnalyticsImpl;
+import de.rwth.i9.palm.analytics.api.PalmAnalyticsImpl;
 
 @Configuration
 @ComponentScan( { "de.rwth.i9.palm.analytics" } )
@@ -28,12 +28,11 @@ public class AppConfig
 		return new PropertySourcesPlaceholderConfigurer();
 	}
 	
-	/* analytics */
+	/* palm analytics */
 	@Bean
 	@Scope( "singleton" )
-	public AnalyticsImpl configAnalyticsImpl()
+	public PalmAnalyticsImpl configAnalyticsImpl()
 	{
-		AnalyticsImpl analyticsImpl = new AnalyticsImpl();
-		return analyticsImpl;
+		return new PalmAnalyticsImpl();
 	}
 }

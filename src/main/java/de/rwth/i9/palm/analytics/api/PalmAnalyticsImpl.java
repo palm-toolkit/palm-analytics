@@ -3,33 +3,33 @@ package de.rwth.i9.palm.analytics.api;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import de.rwth.i9.palm.analytics.algorithm.corephrase.CorePhraseImpl;
-import de.rwth.i9.palm.analytics.algorithm.corephrase.ICorePhrase;
+import de.rwth.i9.palm.analytics.algorithm.corephrase.CorePhrase;
 import de.rwth.i9.palm.analytics.algorithm.cvalue.CValueImpl;
-import de.rwth.i9.palm.analytics.algorithm.cvalue.ICValue;
-import de.rwth.i9.palm.analytics.algorithm.lda.ILda;
+import de.rwth.i9.palm.analytics.algorithm.cvalue.CValue;
+import de.rwth.i9.palm.analytics.algorithm.lda.Lda;
 import de.rwth.i9.palm.analytics.algorithm.lda.LdaImpl;
-import de.rwth.i9.palm.analytics.opennlp.IOpenNLP;
+import de.rwth.i9.palm.analytics.opennlp.OpenNLP;
 import de.rwth.i9.palm.analytics.opennlp.OpenNLPImpl;
 
 /**
  * This interface is a Factory-interface for any analytics
  */
-public class AnalyticsImpl implements IAnalytics
+public class PalmAnalyticsImpl implements PalmAnalytics
 {
 	@Autowired( required = false )
-	private ICorePhrase iCorePhrase;
+	private CorePhrase iCorePhrase;
 	
 	@Autowired( required = false )
-	private ICValue iCValue;
+	private CValue iCValue;
 
 	@Autowired( required = false )
-	private ILda iLda;
+	private Lda iLda;
 
 	@Autowired( required = false )
-	private IOpenNLP iOpenNLP;
+	private OpenNLP iOpenNLP;
 
 	@Override
-	public ICorePhrase getCorePhraseAlgorithm()
+	public CorePhrase getCorePhraseAlgorithm()
 	{
 		if ( this.iCorePhrase == null )
 			this.iCorePhrase = new CorePhraseImpl();
@@ -37,7 +37,7 @@ public class AnalyticsImpl implements IAnalytics
 		return this.iCorePhrase;
 	}
 
-	public ICValue getCValueAlgorithm()
+	public CValue getCValueAlgorithm()
 	{
 		if ( this.iCValue == null )
 			this.iCValue = new CValueImpl();
@@ -46,7 +46,7 @@ public class AnalyticsImpl implements IAnalytics
 	}
 
 	@Override
-	public ILda getLdaAlgorithm()
+	public Lda getLdaAlgorithm()
 	{
 		if ( this.iLda == null )
 			this.iLda = new LdaImpl();
@@ -55,7 +55,7 @@ public class AnalyticsImpl implements IAnalytics
 	}
 
 	@Override
-	public IOpenNLP getOpenNLPTool()
+	public OpenNLP getOpenNLPTool()
 	{
 		if ( this.iOpenNLP == null )
 			this.iOpenNLP = new OpenNLPImpl();

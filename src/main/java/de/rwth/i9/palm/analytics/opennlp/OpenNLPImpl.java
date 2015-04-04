@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 import de.rwth.i9.palm.analytics.service.ConfigurationService;
 
 @Service
-public class OpenNLPImpl implements IOpenNLP
+public class OpenNLPImpl implements OpenNLP
 {
 	static private final Logger logger = LoggerFactory.getLogger( OpenNlpToolkit.class );
 	/**
