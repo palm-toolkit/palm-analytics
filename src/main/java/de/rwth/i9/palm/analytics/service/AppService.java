@@ -10,27 +10,27 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-public class ConfigurationService
+public class AppService
 {
-	private final Logger log = LoggerFactory.getLogger( ConfigurationService.class );
+	private final Logger log = LoggerFactory.getLogger( AppService.class );
 
 	// properties
-	@Value( "${openNLP.sentence}" )
+	@Value( "${opennlp.sentence}" )
 	private String openNLPSentence;
 
-	@Value( "${openNLP.tokenizer}" )
+	@Value( "${opennlp.tokenizer}" )
 	private String openNLPTokenizer;
 
-	@Value( "${openNLP.pos}" )
+	@Value( "${opennlp.pos}" )
 	private String openNLPPos;
 
-	@Value( "${openNLP.namefinder.format}" )
+	@Value( "${opennlp.namefinder.format}" )
 	private String openNLPNamefinderFormat;
 
-	@Value( "${openNLP.parser}" )
+	@Value( "${opennlp.parser}" )
 	private String openNLPParser;
 
-	@Value( "${openNLP.coref.dir}" )
+	@Value( "${opennlp.coref.dir}" )
 	private String openNLPCorefDir;
 
 	public String getOpenNLPSentence()

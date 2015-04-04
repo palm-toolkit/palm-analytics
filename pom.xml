@@ -5,6 +5,7 @@
     <groupId>de.rwth.i9</groupId>
     <artifactId>palm-project</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../palm-project/pom.xml</relativePath>
   </parent>
   
   <groupId>de.rwth.i9.palm</groupId>
@@ -20,6 +21,7 @@
   
   <dependencies>
   	<!-- tools and library for analytics, such as NLP etc -->
+  	
   	<dependency>
 	  <groupId>org.apache.opennlp</groupId>
 	  <artifactId>opennlp-tools</artifactId>
@@ -32,16 +34,23 @@
 	  <version>${opennlp.version}</version>
 	</dependency>
 	
+	
   	<dependency>
 		<groupId>org.apache.mahout</groupId>
 		<artifactId>mahout-core</artifactId>
 		<version>${mahout.version}</version>
 	</dependency>
-	
+
 	<dependency>
 		<groupId>org.apache.mahout</groupId>
 		<artifactId>mahout-math</artifactId>
-		<version>0.9</version>
+		<version>${mahout.version}</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.apache.mahout</groupId>
+		<artifactId>mahout-integration</artifactId>
+		<version>${mahout.version}</version>
 	</dependency>
 	
 	<dependency>
@@ -50,24 +59,29 @@
 		<version>1.0</version>
 	</dependency>
 	
-	<dependency>
-		<groupId>org.apache.mahout</groupId>
-		<artifactId>mahout-integration</artifactId>
-		<version>0.9</version>
-	</dependency>
-	
+
 	<dependency>
 		<groupId>org.apache.mahout</groupId>
 		<artifactId>mahout-utils</artifactId>
 		<version>0.5</version>
+		<exclusions>
+		  <exclusion> 
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>jcl-over-slf4j</artifactId>
+		  </exclusion>
+		  <exclusion> 
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-jcl</artifactId>
+		  </exclusion>
+		</exclusions> 
 	</dependency>
-	
+	<!--
 	<dependency>
 		<groupId>org.apache.mahout</groupId>
 		<artifactId>mahout-examples</artifactId>
 		<version>0.9</version>
 	</dependency>
-	
+	-->
 	
 	
 	<dependency>
@@ -99,13 +113,7 @@
   		<artifactId>spring-context</artifactId>
   		<version>${org.springframework.version}</version>
   	</dependency>
-  	<!-- 
-  	<dependency>
-		<groupId>mysql</groupId>
-		<artifactId>mysql-connector-java</artifactId>
-		<version>${mysql.connector.java.version}</version>
-	</dependency>
-	-->
+
   </dependencies>
   
 
@@ -114,16 +122,18 @@
   	
   	  <plugins>
       
-<plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-surefire-plugin</artifactId>
-  <version>2.4.2</version>
-  <configuration>
-  <argLine>-Xmx1024m</argLine>
-  </configuration>
-</plugin>
+		<plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-surefire-plugin</artifactId>
+		  <version>2.4.2</version>
+		  
+		  <configuration>
+		  <argLine>-Xmx1024m</argLine>
+		  </configuration>
+		</plugin>
     </plugins>
-    
+    <!-- Warning: Do not filter files with binary content like images! 
+    This will most likely result in corrupt output. -->
 		<resources>
 		  <resource>
 		    <directory>src/main/resources</directory>
@@ -131,7 +141,19 @@
 		    <includes>
 				<include>**/*.xml</include>
 				<include>**/*.properties</include>
+			</includes>
+		  </resource>
+		  <resource>
+		    <directory>src/main/resources</directory>
+		    <filtering>false</filtering>
+		    <includes>
 				<include>**/*.bin</include>
+				<include>**/acronyms</include>
+				<include>**/*.gz</include>
+				<include>**/*.events</include>
+				<include>**/*.mas</include>
+				<include>**/*.fem</include>
+				<include>**/acronyms</include>
 			</includes>
 		  </resource>
 	</resources>

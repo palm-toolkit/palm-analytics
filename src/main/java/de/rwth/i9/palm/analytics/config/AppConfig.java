@@ -13,7 +13,7 @@ import org.springframework.core.env.Environment;
 import de.rwth.i9.palm.analytics.api.PalmAnalyticsImpl;
 
 @Configuration
-@ComponentScan( { "de.rwth.i9.palm.analytics" } )
+@ComponentScan( { "de.rwth.i9.palm" } )
 @PropertySource( "classpath:opennlp.properties" )
 @Lazy( true )
 public class AppConfig
@@ -33,6 +33,7 @@ public class AppConfig
 	@Scope( "singleton" )
 	public PalmAnalyticsImpl configAnalyticsImpl()
 	{
-		return new PalmAnalyticsImpl();
+		PalmAnalyticsImpl palmAnalyticsImpl = new PalmAnalyticsImpl();
+		return palmAnalyticsImpl;
 	}
 }

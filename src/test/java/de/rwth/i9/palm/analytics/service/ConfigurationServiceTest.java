@@ -11,6 +11,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import de.rwth.i9.palm.analytics.config.AppConfig;
 
+
 /**
  * Test whether the properties files successfully loaded
  * 
@@ -23,7 +24,7 @@ import de.rwth.i9.palm.analytics.config.AppConfig;
 public class ConfigurationServiceTest
 {
 	@Autowired
-	private ConfigurationService configurationService;
+	private AppService configurationService;
 
 	@Test
 	public void testConfigurationService()
