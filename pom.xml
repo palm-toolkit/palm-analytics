@@ -13,7 +13,69 @@
   <name>palm-analytics</name>
   <description>The analytics module for PALM project</description>
   
+   <properties>
+   		<opennlp.version>1.5.3</opennlp.version>
+		<mahout.version>0.9</mahout.version>
+   </properties>
+  
   <dependencies>
+  	<!-- tools and library for analytics, such as NLP etc -->
+  	<dependency>
+	  <groupId>org.apache.opennlp</groupId>
+	  <artifactId>opennlp-tools</artifactId>
+	  <version>${opennlp.version}</version>
+	</dependency>
+	
+	<dependency>
+	  <groupId>org.apache.opennlp</groupId>
+	  <artifactId>opennlp-uima</artifactId>
+	  <version>${opennlp.version}</version>
+	</dependency>
+	
+  	<dependency>
+		<groupId>org.apache.mahout</groupId>
+		<artifactId>mahout-core</artifactId>
+		<version>${mahout.version}</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.apache.mahout</groupId>
+		<artifactId>mahout-math</artifactId>
+		<version>0.9</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.apache.mahout</groupId>
+		<artifactId>mahout-collections</artifactId>
+		<version>1.0</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.apache.mahout</groupId>
+		<artifactId>mahout-integration</artifactId>
+		<version>0.9</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.apache.mahout</groupId>
+		<artifactId>mahout-utils</artifactId>
+		<version>0.5</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.apache.mahout</groupId>
+		<artifactId>mahout-examples</artifactId>
+		<version>0.9</version>
+	</dependency>
+	
+	
+	
+	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-math</artifactId>
+		<version>2.0</version>
+	</dependency>
+  	
   	<!-- for integration with spring -->
 	<dependency>
 	  <groupId>org.springframework</groupId>
@@ -37,11 +99,41 @@
   		<artifactId>spring-context</artifactId>
   		<version>${org.springframework.version}</version>
   	</dependency>
-  	
+  	<!-- 
   	<dependency>
 		<groupId>mysql</groupId>
 		<artifactId>mysql-connector-java</artifactId>
 		<version>${mysql.connector.java.version}</version>
 	</dependency>
+	-->
   </dependencies>
+  
+
+  
+  	<build>
+  	
+  	  <plugins>
+      
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-surefire-plugin</artifactId>
+  <version>2.4.2</version>
+  <configuration>
+  <argLine>-Xmx1024m</argLine>
+  </configuration>
+</plugin>
+    </plugins>
+    
+		<resources>
+		  <resource>
+		    <directory>src/main/resources</directory>
+		    <filtering>true</filtering>
+		    <includes>
+				<include>**/*.xml</include>
+				<include>**/*.properties</include>
+				<include>**/*.bin</include>
+			</includes>
+		  </resource>
+	</resources>
+	</build>
 </project>
