@@ -15,81 +15,81 @@ public class ConfigurationService
 	private final Logger log = LoggerFactory.getLogger( ConfigurationService.class );
 
 	// properties
-	@Value( "${opennlp.sentence}" )
-	private String opennlpSentence;
+	@Value( "${openNLP.sentence}" )
+	private String openNLPSentence;
 
-	@Value( "${opennlp.tokenizer}" )
-	private String opennlpTokenizer;
+	@Value( "${openNLP.tokenizer}" )
+	private String openNLPTokenizer;
 
-	@Value( "${opennlp.pos}" )
-	private String opennlpPos;
+	@Value( "${openNLP.pos}" )
+	private String openNLPPos;
 
-	@Value( "${opennlp.namefinder.format}" )
-	private String opennlpNamefinderFormat;
+	@Value( "${openNLP.namefinder.format}" )
+	private String openNLPNamefinderFormat;
 
-	@Value( "${opennlp.parser}" )
-	private String opennlpParser;
+	@Value( "${openNLP.parser}" )
+	private String openNLPParser;
 
-	@Value( "${opennlp.coref.dir}" )
-	private String opennlpCorefDir;
+	@Value( "${openNLP.coref.dir}" )
+	private String openNLPCorefDir;
 
-	public String getopennlpSentence()
+	public String getOpenNLPSentence()
 	{
-		return opennlpSentence;
+		return openNLPSentence;
 	}
 
-	public void setopennlpSentence( String opennlpSentence )
+	public void setOpenNLPSentence( String openNLPSentence )
 	{
-		this.opennlpSentence = opennlpSentence;
+		this.openNLPSentence = openNLPSentence;
 	}
 
-	public String getopennlpTokenizer()
+	public String getOpenNLPTokenizer()
 	{
-		return opennlpTokenizer;
+		return openNLPTokenizer;
 	}
 
-	public void setopennlpTokenizer( String opennlpTokenizer )
+	public void setOpenNLPTokenizer( String openNLPTokenizer )
 	{
-		this.opennlpTokenizer = opennlpTokenizer;
+		this.openNLPTokenizer = openNLPTokenizer;
 	}
 
-	public String getopennlpPos()
+	public String getOpenNLPPos()
 	{
-		return opennlpPos;
+		return openNLPPos;
 	}
 
-	public void setopennlpPos( String opennlpPos )
+	public void setOpenNLPPos( String openNLPPos )
 	{
-		this.opennlpPos = opennlpPos;
+		this.openNLPPos = openNLPPos;
 	}
 
-	public String getopennlpNamefinderFormat()
+	public String getOpenNLPNamefinderFormat()
 	{
-		return opennlpNamefinderFormat;
+		return openNLPNamefinderFormat;
 	}
 
-	public void setopennlpNamefinderFormat( String opennlpNamefinderFormat )
+	public void setOpenNLPNamefinderFormat( String openNLPNamefinderFormat )
 	{
-		this.opennlpNamefinderFormat = opennlpNamefinderFormat;
+		this.openNLPNamefinderFormat = openNLPNamefinderFormat;
 	}
 
-	public String getopennlpParser()
+	public String getOpenNLPParser()
 	{
-		return opennlpParser;
+		return openNLPParser;
 	}
 
-	public void setopennlpParser( String opennlpParser )
+	public void setOpenNLPParser( String openNLPParser )
 	{
-		this.opennlpParser = opennlpParser;
+		this.openNLPParser = openNLPParser;
 	}
 
-	public String getopennlpCorefDir()
+	public String getOpenNLPCorefDir()
 	{
-		return opennlpCorefDir;
+		return openNLPCorefDir;
 	}
 
-	public void setopennlpCorefDir( String opennlpCorefDir )
+	public void setOpenNLPCorefDir( String openNLPCorefDir )
 	{
-		this.opennlpCorefDir = opennlpCorefDir;
+		this.openNLPCorefDir = openNLPCorefDir;
 	}
 }

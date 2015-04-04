@@ -28,8 +28,7 @@ public class ConfigurationServiceTest
 	@Test
 	public void testConfigurationService()
 	{
-		assertNotNull( configurationService.getopennlpSentence() );
-		System.out.println( configurationService.getopennlpSentence() );
+		assertNotNull( configurationService.getOpenNLPSentence() );
 	}
 
 
