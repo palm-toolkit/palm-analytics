@@ -24,6 +24,9 @@ public class TermCandidate
 	// the number of substring combination of term candidate
 	private List<String> candidateTermSubStrings;
 
+	// the cvalue value
+	private double cValue;
+
 	// constructor set default value
 	public TermCandidate( final String term )
 	{
@@ -32,6 +35,7 @@ public class TermCandidate
 		this.candidateFrequencies = 0;
 		this.candidateNestedFrequencies = 0;
 		this.uniqueNesterCandidates = 0;
+		this.cValue = 0.0;
 	}
 
 	// increase candidate frequency every time its found in terms list
@@ -96,15 +100,19 @@ public class TermCandidate
 	// get cvalue of candidate
 	public double getCValue()
 	{
+		if( this.cValue != 0.0)
+			return this.cValue;
+		
 		double log2CandidateLength = ( Math.log( (double) this.candidateLength ) / Math.log( (double) 2 ) );
 		double candidateFrequenciesD = (double) this.candidateFrequencies;
 		double inverseCandidateNestedFrequencies = 1.0 / (double) this.uniqueNesterCandidates;
 		double candidateNestedFrequenciesD = (double) this.candidateNestedFrequencies;
 
 		if ( this.uniqueNesterCandidates == 0 )
-			return log2CandidateLength * candidateFrequenciesD;
+			this.cValue = log2CandidateLength * candidateFrequenciesD;
 		else
-			return log2CandidateLength * ( candidateFrequenciesD - inverseCandidateNestedFrequencies * candidateNestedFrequenciesD );
+			this.cValue = log2CandidateLength * ( candidateFrequenciesD - inverseCandidateNestedFrequencies * candidateNestedFrequenciesD );
+		return this.cValue;
 	}
 
 	// getter and setter
@@ -142,5 +150,6 @@ public class TermCandidate
 
 		return this;
 	}
+
 
 }
