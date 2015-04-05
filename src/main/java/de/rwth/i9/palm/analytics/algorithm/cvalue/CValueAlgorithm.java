@@ -43,6 +43,13 @@ public class CValueAlgorithm implements CValue
 		return frequencyThreshold;
 	}
 
+	/**
+	 * Set the frequency threshold of candidate terms. Any terms that has
+	 * frequency below this threshold will be ignored
+	 * 
+	 * @param frequencyThreshold
+	 *            an integer value of threshold
+	 */
 	public void setFrequencyThreshold( final int frequencyThreshold )
 	{
 		if ( frequencyThreshold < 0 )
@@ -81,14 +88,30 @@ public class CValueAlgorithm implements CValue
 		candidate.increaseCandidateFrequencies();
 	}
 
-	// list of term candidate
-	public Collection<TermCandidate> getTermCandidates()
+	/**
+	 * Get the list of constructed multi-word terms candidates<br/>
+	 * Call the following methods first to avoid calling empty list.<br/>
+	 * <i> set the list of terms</i></br>
+	 * <pre>setTerms( terms );</pre></br>
+	 * <i> set the frequency threshold (optional, to boost precision)</i></br>
+	 * <pre>setFrequencyThreshold( integer );</pre></br>
+	 * <i> build candidate list and calculate the cValue</i></br>
+	 * <pre>calculateCValue();</pre></br>
+	 * @return List<TermCandidate>
+	 * 		list of term candidate based on input multi-word terms
+	 */
+	public List<TermCandidate> getTermCandidates()
 	{
 		List<TermCandidate> candidates = new ArrayList<TermCandidate>( candidatesMap.values() );
 		Collections.sort( candidates, new CValueComparator() );
 		return candidates;
 	}
 
+	/**
+	 * Run the actual calculation process. </br> including building the
+	 * multi-word term HashMap and assign each candidate term with its
+	 * frequencies, nested frequencies and number of nester candidate
+	 */
 	public void calculateCValue()
 	{
 		// first build the term candidates
