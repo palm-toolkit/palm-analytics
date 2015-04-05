@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import de.rwth.i9.palm.analytics.algorithm.corephrase.CorePhrase;
 import de.rwth.i9.palm.analytics.algorithm.corephrase.CorePhraseImpl;
 import de.rwth.i9.palm.analytics.algorithm.cvalue.CValue;
-import de.rwth.i9.palm.analytics.algorithm.cvalue.CValueImpl;
+import de.rwth.i9.palm.analytics.algorithm.cvalue.CValueAlgorithm;
 import de.rwth.i9.palm.analytics.algorithm.lda.Lda;
 import de.rwth.i9.palm.analytics.algorithm.lda.LdaImpl;
 import de.rwth.i9.palm.analytics.opennlp.OpenNLP;
@@ -40,7 +40,7 @@ public class PalmAnalyticsImpl implements PalmAnalytics
 	public CValue getCValueAlgorithm()
 	{
 		if ( this.cValue == null )
-			this.cValue = new CValueImpl();
+			this.cValue = new CValueAlgorithm();
 
 		return this.cValue;
 	}
