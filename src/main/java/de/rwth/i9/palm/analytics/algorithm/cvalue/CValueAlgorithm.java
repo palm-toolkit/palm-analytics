@@ -1,7 +1,6 @@
 package de.rwth.i9.palm.analytics.algorithm.cvalue;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -114,10 +113,12 @@ public class CValueAlgorithm implements CValue
 	 */
 	public void calculateCValue()
 	{
+		logger.info( "build the multi-word term candidates" );
 		// first build the term candidates
 		for ( String term : this.terms )
 			buildTermCandidate( term );
 
+		logger.info( "check for frequency threshold, eliminate candidates if candidates frequencies < frequency threshold" );
 		// check frequency threshold
 		if ( this.frequencyThreshold > 1 )
 			for ( Iterator<Map.Entry<String, TermCandidate>> candidatesMapEntry = candidatesMap.entrySet().iterator(); candidatesMapEntry.hasNext(); )
@@ -128,6 +129,8 @@ public class CValueAlgorithm implements CValue
 					candidatesMapEntry.remove();
 				}
 			}
+
+		logger.info( "calculating the cValue" );
 
 		List<TermCandidate> candidates = new ArrayList<TermCandidate>( candidatesMap.values() );
 		// sort based on term length and frequencies
@@ -159,6 +162,6 @@ public class CValueAlgorithm implements CValue
 			}
 		}
 
-
+		logger.info( "The calculation process is done!" );
 	}
 }
