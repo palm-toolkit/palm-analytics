@@ -22,7 +22,7 @@ public interface CValue
 
 	/**
 	 * Add a term into list of term phrases<br/>
-	 * Terms are extracted using <i>part of speech Penn The Bank</i>
+	 * Terms are extracted using <i>part of speech Penn Treebank</i>
 	 * and usually in these following form:<br/>
 	 * 	<i>1. Noun + Noun,</i></br>
 	 *	<i>2.(Adj|Noun) + Noun,</i></br>
@@ -36,8 +36,8 @@ public interface CValue
 	
 	/**
 	 * set list of term phrases<br/>
-	 * Terms are extracted using <i>part of speech Penn The Bank</i> and usually
-	 * in these following form:<br/>
+	 * Terms are extracted using <i>part of speech Penn Treebank</i>
+	 * and usually in these following form:<br/>
 	 * <i>1. Noun + Noun,</i></br> <i>2.(Adj|Noun) + Noun,</i></br>
 	 * <i>3.((Adj|Noun) +|((Adj|Noun)* (NounPrep)?)(Adj|Noun)*)Noun</i></br>
 	 * 
