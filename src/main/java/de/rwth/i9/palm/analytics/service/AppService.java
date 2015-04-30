@@ -33,6 +33,9 @@ public class AppService
 	@Value( "${opennlp.coref.dir}" )
 	private String openNLPCorefDir;
 
+	@Value( "${opennlp.chunker}" )
+	private String openNLPChunker;
+
 	public String getOpenNLPSentence()
 	{
 		return openNLPSentence;
@@ -91,5 +94,15 @@ public class AppService
 	public void setOpenNLPCorefDir( String openNLPCorefDir )
 	{
 		this.openNLPCorefDir = openNLPCorefDir;
+	}
+
+	public String getOpenNLPChunker()
+	{
+		return openNLPChunker;
+	}
+
+	public void setOpenNLPChunker( String openNLPChunker )
+	{
+		this.openNLPChunker = openNLPChunker;
 	}
 }
