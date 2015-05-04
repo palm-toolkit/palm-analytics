@@ -143,7 +143,7 @@
 				<include>**/*.properties</include>
 			</includes>
 		  </resource>
-		  <resource>
+		 <!-- <resource>
 		    <directory>src/main/resources</directory>
 		    <filtering>false</filtering>
 		    <includes>
@@ -155,7 +155,7 @@
 				<include>**/*.fem</include>
 				<include>**/acronyms</include>
 			</includes>
-		  </resource>
+		  </resource>-->
 	</resources>
 	</build>
 </project>
