@@ -113,6 +113,14 @@
   		<artifactId>spring-context</artifactId>
   		<version>${org.springframework.version}</version>
   	</dependency>
+  	
+  	<!-- lucene -->
+  	<dependency>
+		<groupId>org.apache.lucene</groupId>
+		<artifactId>lucene-spellchecker</artifactId>
+		<version>3.6.2</version>
+	</dependency>
+  	
 
   </dependencies>
   

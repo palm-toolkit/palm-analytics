@@ -10,6 +10,8 @@ import de.rwth.i9.palm.analytics.algorithm.lda.Lda;
 import de.rwth.i9.palm.analytics.algorithm.lda.LdaImpl;
 import de.rwth.i9.palm.analytics.opennlp.OpenNLP;
 import de.rwth.i9.palm.analytics.opennlp.OpenNLPImpl;
+import de.rwth.i9.palm.analytics.textcompare.TextCompare;
+import de.rwth.i9.palm.analytics.textcompare.TextCompareImpl;
 
 /**
  * This interface is a Factory-interface for any analytics
@@ -27,6 +29,9 @@ public class PalmAnalyticsImpl implements PalmAnalytics
 
 	@Autowired( required = false )
 	private OpenNLP openNLP;
+	
+	@Autowired( required = false )
+	private TextCompare textCompare;
 
 	@Override
 	public CorePhrase getCorePhraseAlgorithm()
@@ -61,6 +66,15 @@ public class PalmAnalyticsImpl implements PalmAnalytics
 			this.openNLP = new OpenNLPImpl();
 
 		return this.openNLP;
+	}
+
+	@Override
+	public TextCompare getTextCompare()
+	{
+		if( this.textCompare == null )
+			this.textCompare = new TextCompareImpl();
+		
+		return this.textCompare;
 	}
 
 }
