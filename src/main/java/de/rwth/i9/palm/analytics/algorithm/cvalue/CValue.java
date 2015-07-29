@@ -21,9 +21,9 @@ public interface CValue
 	public void setFrequencyThreshold( int frequencyThreshold );
 
 	/**
-	 * Add a term into list of term phrases<br/>
+	 * Add a term into list of term phrases
 	 * Terms are extracted using <i>part of speech Penn Treebank</i>
-	 * and usually in these following form:<br/>
+	 * and usually in these following form:
 	 * 	<i>1. Noun + Noun,</i></br>
 	 *	<i>2.(Adj|Noun) + Noun,</i></br>
 	 *	<i>3.((Adj|Noun) +|((Adj|Noun)* (NounPrep)?)(Adj|Noun)*)Noun</i></br>
@@ -35,9 +35,9 @@ public interface CValue
 	public CValueAlgorithm addTerms( final String term );
 	
 	/**
-	 * set list of term phrases<br/>
+	 * set list of term phrases
 	 * Terms are extracted using <i>part of speech Penn Treebank</i>
-	 * and usually in these following form:<br/>
+	 * and usually in these following form:
 	 * <i>1. Noun + Noun,</i></br> <i>2.(Adj|Noun) + Noun,</i></br>
 	 * <i>3.((Adj|Noun) +|((Adj|Noun)* (NounPrep)?)(Adj|Noun)*)Noun</i></br>
 	 * 
@@ -54,8 +54,8 @@ public interface CValue
 	public void calculateCValue();
 	
 	/**
-	 * Get the list of constructed multi-word terms candidates<br/>
-	 * Call the following methods first to avoid calling empty list.<br/>
+	 * Get the list of constructed multi-word terms candidates
+	 * Call the following methods first to avoid calling empty list.
 	 * <i> set the list of terms</i></br>
 	 * <pre>setTerms( terms );</pre></br>
 	 * <i> set the frequency threshold (optional, to boost precision)</i></br>

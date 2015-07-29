@@ -88,8 +88,8 @@ public class CValueAlgorithm implements CValue
 	}
 
 	/**
-	 * Get the list of constructed multi-word terms candidates<br/>
-	 * Call the following methods first to avoid calling empty list.<br/>
+	 * Get the list of constructed multi-word terms candidates
+	 * Call the following methods first to avoid calling empty list.
 	 * <i> set the list of terms</i></br>
 	 * <pre>setTerms( terms );</pre></br>
 	 * <i> set the frequency threshold (optional, to boost precision)</i></br>
