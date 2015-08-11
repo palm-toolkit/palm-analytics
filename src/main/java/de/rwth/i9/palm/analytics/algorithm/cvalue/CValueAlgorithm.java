@@ -64,6 +64,8 @@ public class CValueAlgorithm implements CValue
 
 	public void setTerms( List<String> terms )
 	{
+		// reset candidate maps
+		this.candidatesMap = new HashMap<String, TermCandidate>();
 		this.terms = terms;
 	}
 
