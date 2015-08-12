@@ -95,4 +95,11 @@ public interface OpenNLP
 	 * @return the parse tree
 	 */
 	public Parse parseSentence( final String text );
+
+	/**
+	 * 
+	 * @param sentence
+	 * @return
+	 */
+	public List<String> nounPhraseExtractor( String[] tokenizeSentence, String[] posTaggerSentence );
 }

@@ -113,6 +113,14 @@
   		<artifactId>spring-context</artifactId>
   		<version>${org.springframework.version}</version>
   	</dependency>
+  	
+  	<!-- lucene -->
+  	<dependency>
+		<groupId>org.apache.lucene</groupId>
+		<artifactId>lucene-spellchecker</artifactId>
+		<version>3.6.2</version>
+	</dependency>
+  	
 
   </dependencies>
   
@@ -143,7 +151,7 @@
 				<include>**/*.properties</include>
 			</includes>
 		  </resource>
-		  <resource>
+		 <!-- <resource>
 		    <directory>src/main/resources</directory>
 		    <filtering>false</filtering>
 		    <includes>
@@ -155,7 +163,7 @@
 				<include>**/*.fem</include>
 				<include>**/acronyms</include>
 			</includes>
-		  </resource>
+		  </resource>-->
 	</resources>
 	</build>
 </project>

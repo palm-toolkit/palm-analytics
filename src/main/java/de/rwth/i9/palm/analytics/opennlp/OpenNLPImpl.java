@@ -11,6 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import opennlp.tools.chunker.ChunkerME;
+import opennlp.tools.chunker.ChunkerModel;
 import opennlp.tools.coref.DefaultLinker;
 import opennlp.tools.coref.DiscourseEntity;
 import opennlp.tools.coref.Linker;
@@ -447,6 +449,77 @@ public class OpenNLPImpl implements OpenNLP
 		}
 		// return the parser
 		return parser;
+	}
+
+	@Override
+	public List<String> nounPhraseExtractor( String[] tokenizeSentence, String[] posTaggerSentence )
+	{
+		ChunkerME chunker = new ChunkerME( this.getChunkerModel() );
+
+		Span[] chunks = chunker.chunkAsSpans( tokenizeSentence, posTaggerSentence );
+	    
+	  //chunkStrings are the actual chunks
+		String[] chunkStrings = Span.spansToStrings( chunks, tokenizeSentence );
+		List<String> result = new ArrayList<String>();
+		for ( int i = 0; i < chunks.length; i++ )
+		{
+			if ( chunks[i].getType().equals( "NP" ) )
+			{
+				result.add( chunkStrings[i] );
+			}
+
+		}
+		return result;
+	}
+	
+	public static List<String> ngram(List<String> input, int n, String separator) {
+	    if (input.size() <= n) {
+	      return input;
+	    }
+	    List<String> outGrams = new ArrayList<String>();
+	    for (int i = 0; i < input.size() - (n - 2); i++) {
+	      String gram = "";
+	      if ((i + n) <= input.size()) {
+	        for (int x = i; x < (n + i); x++) {
+	          gram += input.get(x) + separator;
+	        }
+	        gram = gram.substring(0, gram.lastIndexOf(separator));
+	        outGrams.add(gram);
+	      }
+	    }
+	    return outGrams;
+	  }
+
+	private ChunkerModel getChunkerModel()
+	{
+
+		ChunkerModel model = null;
+		InputStream modelIn = null;
+		try
+		{
+			modelIn = getClass().getResourceAsStream( appService.getOpenNLPChunker() );
+			model = new ChunkerModel( modelIn );
+		}
+		catch ( IOException e )
+		{
+			// Model loading failed, handle the error
+			e.printStackTrace();
+		}
+		finally
+		{
+			if ( modelIn != null )
+			{
+				try
+				{
+					modelIn.close();
+				}
+				catch ( IOException e )
+				{
+				}
+			}
+		}
+
+		return model;
 	}
 
 }
