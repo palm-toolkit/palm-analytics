@@ -3,6 +3,4 @@
 .settings/
 /target/
 opennlp/
-/target/
-/target/
-/target/
+/bin/
