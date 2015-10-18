@@ -26,18 +26,24 @@ public class LDAJob
 public void test() throws Exception {
 	
 	try {
-		// Get the converted file (keep in mind --keep-sequence & --remove-stopwords
 		
-		//TO DO convert to mallet automatically 
+		// Get the data from a directory and convert it into mallet format 
+		// Use importData Class to make input traverse through the following pipes
+		// 		1.	Input2CharSequence
+		//		2.	CharSequence2TokenSequence
+		//		3.	TokenSequenceLowercase
+		//		4.	TokenSequenceRemoveStopwords
+		//		5.	TokenSequence2FeatureSequence
+		
 		importData importer = new importData();
-		InstanceList instances = importer.readDirectory(new File("C:/Users/Piro/Desktop/Documents"));
-		instances.save( new File("C:/Users/Piro/Desktop/Outputs/mydbnewtrial.mallet") );
+		InstanceList instances = importer.readDirectory(new File("C:/Users/Piro/Desktop/MyOutputs"));
+		instances.save( new File("C:/Users/Piro/Desktop/Outputs/myoutputs.mallet") );
 		
-		File texting = new File("C:/Users/Piro/Desktop/Outputs/mydbnewtrial.mallet");
+		File texting = new File("C:/Users/Piro/Desktop/Outputs/myoutputs.mallet");
 		InstanceList training = InstanceList.load (texting);
 		
 		// define number of Topics 
-		int numTopics = 10;
+		int numTopics = 100;
 		
 		// call ParallelTopicModel class to run simple parallel version of LDA with
 		// alpha=0.1 (sumalpha)50 beta=0,01 numTopics=5
@@ -56,11 +62,6 @@ public void test() throws Exception {
 		
 		// Start the printing of results. Other methods can be called 
 		MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("printing state");
-		
-		//constructor
-//		public LDAJob (){
-//			
-//		}
 		
 		// get the top words for each topic 
 		lda.printTopWords( new File("C:/Users/Piro/Desktop/Outputs/TopWords.txt"), 11, false );
