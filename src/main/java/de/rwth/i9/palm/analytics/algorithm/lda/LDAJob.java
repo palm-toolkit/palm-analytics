@@ -1,138 +1,113 @@
 package de.rwth.i9.palm.analytics.algorithm.lda;
 
-import java.io.IOException;
+import cc.mallet.topics.tui.*;
+import cc.mallet.util.*;
+import de.rwth.i9.palm.analytics.config.AppConfig;
+import cc.mallet.types.*;
+import cc.mallet.pipe.*;
+import cc.mallet.pipe.iterator.*;
+import cc.mallet.topics.*;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.SequenceFile;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.util.ToolRunner;
-import org.apache.mahout.clustering.lda.cvb.CVB0Driver;
-import org.apache.mahout.common.AbstractJob;
-import org.apache.mahout.common.HadoopUtil;
-import org.apache.mahout.utils.vectors.RowIdJob;
+import java.io.*;
+import java.util.*;
+import java.util.regex.Pattern;
 
-public class LDAJob extends AbstractJob
-{
-	static int numTopics = 20;
-	static double doc_topic_smoothening = 0.0001;
-	static double term_topic_smoothening = 0.0001;
-	static int maxIter = 10;
-	static int iteration_block_size = 10;
-	static double convergenceDelta = 0;
-	static float testFraction = 0.0f;
-	static int numTrainThreads = 4;
-	static int numUpdateThreads = 1;
-	static int maxItersPerDoc = 10;
-	static int numReduceTasks = 10;
-	static boolean backfillPerplexity = false;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-	private void run( Configuration conf, Path input, String baseFileLocation ) throws Exception
-	{
-
-		System.out.println( input.toString() );
-		String seqFileOutput = "SeqFile";
-		String vectorOutFile = "VectorFile";
-		String rowIDOutFile = "RowIdOutput";
-		String ldaOutputFile = "topicModelOutputPath";
-		String dictionaryFileName = vectorOutFile + "/dictionary.file-0";
-		String tempLDAModelFile = "modelTempPath";
-		String docTopicOutput = "docTopicOutputPath";
-		String topicTermVectorDumpPath = "topicTermVectorDump";
-		String docTopicVectorDumpPath = "docTopicVectorDump";
-
-		// String topicTermVectorDump = "topicTermVectorDump";
-
-		// Deleting all the previous files.
-		HadoopUtil.delete( conf, new Path( seqFileOutput ) );
-		HadoopUtil.delete( conf, new Path( vectorOutFile ) );
-		HadoopUtil.delete( conf, new Path( rowIDOutFile ) );
-		HadoopUtil.delete( conf, new Path( ldaOutputFile ) );
-		HadoopUtil.delete( conf, new Path( docTopicOutput ) );
-		HadoopUtil.delete( conf, new Path( tempLDAModelFile ) );
-		HadoopUtil.delete( conf, new Path( topicTermVectorDumpPath ) );
-		HadoopUtil.delete( conf, new Path( docTopicVectorDumpPath ) );
-
-		/* done by lucene */
-		/*
-		 * // S3FileSystem. //Step1: convert the directory into seqFile.
-		 * System.out.println("starting dir to seq job"); String[] dirToSeqArgs
-		 * = { "--input", input.toString(), "--output", seqFileOutput};
-		 * ToolRunner.run(new SequenceFilesFromDirectory(), dirToSeqArgs);
-		 * System.out.println("finished dir to seq job");
-		 * 
-		 * //Step 2: converting the seq to vector. //TODO use the custome
-		 * analyzer System.out.println("starting seq To Vector job"); String[]
-		 * seqToVectorArgs = {"--input", seqFileOutput, "--output",
-		 * vectorOutFile, "--maxDFPercent", "70", "--maxNGramSize", "2",
-		 * "--namedVector", "--analyzerName",
-		 * "com.ABC.mahout.clustering.CustomLuceneAnalyzer" };
-		 * ToolRunner.run(new SparseVectorsFromSequenceFiles(),
-		 * seqToVectorArgs); System.out.println("finished seq to vector job");
-		 */
-		// Step3: convert SequenceFile<Text, >> VectorWritable> to
-		// SequenceFile<IntWritable, VectorWritable>
-		System.out.println( "starting rowID job" );
-		String[] rowIDArgs = { "--input", vectorOutFile + "/tfidf-vectors/part-r-00000", "--output", rowIDOutFile };
-		ToolRunner.run( new RowIdJob(), rowIDArgs );
-		System.out.println( "finished rowID job" );
-
-		// Step4: Run the LDA algo
-		// TODO use the termlist used in the LDAPrintTopWords.
-		System.out.println( "starting caluclulating the number of terms" );
-		int numTerms = getNumTerms( conf, new Path( dictionaryFileName ) );
-		System.out.println( "finished calculating the number of terms" );
-
-		long seed = System.nanoTime() % 10000;
-		System.out.println( "starting the CVB job" );
-
-		CVB0Driver cVB0Driver = new CVB0Driver();
-		cVB0Driver.run( conf, new Path( rowIDOutFile + "/matrix" ), new Path( ldaOutputFile ), numTopics, numTerms, doc_topic_smoothening, term_topic_smoothening, maxIter, iteration_block_size, convergenceDelta, new Path( dictionaryFileName ), new Path( docTopicOutput ), new Path( tempLDAModelFile ), seed, testFraction, numTrainThreads, numUpdateThreads, maxItersPerDoc, numReduceTasks, backfillPerplexity );
-		System.out.println( "finished the cvb job" );
-		//
-
-		// Step5: vectordump topic-term
-
-		System.out.println( "starting the vector dumper for topic term" );
-		String[] topicTermDumperArg = { "--input", ldaOutputFile, "--output", topicTermVectorDumpPath, "--dictionary", dictionaryFileName, "-dt", "sequencefile", "--vectorSize", "25", "-sort", "testsortVectors" };
-		ToolRunner.run( new Configuration(), new CustomVectorDumper(), topicTermDumperArg );
-		System.out.println( "finisher the vector dumper for topicterm" );
-
-		System.out.println( "starting the vector dumper for doctopic dumper" );
-		String[] docTopicDumperArg = { "--input", docTopicOutput, "--output", docTopicVectorDumpPath };
-		ToolRunner.run( new Configuration(), new CustomVectorDumper(), docTopicDumperArg );
-		System.out.println( "finsiher the vector dumper for doctopic dumper" );
-
-		//
-		// printLdaResults(ldaOutputFile, numTerms);
-		// MongoDumper dumper = new MongoDumper();
-		// dumper.writeTopicCollection( topicTermVectorDumpPath.toString() );
-	}
-
-	private static int getNumTerms( Configuration conf, Path dictionaryPath ) throws IOException
-	{
-		FileSystem fs = dictionaryPath.getFileSystem( conf );
-		Text key = new Text();
-		IntWritable value = new IntWritable();
-		int maxTermId = -1;
-		for ( FileStatus stat : fs.globStatus( dictionaryPath ) )
-		{
-			SequenceFile.Reader reader = new SequenceFile.Reader( fs, stat.getPath(), conf );
-			while ( reader.next( key, value ) )
-			{
-				maxTermId = Math.max( maxTermId, value.get() );
-			}
+@RunWith( SpringJUnit4ClassRunner.class )
+@ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
+public class LDAJob
+{	
+@Test
+public void test() throws Exception {
+	
+	try {
+		// Get the converted file (keep in mind --keep-sequence & --remove-stopwords
+		
+		//TO DO convert to mallet automatically 
+		importData importer = new importData();
+		InstanceList instances = importer.readDirectory(new File("C:/Users/Piro/Desktop/Documents"));
+		instances.save( new File("C:/Users/Piro/Desktop/Outputs/mydbnewtrial.mallet") );
+		
+		File texting = new File("C:/Users/Piro/Desktop/Outputs/mydbnewtrial.mallet");
+		InstanceList training = InstanceList.load (texting);
+		
+		// define number of Topics 
+		int numTopics = 10;
+		
+		// call ParallelTopicModel class to run simple parallel version of LDA with
+		// alpha=0.1 (sumalpha)50 beta=0,01 numTopics=5
+		ParallelTopicModel lda = new ParallelTopicModel (numTopics, 50.0 , 0.01);
+		lda.printLogLikelihood = true;
+		
+		// Assign the number of threads to Maximally number of cores of your pc
+		lda.setNumThreads(1);
+					
+		// Assign an optimizing factor of 50 and let the number of words be 10 per each topic
+		lda.setTopicDisplay(50, 11);
+		lda.addInstances(training);
+		
+		// Calculate the lda running time for single and multi-thread calls
+		lda.estimate();
+		
+		// Start the printing of results. Other methods can be called 
+		MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("printing state");
+		
+		//constructor
+//		public LDAJob (){
+//			
+//		}
+		
+		// get the top words for each topic 
+		lda.printTopWords( new File("C:/Users/Piro/Desktop/Outputs/TopWords.txt"), 11, false );
+		
+		// get the topic distribution for each of the files
+		lda.printDocumentTopics( new File("C:/Users/Piro/Desktop/Outputs/DocTopic.txt") );
+		
+		// get the weight of each word if needed
+		//lda.printTopicWordWeights( new File("C:/Users/Piro/Desktop/Outputs/Wordweight.txt") );
+		
+		MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("finished printing");
+		
+		//Start the procedure of merging the contents of file for mapping
+		//the documents with their "bag-of-words" topics 
+		@SuppressWarnings( "resource" )
+		BufferedReader docs = new BufferedReader(new FileReader("C:/Users/Piro/Desktop/Outputs/DocTopic.txt"));
+		@SuppressWarnings( "resource" )
+		BufferedReader tops = new BufferedReader(new FileReader("C:/Users/Piro/Desktop/Outputs/TopWords.txt"));
+		String document, topic;
+		
+		// get Line by line the bag of words for each of the topics
+		List<String> listtopic = new ArrayList<String>();
+		while((topic=tops.readLine())!=null){
+			listtopic.add( topic );
 		}
-		return maxTermId + 1;
-	}
-
-	@Override
-	public int run( String[] arg0 ) throws Exception
-	{
-		// TODO Auto-generated method stub
-		return 0;
-	}
+		String[] topics = listtopic.toArray( new String[0] );
+		
+		// get Line by line the topic distribution for each of the documents
+		List<String> listdoc = new ArrayList<String>();
+		while((document=docs.readLine())!=null){
+			listdoc.add( document );
+		}
+		
+		// map documents to topic's bag-of-words
+		String[] documents = listdoc.toArray(new String[0]);
+		for (int i=1; i<documents.length;i++){
+			String[] docsplit = documents[i].split( "\\s+" );
+			for(int j =0;j<numTopics;j++){
+				if (topics[j].startsWith( docsplit[2]) == true){
+					System.out.println(docsplit[1] +" -> " + topics[j].substring( 9 ));
+						break;
+					} 
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+   }
+	
 }
