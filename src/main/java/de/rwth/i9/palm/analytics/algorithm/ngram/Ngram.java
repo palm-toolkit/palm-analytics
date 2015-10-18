@@ -16,6 +16,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import cc.mallet.topics.TopicalNGrams;
 import cc.mallet.types.InstanceList;
 import cc.mallet.util.Randoms;
+import de.rwth.i9.palm.analytics.algorithm.lda.importData;
 import de.rwth.i9.palm.analytics.config.AppConfig;
 import cc.mallet.util.CommandOption;
 import cc.mallet.util.Randoms;
@@ -30,8 +31,24 @@ public class Ngram
 	@Test
 	public void test() throws Exception
 	{	
+		
+		try{
+			
+		// Get the data from a directory and convert it into mallet format 
+		// Use importData Class to make input traverse through the following pipes
+		// 		1.	Input2CharSequence
+		//		2.	CharSequence2TokenSequence
+		//		3.	TokenSequenceLowercase
+		//		4.	TokenSequenceRemoveStopwords
+		//		5.	TokenSequence2FeatureSequence
+		
+		importDataNgram importer = new importDataNgram();
+		InstanceList instances = importer.readDirectory(new File("C:/Users/Piro/Desktop/Documents"));
+		instances.save( new File("C:/Users/Piro/Desktop/Outputs/myoutputs-ngrams.mallet") );
+		
 		// specify the file from which the data will be gathered
-		InstanceList ilist = InstanceList.load (new File("C:/Users/Piro/Desktop/Outputs/myngramdb.mallet"));
+		File texting = new File("C:/Users/Piro/Desktop/Outputs/myoutputs-ngrams.mallet");
+		InstanceList training = InstanceList.load (texting);
 		
 		System.out.println ("Data loaded.");
 		
@@ -40,7 +57,7 @@ public class Ngram
 		TopicalNGrams tng = new TopicalNGrams (10,1.0, 0.001,0.1,0.001,0.2, 1000.0);
 		
 		// estimate the model parameters and prepare the results
-		tng.estimate (ilist, 200, 1, 0, null, new Randoms());
+		tng.estimate (training, 200, 1, 0, null, new Randoms());
 		
 		// get the list of unigrams & ngrams
 		tng.printTopWords( 10, true );
@@ -51,6 +68,9 @@ public class Ngram
 		// run the method to get topic proportions for each doc.
 		tng.printDocumentTopics (out, 0.0, -1);
 		out.close();
-		}
-
+		
+		}	catch (Exception e) {
+		e.printStackTrace();
+			}
 	}
+}
