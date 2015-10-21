@@ -40,7 +40,7 @@ public class Ngram
 		//		2.	CharSequence2TokenSequence
 		//		3.	TokenSequenceLowercase
 		//		4.	TokenSequenceRemoveStopwords
-		//		5.	TokenSequence2FeatureSequence
+		//		5.	TokenSequence2FeatureSequenceWithBigrams
 		
 		importDataNgram importer = new importDataNgram();
 		InstanceList instances = importer.readDirectory(new File("C:/Users/Piro/Desktop/Documents"));
@@ -61,7 +61,7 @@ public class Ngram
 		
 		// get the list of unigrams & ngrams
 		tng.printTopWords( 10, true );
-		
+
 		// assign a file for the output of topic proportions
 		PrintWriter out = new PrintWriter (new File("C:/Users/Piro/Desktop/Outputs/DocTopic-Ngrams.txt"));
 		

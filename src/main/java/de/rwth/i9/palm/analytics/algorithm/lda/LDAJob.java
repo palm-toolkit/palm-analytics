@@ -43,8 +43,8 @@ public void test() throws Exception {
 		InstanceList training = InstanceList.load (texting);
 		
 		// define number of Topics 
-		int numTopics = 147;
-		
+		int numTopics = 50;
+
 		// call ParallelTopicModel class to run simple parallel version of LDA with
 		// alpha=0.1 (sumalpha)50 beta=0,01 numTopics=5
 		ParallelTopicModel lda = new ParallelTopicModel (numTopics, 50.0 , 0.01);

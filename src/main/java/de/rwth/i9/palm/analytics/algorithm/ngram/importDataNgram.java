@@ -35,8 +35,10 @@ public class importDataNgram
 
 	        // Rather than storing tokens as strings, convert 
 	        //  them to integers by looking them up in an alphabet.
+	        pipeList.add(new TokenSequenceRemoveNonAlpha(false));
 	        pipeList.add(new TokenSequence2FeatureSequenceWithBigrams());
-
+	        
+	        
 	        return new SerialPipes(pipeList);
 	    }
 
