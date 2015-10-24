@@ -42,26 +42,30 @@ public class Ngram
 		//		4.	TokenSequenceRemoveStopwords
 		//		5.	TokenSequence2FeatureSequenceWithBigrams
 		
-		importDataNgram importer = new importDataNgram();
-		InstanceList instances = importer.readDirectory(new File("C:/Users/Piro/Desktop/Documents"));
-		instances.save( new File("C:/Users/Piro/Desktop/Outputs/myoutputs-ngrams.mallet") );
+//		importDataNgram importer = new importDataNgram();
+//		InstanceList instances = importer.readDirectory(new File("C:/Users/Piro/Desktop/Documents"));
+//		instances.save( new File("C:/Users/Piro/Desktop/Outputs/myoutputs-ngrams.mallet") );
 		
 		// specify the file from which the data will be gathered
-		File texting = new File("C:/Users/Piro/Desktop/Outputs/myoutputs-ngrams.mallet");
+		File texting = new File("C:/Users/Piro/Desktop/Outputs/myNewNgramDB.mallet");
 		InstanceList training = InstanceList.load (texting);
 		
 		System.out.println ("Data loaded.");
 		
 		// call the TopicalNGrams methods with the followong parameters as specified by Blei
 		// numTopics=10 , alphas = 1.0, beta = 0.001, gamma = 0.1, delta = 0.001, delta1 = 0.2, delta2=1000.0
-		TopicalNGrams tng = new TopicalNGrams (10,1.0, 0.001,0.1,0.001,0.2, 1000.0);
+		TopicalNGrams tng = new TopicalNGrams (100,1.0, 0.001,0.1,0.001,0.2, 1000.0);
 		
 		// estimate the model parameters and prepare the results
 		tng.estimate (training, 200, 1, 0, null, new Randoms());
 		
 		// get the list of unigrams & ngrams
+		// later we get the content of console and add it to a file for further processing
 		tng.printTopWords( 10, true );
-
+		
+		
+		PrintWriter outconsole = new PrintWriter (new File ("C:/Users/Piro/Desktop/Outputs/Uni-Ngrams.txt"));
+		
 		// assign a file for the output of topic proportions
 		PrintWriter out = new PrintWriter (new File("C:/Users/Piro/Desktop/Outputs/DocTopic-Ngrams.txt"));
 		
@@ -72,5 +76,7 @@ public class Ngram
 		}	catch (Exception e) {
 		e.printStackTrace();
 			}
+		
+		
 	}
 }

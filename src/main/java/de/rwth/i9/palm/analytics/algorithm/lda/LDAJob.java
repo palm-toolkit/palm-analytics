@@ -43,7 +43,7 @@ public void test() throws Exception {
 		InstanceList training = InstanceList.load (texting);
 		
 		// define number of Topics 
-		int numTopics = 50;
+		int numTopics = 70;
 
 		// call ParallelTopicModel class to run simple parallel version of LDA with
 		// alpha=0.1 (sumalpha)50 beta=0,01 numTopics=5
@@ -101,7 +101,7 @@ public void test() throws Exception {
 			String[] docsplit = documents[i].split( "\\s+" );
 			for(int j =0;j<numTopics;j++){
 				if (topics[j].startsWith( docsplit[2]) == true){
-					System.out.println(docsplit[1] +" -> " + topics[j].substring( 9 ));
+					System.out.println(docsplit[1] +" -> " + topics[j].substring( 10 ));
 						break;
 					} 
 				}
