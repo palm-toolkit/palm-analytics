@@ -51,7 +51,10 @@ public class Ngram
 		
 		// call the TopicalNGrams methods with the followong parameters as specified by Blei
 		// numTopics=10 , alphas = 1.0, beta = 0.001, gamma = 0.1, delta = 0.001, delta1 = 0.2, delta2=1000.0
-		TopicalNGrams tng = new TopicalNGrams (100,1.0, 0.001,0.1,0.001,0.2, 1000.0);
+		
+		int numTopics = 100;
+		
+		TopicalNGrams tng = new TopicalNGrams (numTopics,1.0, 0.001,0.1,0.001,0.2, 1000.0);
 		
 		// estimate the model parameters and prepare the results
 		tng.estimate (training, 200, 1, 0, null, new Randoms());
@@ -59,10 +62,10 @@ public class Ngram
 		// get the list of unigrams & ngrams
 		// later we get the content of console and add it to a file for further processing
 		tng.printTopWords( 10, true );
-		File file = new File("C:/Users/Piro/Desktop/Outputs/Uni-Ngrams.txt"); //Your file
-		FileOutputStream fos = new FileOutputStream(file);
-		PrintStream ps = new PrintStream(fos);
-		System.setOut(ps);
+//		File file = new File("C:/Users/Piro/Desktop/Outputs/Uni-Ngrams.txt"); 
+//		FileOutputStream fos = new FileOutputStream(file);
+//		PrintStream ps = new PrintStream(fos);
+//		System.setOut(ps);
 		
 
 		
@@ -72,6 +75,52 @@ public class Ngram
 		// run the method to get topic proportions for each doc.
 		tng.printDocumentTopics (out, 0.0, -1);
 		out.close();
+		
+		//Start the procedure of merging the contents of file for mapping
+		//the documents with their "bag-of-words" topics 
+		
+		@SuppressWarnings( "resource" )
+		BufferedReader docs = new BufferedReader(new FileReader("C:/Users/Piro/Desktop/Outputs/DocTopic-Ngrams.txt"));
+		@SuppressWarnings( "resource" )
+		BufferedReader tops = new BufferedReader(new FileReader("C:/Users/Piro/Desktop/Outputs/Uni-Ngrams.txt"));
+		String document, topic;
+		
+		// get Line by line the bag of words for each of the topics starting from the bottom
+		List<String> listtopic = new ArrayList<String>();
+		while((topic=tops.readLine())!=null){
+			listtopic.add( topic );
+		}
+		
+		Integer ntop = numTopics;
+		List<String> bigrams = new ArrayList<String>();
+		
+		//	get only the bigrams 
+		//	the unigrams are the same as in LDAJob.Java (proof of correctness
+		//	use the ordered topics and all-lower-case-letters
+		
+		for (int i= listtopic.size()-1; i > 0; i--){
+			while(ntop > 0){
+				if(listtopic.get( i ).contains("Topic " + (ntop-1)) && listtopic.get( i ).contains( "bigrams" ));
+					Integer countbi = Integer.parseInt( listtopic.get(i).split("\\s+")[6] );
+			}
+			
+		}
+		
+		// get Line by line the topic distribution for each of the documents
+		List<String> listdoc = new ArrayList<String>();
+		while((document=docs.readLine())!=null){
+			listdoc.add( document );
+		}
+		
+		for (int i= 0; i < listdoc.size()-1; i++){
+			String[] docsplit = listdoc.get( i ).split("\\s+");
+			for(int j =0 ; j<numTopics; j++){
+				if (listtopic.get( j ).startsWith( docsplit[2]) == true){
+					System.out.println(docsplit[1] +" -> " + listtopic.get( j ).substring( 10 ));
+						break;
+					} 
+				}
+		}
 		
 		}	catch (Exception e) {
 		e.printStackTrace();

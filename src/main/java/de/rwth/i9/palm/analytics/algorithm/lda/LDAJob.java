@@ -1,17 +1,12 @@
 package de.rwth.i9.palm.analytics.algorithm.lda;
 
-import cc.mallet.topics.tui.*;
 import cc.mallet.util.*;
 import de.rwth.i9.palm.analytics.config.AppConfig;
 import cc.mallet.types.*;
-import cc.mallet.pipe.*;
-import cc.mallet.pipe.iterator.*;
 import cc.mallet.topics.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.regex.Pattern;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -64,10 +59,10 @@ public void test() throws Exception {
 		MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("printing state");
 		
 		// get the top words for each topic 
-		lda.printTopWords( new File("C:/Users/Piro/Desktop/Outputs/TopWords.txt"), 11, false );
+		lda.printTopWords( new File("C:/Users/Piro/Desktop/Outputs/TopWords-NEW.txt"), 11, false );
 		
 		// get the topic distribution for each of the files
-		lda.printDocumentTopics( new File("C:/Users/Piro/Desktop/Outputs/DocTopic.txt") );
+		lda.printDocumentTopics( new File("C:/Users/Piro/Desktop/Outputs/DocTopic-NEW.txt") );
 		
 		// get the weight of each word if needed
 		//lda.printTopicWordWeights( new File("C:/Users/Piro/Desktop/Outputs/Wordweight.txt") );
@@ -77,17 +72,16 @@ public void test() throws Exception {
 		//Start the procedure of merging the contents of file for mapping
 		//the documents with their "bag-of-words" topics 
 		@SuppressWarnings( "resource" )
-		BufferedReader docs = new BufferedReader(new FileReader("C:/Users/Piro/Desktop/Outputs/DocTopic.txt"));
+		BufferedReader docs = new BufferedReader(new FileReader("C:/Users/Piro/Desktop/Outputs/DocTopic-NEW.txt"));
 		@SuppressWarnings( "resource" )
-		BufferedReader tops = new BufferedReader(new FileReader("C:/Users/Piro/Desktop/Outputs/TopWords.txt"));
+		BufferedReader tops = new BufferedReader(new FileReader("C:/Users/Piro/Desktop/Outputs/TopWords-NEW.txt"));
 		String document, topic;
 		
 		// get Line by line the bag of words for each of the topics
 		List<String> listtopic = new ArrayList<String>();
-		while((topic=tops.readLine())!=null){
+		while(( topic = tops.readLine())!=null){
 			listtopic.add( topic );
 		}
-		String[] topics = listtopic.toArray( new String[0] );
 		
 		// get Line by line the topic distribution for each of the documents
 		List<String> listdoc = new ArrayList<String>();
@@ -96,12 +90,11 @@ public void test() throws Exception {
 		}
 		
 		// map documents to topic's bag-of-words
-		String[] documents = listdoc.toArray(new String[0]);
-		for (int i=1; i<documents.length;i++){
-			String[] docsplit = documents[i].split( "\\s+" );
+		for (int i=1; i<listdoc.size();i++){
+			String[] docsplit = listdoc.get( i ).split( "\\s+" );
 			for(int j =0;j<numTopics;j++){
-				if (topics[j].startsWith( docsplit[2]) == true){
-					System.out.println(docsplit[1] +" -> " + topics[j].substring( 10 ));
+				if (listtopic.get( j ).startsWith( docsplit[2]) == true){
+					System.out.println(docsplit[1] +" -> " + listtopic.get( j ).substring( 10 ));
 						break;
 					} 
 				}
