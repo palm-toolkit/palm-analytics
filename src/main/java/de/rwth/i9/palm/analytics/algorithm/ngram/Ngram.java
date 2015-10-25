@@ -1,10 +1,7 @@
 package de.rwth.i9.palm.analytics.algorithm.ngram;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.*;
 
 import org.junit.Test;
@@ -62,9 +59,12 @@ public class Ngram
 		// get the list of unigrams & ngrams
 		// later we get the content of console and add it to a file for further processing
 		tng.printTopWords( 10, true );
+		File file = new File("C:/Users/Piro/Desktop/Outputs/Uni-Ngrams.txt"); //Your file
+		FileOutputStream fos = new FileOutputStream(file);
+		PrintStream ps = new PrintStream(fos);
+		System.setOut(ps);
 		
-		
-		PrintWriter outconsole = new PrintWriter (new File ("C:/Users/Piro/Desktop/Outputs/Uni-Ngrams.txt"));
+
 		
 		// assign a file for the output of topic proportions
 		PrintWriter out = new PrintWriter (new File("C:/Users/Piro/Desktop/Outputs/DocTopic-Ngrams.txt"));
@@ -77,6 +77,75 @@ public class Ngram
 		e.printStackTrace();
 			}
 		
+	        
+//		try {
+//		      //create a buffered reader that connects to the console, we use it so we can read lines
+//		      BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+//
+//		      //read a line from the console
+//		      String lineFromInput = in.readLine();
+//
+//		      //create an print writer for writing to a file
+//		      PrintWriter out = new PrintWriter(new FileWriter("output.txt"));
+//
+//		      //output to the file a line
+//		      out.println(lineFromInput);
+//
+//		      //close the file (VERY IMPORTANT!)
+//		      out.close();
+//		   }
+//		      catch(IOException e1) {
+//		        System.out.println("Error during reading/writing");
+//		   }
+//		
 		
+//		PrintWriter outconsole = new PrintWriter (new File ("C:/Users/Piro/Desktop/Outputs/Uni-Ngrams.txt"), "UTF-8");
+//		LoggedPrintStream cons = LoggedPrintStream.create( System.out );
+//		System.setOut( cons );
+//		System.setOut( cons.underlying );
+//		 System.out.println("----- Log for System.out: -----\n" + cons.buf);
+		
+//		//create pairs of Piped input and output streasm for std out and std err
+//		final PipedInputStream outPipedInputStream = new PipedInputStream();
+//		final PrintStream outPrintStream = new PrintStream(new PipedOutputStream(
+//		    outPipedInputStream));
+//		final BufferedReader outReader = new BufferedReader(
+//		    new InputStreamReader(outPipedInputStream));
+//	
+//		final PrintStream originalOutStream = System.out;
+//
+//		final Thread writingThread = new Thread(new Runnable() {
+//		    @Override
+//		    public void run() {
+//		        try {
+//		            System.setOut(outPrintStream);
+//		            // You could also set the System.in here using a
+//		            // PipedInputStream
+//		            
+//		            // Even better would be to refactor DoSomething to accept
+//		            // PrintStream objects as parameters to replace all uses of
+//		            // System.out and System.err. DoSomething could also have 
+//		            // an overload with DoSomething() calling: 
+//		          
+//		        } finally {
+//		            // may also want to add a catch for exceptions but it is
+//		            // essential to restore the original System output and error
+//		            // streams since it can be very confusing to not be able to
+//		            // find System.out output on your console
+//		            System.setOut(originalOutStream);
+//		
+//		            //You must close the streams which will auto flush them
+//		            outPrintStream.close();
+//	
+//		        }
+//		    } // end run()
+//		}); // end writing thread
+//		//Start the code that will write into streams
+//		writingThread.start();
+//		String line;
+//		final List<String> completeOutputStreamContent = new ArrayList<String>();
+//		while ((line = outReader.readLine()) != null) {
+//		    completeOutputStreamContent.add(line);
+//		} // end reading output stream
 	}
 }
