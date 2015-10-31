@@ -1,6 +1,116 @@
 package de.rwth.i9.palm.analytics.algorithm.dynamicLDA;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
+
+import cc.mallet.topics.ParallelTopicModel;
+import cc.mallet.types.InstanceList;
+import cc.mallet.util.MalletLogger;
+import cc.mallet.util.Randoms;
+import de.rwth.i9.palm.analytics.config.AppConfig;
+
+@RunWith( SpringJUnit4ClassRunner.class )
+@ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
 public class dynamicLDA
 {
+	@Test
+	public void test() throws Exception
+	{	
+		
+		try{
+			
+		// Get the data from a directory and convert it into mallet format 
+		// Use importData Class to make input traverse through the following pipes
+		// 		1.	Input2CharSequence
+		//		2.	CharSequence2TokenSequence
+		//		3.	TokenSequenceLowercase
+		//		4.	TokenSequenceRemoveStopwords
+		//		5.	TokenSequence2FeatureSequence
+		
+		importData importer = new importData();
+		InstanceList instances = importer.readDirectory(new File("C:/Users/Piro/Desktop/Documents"));
+		instances.save( new File("C:/Users/Piro/Desktop/Outputs/myoutputs-ngrams.mallet") );
+		
+		// specify the file from which the data will be gathered
+		File texting = new File("C:/Users/Piro/Desktop/Outputs/myNewNgramDB.mallet");
+		InstanceList training = InstanceList.load (texting);
+		
+		System.out.println ("Data loaded.");
+		
+		// define number of Topics 
+		int numTopics = 70;
 
+		// call ParallelTopicModel class to run simple parallel version of LDA with
+		// alpha=0.1 (sumalpha)50 beta=0,01 numTopics=5
+		ParallelTopicModel lda = new ParallelTopicModel (numTopics, 50.0 , 0.01);
+		lda.printLogLikelihood = true;
+		
+		// Assign the number of threads to Maximally number of cores of your pc
+		lda.setNumThreads(1);
+					
+		// Assign an optimizing factor of 50 and let the number of words be 10 per each topic
+		lda.setTopicDisplay(50, 11);
+		lda.addInstances(training);
+		
+		// Calculate the lda running time for single and multi-thread calls
+		lda.estimate();
+		
+		// Start the printing of results. Other methods can be called 
+		MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("printing state");
+		
+		// get the top words for each topic 
+		lda.printTopWords( new File("C:/Users/Piro/Desktop/Outputs/TopWords-NEW.txt"), 11, false );
+		
+		// get the topic distribution for each of the files
+		lda.printDocumentTopics( new File("C:/Users/Piro/Desktop/Outputs/DocTopic-NEW.txt") );
+		
+		// get the weight of each word if needed
+		//lda.printTopicWordWeights( new File("C:/Users/Piro/Desktop/Outputs/Wordweight.txt") );
+		
+		MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("finished printing");
+		
+		//Start the procedure of merging the contents of file for mapping
+		//the documents with their "bag-of-words" topics 
+		@SuppressWarnings( "resource" )
+		BufferedReader docs = new BufferedReader(new FileReader("C:/Users/Piro/Desktop/Outputs/DocTopic-NEW.txt"));
+		@SuppressWarnings( "resource" )
+		BufferedReader tops = new BufferedReader(new FileReader("C:/Users/Piro/Desktop/Outputs/TopWords-NEW.txt"));
+		String document, topic;
+		
+		// get Line by line the bag of words for each of the topics
+		List<String> listtopic = new ArrayList<String>();
+		while(( topic = tops.readLine())!=null){
+			listtopic.add( topic );
+		}
+		
+		// get Line by line the topic distribution for each of the documents
+		List<String> listdoc = new ArrayList<String>();
+		while((document=docs.readLine())!=null){
+			listdoc.add( document );
+		}
+		
+		// map documents to topic's bag-of-words
+		for (int i=1; i<listdoc.size();i++){
+			String[] docsplit = listdoc.get( i ).split( "\\s+" );
+			for(int j =0;j<numTopics;j++){
+				if (listtopic.get( j ).startsWith( docsplit[2]) == true){
+					System.out.println(docsplit[1] +" -> " + listtopic.get( j ).substring( 10 ));
+						break;
+					} 
+				}
+			}
+		}  catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

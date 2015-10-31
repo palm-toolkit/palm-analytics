@@ -1,8 +1,6 @@
 package de.rwth.i9.palm.analytics.algorithm.lda;
 import java.io.*;
 import java.util.*;
-import java.util.regex.*;
-
 import cc.mallet.pipe.*;
 import cc.mallet.pipe.iterator.*;
 import cc.mallet.types.*;
@@ -16,18 +14,18 @@ public class importData {
     }
 
     public Pipe buildPipe() {
-        ArrayList pipeList = new ArrayList();
+        ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
 
         // Read data from File objects
         pipeList.add(new Input2CharSequence("UTF-8"));
 
-        // Tokenize raw strings
+        // Create Token raw strings
         pipeList.add(new CharSequence2TokenSequence());
 
-        // Normalize all tokens to all lowercase
+        // Normalize all tokens to all Lower case
         pipeList.add(new TokenSequenceLowercase());
 
-        // Remove stopwords from a standard English stoplist.
+        // Remove stop-words from a standard English stop-list.
         //  options: [case sensitive] [mark deletions]
         pipeList.add(new TokenSequenceRemoveStopwords(false, true));
 
@@ -45,7 +43,7 @@ public class importData {
     public InstanceList readDirectories(File[] directories) {
         
         // Construct a file iterator, starting with the 
-        //  specified directories, and recursing through subdirectories.
+        //  specified directories, and recursing through sub-directories.
         // The second argument specifies a FileFilter to use to select
         //  files within a directory.
         // The third argument is a Pattern that is applied to the 

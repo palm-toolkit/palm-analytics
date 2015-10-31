@@ -76,6 +76,8 @@ public class Ngram
 		tng.printDocumentTopics (out, 0.0, -1);
 		out.close();
 		
+		
+		System.out.println("_____________________________________________________________________________________");
 		//Start the procedure of merging the contents of file for mapping
 		//the documents with their "bag-of-words" topics 
 		
@@ -85,47 +87,53 @@ public class Ngram
 		BufferedReader tops = new BufferedReader(new FileReader("C:/Users/Piro/Desktop/Outputs/Uni-Ngrams.txt"));
 		String document, topic;
 		
-		// get Line by line the bag of words for each of the topics starting from the bottom
+		// get line by line the bag of words for each of the topics starting from the bottom
 		List<String> listtopic = new ArrayList<String>();
-		while((topic=tops.readLine())!=null){
-			listtopic.add( topic );
+		while((topic = tops.readLine()) != null){
+			if (topic.contains(":") !=	true){
+					if((topic.contains( "Topic" ) && topic.contains( "bigrams" )) || (topic.contains( "_" ) && topic.contains( "." ))){
+						listtopic.add( topic );
+				}	
+			}
 		}
 		
-		Integer ntop = numTopics;
-		List<String> bigrams = new ArrayList<String>();
+		for (int i=1; i < listtopic.size(); i++){
+			String numbis = listtopic.get( i );
+				if (numbis.contains("Topic") ){
+					listtopic.set( i, (numbis.split( "\\s+" )[1]));
+				}
+		}
 		
-		//	get only the bigrams 
-		//	the unigrams are the same as in LDAJob.Java (proof of correctness
-		//	use the ordered topics and all-lower-case-letters
-		
-		for (int i= listtopic.size()-1; i > 0; i--){
-			while(ntop > 0){
-				if(listtopic.get( i ).contains("Topic " + (ntop-1)) && listtopic.get( i ).contains( "bigrams" ));
-					Integer countbi = Integer.parseInt( listtopic.get(i).split("\\s+")[6] );
-			}
-			
+		for (String i : listtopic){
+			System.out.println(i);
 		}
 		
 		// get Line by line the topic distribution for each of the documents
 		List<String> listdoc = new ArrayList<String>();
-		while((document=docs.readLine())!=null){
+		while((document = docs.readLine())!=null){
 			listdoc.add( document );
 		}
-		
-		for (int i= 0; i < listdoc.size()-1; i++){
-			String[] docsplit = listdoc.get( i ).split("\\s+");
-			for(int j =0 ; j<numTopics; j++){
-				if (listtopic.get( j ).startsWith( docsplit[2]) == true){
-					System.out.println(docsplit[1] +" -> " + listtopic.get( j ).substring( 10 ));
-						break;
-					} 
+
+		// connect the two files so that one has the mapping document -> phrases
+		for (int i= 1; i < listdoc.size()-1; i++){
+			String docu[] = listdoc.get( i ).split(".txt");
+			if(docu[1] != null){
+				Integer index = listtopic.indexOf( docu[1].split( "\\s+" )[1]);
+				Integer index2 = listtopic.indexOf( (Integer.parseInt(  docu[1].split( "\\s+" )[1]) + 1) +"");
+				System.out.print(docu[0] +" -> ");
+				for(int j = index+1; j < index2; j++){
+					System.out.print(listtopic.get( j )+ " ");
 				}
+			System.out.println();
+			} else {
+				System.out.print(docu[0] +" ->  NULL");
+			}
+				
 		}
-		
+
 		}	catch (Exception e) {
 		e.printStackTrace();
-			}
-		
+		}	
 	        
 //		try {
 //		      //create a buffered reader that connects to the console, we use it so we can read lines
@@ -146,7 +154,7 @@ public class Ngram
 //		      catch(IOException e1) {
 //		        System.out.println("Error during reading/writing");
 //		   }
-//		
+		
 		
 //		PrintWriter outconsole = new PrintWriter (new File ("C:/Users/Piro/Desktop/Outputs/Uni-Ngrams.txt"), "UTF-8");
 //		LoggedPrintStream cons = LoggedPrintStream.create( System.out );
