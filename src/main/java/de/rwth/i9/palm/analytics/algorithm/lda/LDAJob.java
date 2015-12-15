@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeSet;
 
@@ -33,278 +34,68 @@ import de.rwth.i9.palm.analytics.config.AppConfig;
 @ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
 @TransactionConfiguration
 @Transactional
-public class LDAJob
+public class LDAJob implements Lda
 {	
 
 @Test
 public void test() throws Exception {
 	
 	try {
+			 String path = "C:/Users/Piro/Desktop/";
 		
-			System.out.println( "Hi" );
-			// String path = "C:/Users/Piro/Desktop/";
-//		
-			// // call the methods to create the training-set
-			// // import the data && create the mallet instances
-			// // for authors, publications
-//		
-			// //getRandomTrainerFiles(path, "Authors");
-			// //getRandomTrainerFiles(path, "Publications");
-//		
-//		
-			// // create the respective models for authors, publications
-			// ParallelTopicModel authors = createModel(path, "Authors",
-			// "Trainer", 30, 10);
-			// // ParallelTopicModel publications = createModel(path,
-			// // "Publications", "Trainer", 70, 10);
-//		
-			// // print the Top x Words for each Topic
-			// printTopWords(authors, 10, path, "Authors", "Trainer");
-			// // printTopWords(publications, 10, path, "Publications",
-			// "Trainer");
-//		
-			// // print the Topic proportions for each document
-			//// printDocTopicprobs(authors, path, "Authors", "Trainer");
-			//// printDocTopicprobs(publications, path, "Publications",
-			// "Trainer");
-//		
-			// // map the results with each other
-			// DocTopicMapper(path, "Authors", "Trainer");
-			// // DocTopicMapper(path, "Publications", "Trainer");
-//		
-			// // evaluate the model
-			// //evaluateModel(authors, path, "Authors", "Trainer");
-//		
-//		
-			// // Alternative way to get the topics without using the files
-			// TopWords per topic"
-			// // List <String> topics = new ArrayList<>();
-			// // topics.add( authors.displayTopWords( 10, true ) );
-//		
-			// // Alternative way to get the instance and its topic distribution
-//		
-//		
-//		
-			// // inference a model for the new documents
-			// double[] inferencer = TopicInferencer(authors, " ", path,
-			// "Authors", "Infer");
-			// for (double i : inferencer){
-			// System.out.println(i);
-//		}
-//		
-			//// // Get the data from a directory and convert it into mallet
-			// format
-			//// // Use importData Class to make input traverse through the
-			// following pipes
-			//// // 1. Input2CharSequence
-			//// // 2. CharSequence2TokenSequence
-			//// // 3. TokenSequenceLowercase
-			//// // 4. TokenSequenceRemoveStopwords
-			//// // 5. TokenSequence2FeatureSequence
-			////
-			//// // logger
-			//// final Logger logger = LoggerFactory.getLogger( LDAJob.class );
-			////
-			//
-			//// // getRandomTrainerFiles(path, "Authors");
-			//// // import data from db (can be authors, publications, yearly
-			// results, conferences)
-			//// // DONE TILL 42
-			//// // these are instances for the training corpus
-			//// importData importer = new importData();
-			//// InstanceList instances = importer.readDirectory(new
-			// File("C:/Users/Piro/Desktop/Authors/Trainer"));
-			//// instances.save( new
-			// File("C:/Users/Piro/Desktop/Outputs/trainer.mallet") );
-			////
-			//// File texting = new
-			// File("C:/Users/Piro/Desktop/Outputs/trainer.mallet");
-			//// InstanceList training = InstanceList.load (texting);
-			////
-			//// // define number of Topics
-			//// // DONE the set and get methods
-			//// int numTopics = 50;
-			////
-			//// // define alpha; beta
-			//// // DONE by Mallet to set the values
-			////
-			//// // call ParallelTopicModel class to run simple parallel version
-			// of LDA with
-			//// // alpha=0.1 (sumalpha)50 beta=0,01 numTopics=5
-			////
-			//// // use the method createModel to create the LDA model with the
-			// assigned parameters
-			//// // DONE till model estimation - Line 74
-			//// ParallelTopicModel lda = new ParallelTopicModel (10, 50.0 ,
-			// 0.01);
-			//// lda.printLogLikelihood = true;
-			////
-			//// // Assign the number of threads to Maximally number of cores of
-			// your pc
-			//// lda.setNumThreads(1);
-			////
-			//// // Assign an optimizing factor of 50 and let the number of
-			// words be 10 per each topic
-			//// lda.setTopicDisplay(10, 11);
-			//// lda.addInstances(training);
-			////
-			////
-			//// // Calculate the lda running time for single and multi-thread
-			// calls
-			//// lda.estimate();
-			//// lda.printTopWords( new
-			// File("C:/Users/Piro/Desktop/TopWords.txt"), 11, false );
-			//// lda.printDocumentTopics( new
-			// File("C:/Users/Piro/Desktop/Topics.txt") );
-			////
-			////
-			////// for (int i=0; i< 10; i++){
-			////// for (int j= 0; j<15; j++){
-			////// System.out.print(lda.topicDocCounts[i][j]+" ");}
-			////// System.out.println();}
-			////
-			//// // Start the printing of results. Other methods can be called
-			//// MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("TRAINING
-			// Printing State");
-			////
-			//// // The trainers do not need to be printed out If so use the two
-			// below mentioned methods
-			//// // get the top words for each topic
-			//// lda.printTopWords( new
-			// File("C:/Users/Piro/Desktop/Outputs/TopWords-Trainer.txt"), 11,
-			// false );
-			////
-			//// // get the topic distribution for each of the files
-			//// lda.printDocumentTopics( new
-			// File("C:/Users/Piro/Desktop/Outputs/DocTopic-Trainer.txt") );
-			////
-			//// // get the weight of each word if needed
-			//// lda.printTopicWordWeights( new
-			// File("C:/Users/Piro/Desktop/Outputs/Wordweight-Trainer.txt") );
-			////
-			//// // evaluator
-			//// // Use the proper method to evaluate a model
-			//// MarginalProbEstimator evaluator = lda.getProbEstimator();
-			//// double logLikelyhood = evaluator.evaluateLeftToRight( training,
-			// 10, false, null);
-			//// System.out.println(logLikelyhood);
-			////
-			//// MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("END
-			// TRAINING");
-			//// System.out.println("---------------------------------------------------------");
-			//// System.out.println("");
-			////
-			////
-			//// // inferencing the topic distribution for each of the documents
-			// in corpora
-			//// //
-			//// importData realdata = new importData();
-			//// InstanceList realinstances = realdata.readDirectory(new
-			// File("C:/Users/Piro/Desktop/Authors"));
-			//// realinstances.save( new
-			// File("C:/Users/Piro/Desktop/Outputs/inference.mallet") );
-			////
-			//// File inferencing = new
-			// File("C:/Users/Piro/Desktop/Outputs/inference.mallet");
-			//// InstanceList inferencer = InstanceList.load (inferencing);
-			////
-			//// ParallelTopicModel infer = new ParallelTopicModel(50, 50.0,
-			// 0.1);
-			//// infer.printLogLikelihood = true;
-			//// infer.setNumThreads(1);
-			//// infer.setTopicDisplay(50, 11);
-			//// infer.addInstances(inferencer);
-			//// infer.estimate();
-			////
-			//// TopicInferencer decideontopic = infer.getInferencer();
-			////
-			////
-			//// for (int t=0; t<inferencer.size(); t++){
-			//// double[] topicProbs =
-			// decideontopic.getSampledDistribution(inferencer.get(t), 100, 10,
-			// 10);
-			//// double max = 0.0;
-			//// for (int i=0; i< topicProbs.length; i++){
-			//// if (topicProbs[i]>max){
-			//// max = topicProbs[i];
-			//// }
-			//// }
-			//// System.out.println(t + "->" + max );
-			//// }
-			////
-			//// // Start the printing of results. Other methods can be called
-			//// MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("TESTING
-			// Printing State");
-			////
-			//// // get the top words for each topic
-			//// infer.printTopWords( new
-			// File("C:/Users/Piro/Desktop/Outputs/TopWords-Inferencer.txt"),
-			// 11, false );
-			////
-			//// // get the topic distribution for each of the files
-			//// infer.printDocumentTopics( new
-			// File("C:/Users/Piro/Desktop/Outputs/DocTopic-Inferencer.txt") );
-			////
-			////
-			//// for (int i=0; i< 50; i++){
-			//// for (int j= 0; j<146; j++){
-			//// System.out.print(infer.topicDocCounts[i][j]+" ");
-			//// }
-			//// System.out.println();
-			//// }
-			////
-			//// MarginalProbEstimator evaluate = infer.getProbEstimator();
-			//// double liklyhood = evaluate.evaluateLeftToRight( inferencer,
-			// 10, false, null);
-			//// System.out.println(liklyhood);
-			////
-			//// // Start the printing of results. Other methods can be called
-			//// MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("END
-			// TESTING");
-			////
-			//// // End of Inferencing
-			// --------------------------------------------------------------
-			////
-			////
-			//// //Start the procedure of merging the contents of file for
-			// mapping
-			//// //the documents with their "bag-of-words" topics
-			//// @SuppressWarnings( "resource" )
-			//// BufferedReader docs = new BufferedReader(new
-			// FileReader("C:/Users/Piro/Desktop/Outputs/DocTopic-Trainer.txt"));
-			//// @SuppressWarnings( "resource" )
-			//// BufferedReader tops = new BufferedReader(new
-			// FileReader("C:/Users/Piro/Desktop/Outputs/TopWords-Trainer.txt"));
-			//// String document, topic;
-			////
-			//// // get Line by line the bag of words for each of the topics
-			//// List<String> listtopic = new ArrayList<String>();
-			//// while(( topic = tops.readLine())!=null){
-			//// listtopic.add( topic );
-			//// }
-			////
-			//// // get Line by line the topic distribution for each of the
-			// documents
-			//// List<String> listdoc = new ArrayList<String>();
-			//// while((document=docs.readLine())!=null){
-			//// listdoc.add( document );
-			//// }
-			////
-			//// // map documents to topic's bag-of-words
-			//// for (int i=1; i<listdoc.size();i++){
-			//// int numTopics = 50;
-			//// String[] docsplit = listdoc.get( i ).split( "\\s+" );
-			//// for(int j =0;j<numTopics;j++){
-			//// if (listtopic.get( j ).startsWith( docsplit[2]) == true){
-			//// System.out.println(docsplit[1] +" -> " + listtopic.get( j
-			// ).substring( 10 ));
-			//// break;
-			//// }
-			//// }
-			//// }
+			 // call the methods to create the training-set
+			 // import the data && create the mallet instances
+			 // for authors, publications
+		
+ //				getRandomTrainerFiles(path, "Authors");
+ //				getRandomTrainerFiles(path, "Publications");
+		
+			 
+			 // create the respective models for authors, publications
+			 ParallelTopicModel authors = createModel(path, "Authors", "Authors", 50, 10);
+// 				ParallelTopicModel publications = createModel(path,"Publications", "Trainer", 70, 10);
+			 
+			 // print the Top x Words for each Topic
+			 printTopWords(authors, 10, path, "Authors", "Trainer");
+// 				printTopWords(publications, 10, path, "Publications", "Trainer");
+				List<String> author = getListTopics(authors, 10);
+			 
+			 
+			 for (int i=0; i< authors.data.size(); i++){
+				 for (Entry<String, String> entry : getTopicDocument(authors, i, -1, 0.00, authors.getNumTopics(), 11 ).entrySet()){
+					 System.out.println((entry.getKey().split( "/" )[7]).replaceAll(".txt","") + " ->-> " + entry.getValue().replaceAll( "[^a-z\\s]", "" ));
+					 }
+			 }
+			 
+			 for (int i=0; i< authors.data.size(); i++){
+				 for (Entry<String, Double> entry : getTopicWeight(authors, i, -1, 0.00, authors.getNumTopics(), 11 ).entrySet()){
+					 System.out.println((entry.getKey().split( "/" )[7]).replaceAll(".txt","") + " ->-> " + entry.getValue());
+					 }
+			 }
+			 
+			 // For the visualization (update it later on)
+			 
+			 System.out.println();
+			 System.out.println("_________________________________");
+			 System.out.println("");
+			 for (int i=0; i< authors.data.size(); i++){
+				 for (Entry<String, List<String>> entry : getAllDocumentTopics(authors, i, -1, 0.005, authors.getNumTopics() ).entrySet()){
+					 System.out.println((entry.getKey().split( "/" )[7]).replaceAll(".txt","") + " ->-> " );
+					 for (String a : entry.getValue()){
+						 System.out.println(  author.get(Integer.parseInt( a.split( "-" )[0])  ));
+					 }
+					 }
+			 }
+			 // print the Topic proportions for each document
+			 	printDocTopicprobs(authors, path, "Authors", "Trainer");
+// 				printDocTopicprobs(publications, path, "Publications","Trainer");
+		
+			 // Alternative way to get the topics without using the files TopWords per topic"
+//			  	List <String> topics = new ArrayList<>();
+//			  	topics.add( authors.displayTopWords( 10, true ) );
 		} catch (Exception e) {
 			e.printStackTrace();
-		}	
+		}	   
    }
 
 // filename specifies the list of files that will come from db 
@@ -313,8 +104,15 @@ public void test() throws Exception {
 
 // purpose - {Authors, Publications, Conferences, Years}
 // specify - {Trainer, Infer}
-public InstanceList getInstanceData(String path, String purpose, String specify)
-{		
+	public InstanceList getInstanceData(String path, String purpose, String specify){		
+	
+	 // Get the data from a directory and convert it into mallet format
+	 // Use importData Class to make input traverse through the following pipes
+	 // 1. Input2CharSequence
+	 // 2. CharSequence2TokenSequence
+	 // 3. TokenSequenceLowercase
+	 // 4. TokenSequenceRemoveStopwords
+	 // 5. TokenSequence2FeatureSequence
 		importData importer = new importData( );
 		InstanceList instances = importer.readDirectory(new File (path +"/"+ purpose +"/"+ purpose)); //+ "/"+ specify ));
 		instances.save( new File( path + purpose + "/" + purpose + "-" + specify + ".mallet") );
@@ -322,27 +120,24 @@ public InstanceList getInstanceData(String path, String purpose, String specify)
 		return training;
 	}
  
-
-// get the number of topics 
-//public int getNumbertopics(){
-//	return numtopics;
-//	}
-
-
 // set the number of topics
-public int setNumberTopics( int numTopics){
+	public ParallelTopicModel setNumberTopics( int numTopics){
 	if (numTopics <= 0){
 		System.out.print("Wrong input");
-		return -1;
+		return null;
 	} else {
-		return numTopics;}
+		return new ParallelTopicModel(numTopics);}
 	}
 
+// return the default LDA number of topics 
+	public int getNumTopics(ParallelTopicModel m){
+	return m.getNumTopics();
+}	
 
 // create a model of reference in a training corpora
-public ParallelTopicModel createModel(String path, String purpose, String specify, int numTopics, int numWords){
+	public ParallelTopicModel createModel(String path, String purpose, String specify, int numTopics, int numWords){
 	
-	ParallelTopicModel lda = new ParallelTopicModel(numTopics, 50.0, 1.0);
+	ParallelTopicModel lda = new ParallelTopicModel(numTopics, 50.0, 0.01);
 	lda.setNumThreads( 1 );
 	lda.optimizeInterval = 20;
 	lda.printLogLikelihood = true;
@@ -360,18 +155,8 @@ public ParallelTopicModel createModel(String path, String purpose, String specif
 	return lda;
 	}
 
-
-//// Return the default LDA number of topics 
-public int getNumTopics(){
-	
-	ParallelTopicModel lda = new ParallelTopicModel(50, 50.0, 0.1);
-	return lda.getNumTopics();
-	}	
-
-
-//purpose - {Authors, Publications, Conferences, Years}
-//specify - {Trainer, Infer}
-public void printTopWords(ParallelTopicModel m, int nwords,String path, String purpose, String specify){
+//purpose - {Authors, Publications, Conferences, Years} ; specify - {Trainer, Infer}
+	public void printTopWords(ParallelTopicModel m, int nwords,String path, String purpose, String specify){
 	try
 	{
 		m.printTopWords(new File(path + purpose +"/TopWords-" +purpose +"-"+specify +".txt"), nwords +1, false);
@@ -380,10 +165,8 @@ public void printTopWords(ParallelTopicModel m, int nwords,String path, String p
 		}
 	}
 
-
-// purpose - {Authors, Publications, Conferences, Years}
-// specify - {Trainer, Infer}
-public void printDocTopicprobs(ParallelTopicModel m,String path, String purpose, String specify){
+// purpose - {Authors, Publications, Conferences, Years} ; specify - {Trainer, Infer}
+	public void printDocTopicprobs(ParallelTopicModel m,String path, String purpose, String specify){
 try
 {
 	m.printDocumentTopics( new File(path + purpose + "/DocTopic-" +purpose +"-"+specify +".txt") );
@@ -392,9 +175,27 @@ try
 	e.printStackTrace(); }
 	}
 
+// returns another version of topics (not as a File) but as vector of strings
+	public String[] getStringTopics (ParallelTopicModel m, int nwords){
+	
+	String[] topics = m.displayTopWords( nwords, false ).split( "\n" );
+	
+	return topics;
+	}
 
+// returns list of strings of topics (alternative to another method implemented above
+	public List<String> getListTopics (ParallelTopicModel m, int nwords){
+		
+		List<String> listtopics = new ArrayList<String>();
+		String[] topics = m.displayTopWords( nwords, false ).split( "\n" );
+		for (String topic : topics){
+			listtopics.add( topic );
+		}
+	return listtopics;
+	}
+	
 // Some minor problems need to be fixed here
-public void evaluateModel(ParallelTopicModel m, String path, String purpose, String specify){
+	public void evaluateModel(ParallelTopicModel m, String path, String purpose, String specify){
 	
 	InstanceList training = InstanceList.load( new File(path + purpose +"/"+purpose + "-"+ specify +".mallet") );
 	MarginalProbEstimator evaluator = m.getProbEstimator();
@@ -402,9 +203,8 @@ public void evaluateModel(ParallelTopicModel m, String path, String purpose, Str
 	System.out.println(logLikelyhood);
 }
 
-public static File createTempDirectory()
-	    throws IOException
-	{
+// create some random files
+	public  File createTempDirectory() throws IOException{
 	    final File temp;
 
 	    temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
@@ -422,10 +222,9 @@ public static File createTempDirectory()
 	    return (temp);
 	}
 
-
 // gets some random files from path/purpose and pastes them on path/purpose/specify
 // specify = Trainer
-public void getRandomTrainerFiles(String path, String purpose){
+	public void getRandomTrainerFiles(String path, String purpose){
 	int count = 20;
 	String[] trainer = new File (path + purpose + "/" + purpose).list();
 	while (count != 0){
@@ -437,9 +236,9 @@ public void getRandomTrainerFiles(String path, String purpose){
 		count--;	}
 	}
 
-
 // this methods maps the best topic with the suitable document
-public void DocTopicMapper(String path, String purpose, String specify) throws IOException{
+// used only for initial version - files as output
+	public void DocTopicMapper(String path, String purpose, String specify) throws IOException{
 	@SuppressWarnings( "resource" )
 	BufferedReader docs = new BufferedReader(new FileReader(path + purpose + "/DocTopic-" + purpose + "-" + specify + ".txt"));
 	@SuppressWarnings( "resource" )
@@ -483,18 +282,9 @@ public void DocTopicMapper(String path, String purpose, String specify) throws I
 		return topicProbs;	
 }
 	
-// Returns another version of topics (not as a File) but as vector of strings
-public String[] getStringTopics (ParallelTopicModel m, int nwords){
-	
-	String[] topics = m.displayTopWords( nwords, false ).split( "\n" );
-	
-	return topics;
-	}
-
-// Returns a map which shows the topic assigned to a specific document with given ID
+// Returns a map <DocumentID, Top Topic Assigned to it> which shows the topic assigned to a specific document with given ID
 // When calling max = -1, threshold = 0.05, 
-	public HashMap<String, String> getTopicDocument( ParallelTopicModel m, int docID, int max, double threshold, int numTopics )
-	{
+	public HashMap<String, String> getTopicDocument( ParallelTopicModel m, int docID, int max, double threshold, int numTopics, int numWords ){
 	
 		HashMap<String, String> h = new HashMap<String, String>();
 		int[] topicCounts = new int[numTopics];
@@ -535,20 +325,77 @@ public String[] getStringTopics (ParallelTopicModel m, int nwords){
 
 		// m.data.get(docID).instance.getName(); // can be also
 		// model.data.get(doc).instance.getID(); or whatever :))))
-		if ( sortedTopics[0].getWeight() < threshold )
-		{
+		
+		for (int i=0; i<max; i++)
+			if ( sortedTopics[0].getWeight() > threshold ){	 
 			topicID = sortedTopics[0].getID();
 			topicWeight = sortedTopics[0].getWeight();
 		}
-		topicNames = getStringTopics( m, 5 );
-		h.put( (String) m.data.get( docID ).instance.getName(), topicWeight + "-" + topicNames[topicID] );
+		topicNames = getStringTopics( m, numWords);
+		h.put(  m.data.get( docID ).instance.getName() + "", topicNames[topicID]);
 		Arrays.fill( topicCounts, 0 );
 		return h;
 	}
 
-	public HashMap<String, List<String>> getAllDocumentTopics( ParallelTopicModel m, int max, double threshold, int numTopics )
-	{
+// get the weight of the highest probable topic for a specific document (docID)
+	public HashMap<String, Double> getTopicWeight( ParallelTopicModel m, int docID, int max, double threshold, int numTopics, int numWords ){
+		
+		HashMap<String, Double> h = new HashMap<String, Double>();
+		int[] topicCounts = new int[numTopics];
+		String[] topicNames;
+		int docLen = 0;
+		int topicID = 0;
+		double topicWeight = 0;
+		IDSorter[] sortedTopics = new IDSorter[numTopics];
+		for ( int topic = 0; topic < numTopics; topic++ )
+		{
+			// Initialize the sorters with dummy values
+			sortedTopics[topic] = new IDSorter( topic, topic );
+		}
+	
+		if ( max < 0 || max > numTopics )
+		{
+			max = numTopics;
+		}
+
+		LabelSequence topicSequence = (LabelSequence) m.data.get( docID ).topicSequence;
+		int[] currentDocTopics = topicSequence.getFeatures();
+
+		docLen = currentDocTopics.length;
+	
+		// Count up the tokens
+		for ( int token = 0; token < docLen; token++ )
+		{
+			topicCounts[currentDocTopics[token]]++;
+		}
+	
+		// And normalize
+		for ( int topic = 0; topic < numTopics; topic++ )
+		{
+			sortedTopics[topic].set( topic, ( m.alpha[topic] + topicCounts[topic] ) / ( docLen + m.alphaSum ) );
+		}
+
+		Arrays.sort( sortedTopics );
+
+		// m.data.get(docID).instance.getName(); // can be also
+		// model.data.get(doc).instance.getID(); or whatever :))))
+		
+		for (int i=0; i<max; i++)
+		if ( sortedTopics[0].getWeight() > threshold ){	 
+		topicID = sortedTopics[0].getID();
+		topicWeight = sortedTopics[0].getWeight();
+		}
+		topicNames = getStringTopics( m, numWords);
+		h.put(  m.data.get( docID ).instance.getName() + "", topicWeight);// in case weight is needed just add: topicWeight
+		Arrays.fill( topicCounts, 0 );
+		return h;
+	}
+	
+//produce a Map wish holds <DocumentId, List<TopicWeight, String of Words>> 
+	public HashMap<String, List<String>> getAllDocumentTopics( ParallelTopicModel m, int docID, int max, double threshold, int numTopics ){
+		
 		HashMap<String, List<String>> h = new HashMap<String, List<String>>();
+		List<String> topics = new ArrayList<String>();
 		int[] topicCounts = new int[numTopics];
 		int docLen = 0;
 		int topicID = 0;
@@ -565,50 +412,42 @@ public String[] getStringTopics (ParallelTopicModel m, int nwords){
 			max = numTopics;
 		}
 
-		for ( int docID = 0; docID < m.data.size(); docID++ )
+		LabelSequence topicSequence = (LabelSequence) m.data.get( docID ).topicSequence;
+		int[] currentDocTopics = topicSequence.getFeatures();
+
+		docLen = currentDocTopics.length;
+
+		// Count up the tokens
+		for ( int token = 0; token < docLen; token++ )
 			{
-			LabelSequence topicSequence = (LabelSequence) m.data.get( docID ).topicSequence;
-			int[] currentDocTopics = topicSequence.getFeatures();
-
-			docLen = currentDocTopics.length;
-
-			// Count up the tokens
-			for ( int token = 0; token < docLen; token++ )
-				{
-				topicCounts[currentDocTopics[token]]++;
-				}
-
-			// And normalize
-			for ( int topic = 0; topic < numTopics; topic++ )
-				{
-				sortedTopics[topic].set( topic, ( m.alpha[topic] + topicCounts[topic] ) / ( docLen + m.alphaSum ) );
-				}
-
-			Arrays.sort( sortedTopics );
-			List<String> distribution = new ArrayList<String>();
-			// m.data.get(docID).instance.getName(); // can be also
-			// model.data.get(doc).instance.getID(); or whatever :))))
-			for ( int i = 0; i < max; i++ )
-			{
-				if ( sortedTopics[i].getWeight() < threshold )
-				{
-					break;
-				}
-				if ( sortedTopics[0].getWeight() < threshold )
-				{
-					topicID = sortedTopics[0].getID();
-					topicWeight = sortedTopics[0].getWeight();
-					distribution.add( topicID + "-" + topicWeight );
-				}
+			topicCounts[currentDocTopics[token]]++;
 			}
-			h.put( (String) m.data.get( docID ).instance.getName(), distribution );
-			Arrays.fill( topicCounts, 0 );
+
+		// And normalize
+		for ( int topic = 0; topic < numTopics; topic++ )
+			{
+			sortedTopics[topic].set( topic, ( m.alpha[topic] + topicCounts[topic] ) / ( docLen + m.alphaSum ) );
+			}
+
+		Arrays.sort( sortedTopics );
+		
+		// m.data.get(docID).instance.getName(); // can be also
+		// model.data.get(doc).instance.getID(); or whatever :))))
+		for ( int i = 0; i < max; i++ )
+		{
+			if ( sortedTopics[i].getWeight() < threshold ){	break; }
+			
+				topicID = sortedTopics[i].getID();
+				topicWeight = sortedTopics[i].getWeight();
+				topics.add( topicID + "-" + topicWeight );
 		}
+		h.put( m.data.get(docID).instance.getName()+ "", topics );
+		Arrays.fill( topicCounts, 0 );
 		return h;
 	}
 
-	public ArrayList<TreeSet<IDSorter>> getSortedWords( ParallelTopicModel m, int numTopics )
-	{
+// function used to get the sorted words per topic
+	public ArrayList<TreeSet<IDSorter>> getSortedWords( ParallelTopicModel m, int numTopics ){
 
 		ArrayList<TreeSet<IDSorter>> topicSortedWords = new ArrayList<TreeSet<IDSorter>>( numTopics );
 

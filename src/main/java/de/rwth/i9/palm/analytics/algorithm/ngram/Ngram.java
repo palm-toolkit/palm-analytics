@@ -3,9 +3,20 @@ package de.rwth.i9.palm.analytics.algorithm.ngram;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.TreeSet;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,11 +24,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import cc.mallet.topics.TopicalNGrams;
+import cc.mallet.topics.MarginalProbEstimator;
+import cc.mallet.topics.TopicInferencer;
+import cc.mallet.topics.ParallelTopicModel;
+import cc.mallet.types.Alphabet;
+import cc.mallet.types.AugmentableFeatureVector;
+import cc.mallet.types.FeatureSequenceWithBigrams;
+import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
-import cc.mallet.types.InstanceList;
+import cc.mallet.types.LabelSequence;
 import cc.mallet.util.Randoms;
-import cc.mallet.util.Randoms;
+import de.rwth.i9.palm.analytics.algorithm.lda.importData;
 import de.rwth.i9.palm.analytics.config.AppConfig;
 
 @RunWith( SpringJUnit4ClassRunner.class )
@@ -29,161 +46,413 @@ public class Ngram
 	{	
 		
 		try{
-			
-			// Get the data from a directory and convert it into mallet format
-			// Use importData Class to make input traverse through the following
-			// pipes
-			// 1. Input2CharSequence
-			// 2. CharSequence2TokenSequence
-			// 3. TokenSequenceLowercase
-			// 4. TokenSequenceRemoveStopwords
-			// 5. TokenSequence2FeatureSequenceWithBigrams
-
-			// importDataNgram importer = new importDataNgram();
-			// InstanceList instances = importer.readDirectory(new
-			// File("C:/Users/Piro/Desktop/Documents"));
-			// instances.save( new
-			// File("C:/Users/Piro/Desktop/Outputs/myoutputs-ngrams.mallet") );
 
 			String path = "C:/Users/Piro/Desktop/";
+			
+			// call the TopicalNGrams methods with the following parameters by Blei
+			// numTopics=100 , alpha = 1.0, beta = 0.001, gamma = 0.1, delta = 0.001, delta1 = 0.2, delta2=1000.0
 
-			// specify the file from which the data will be gathered
-			// DONE BY USING THE METHOD BELLOW
-			File texting = new File( "C:/Users/Piro/Desktop/Outputs/myNewNgramDB.mallet" );
-			InstanceList training = InstanceList.load( texting );
-
-			System.out.println( "Data loaded." );
-
-			// call the TopicalNGrams methods with the followong parameters as
-			// specified by Blei
-			// numTopics=10 , alphas = 1.0, beta = 0.001, gamma = 0.1, delta =
-			// 0.001, delta1 = 0.2, delta2=1000.0
-
-			int numTopics = 100;
-
-			TopicalNGrams tng = new TopicalNGrams( numTopics, 1.0, 0.001, 0.1, 0.001, 0.2, 1000.0 );
-
-			// estimate the model parameters and prepare the results
-			tng.estimate( training, 200, 1, 0, null, new Randoms() );
+			TopicalNGrams tng = createModel(path, "Authors", "Trainer", 100); 
 
 			// get the list of unigrams & ngrams
-			// later we get the content of console and add it to a file for
-			// further processing
-			tng.printTopWords( 10, true );
-			// File file = new
-			// File("C:/Users/Piro/Desktop/Outputs/Uni-Ngrams.txt");
-			// FileOutputStream fos = new FileOutputStream(file);
-			// PrintStream ps = new PrintStream(fos);
-			// System.setOut(ps);
 
-			// assign a file for the output of topic proportions
-			PrintWriter out = new PrintWriter( new File( "C:/Users/Piro/Desktop/Outputs/DocTopic-Ngrams.txt" ) );
-
+			// tng.printTopWords( 10, true );
+			 
+			 System.out.println( "________________________GET THE TOPICS AS UNIGRAMS__________________________" );
+			 String[] u = getStringTopicsUnigrams(tng, 10, false);
+			 for (String h : u){
+				 System.out.println(h);
+			 }
+			 
+			 System.out.println( "________________________GET THE TOPICS AS N-GRAMS__________________________" );
+			 String[] n =  getStringTopicsNgrams(tng, 10, false);
+			 for (String h : n){
+				 System.out.println(h);
+			 }
+			 
+			 System.out.println( "________________________GET THE TOP X TOPICS FOLLOWED BY THEIR PROPORTIONS__________________________" );
+			 String[] d = getStringDocumentTopicIndex(tng, 0.0, -1, true);
+			 for (String h : d){
+				 System.out.println(h);
+			 }
+			 
+			 System.out.println( "________________________GET THE TOPIC ASSIGNMENT AS N-GRAMS CONTENT __________________________" );
+			 for (int i=0; i< tng.topics.length; i++){
+				 for (Entry<String, List<String>> entry : getTopicNgramsDocument(tng, i, -1, 0.0, 100, 10, false).entrySet()){
+					 System.out.println((entry.getKey()) + " ->-> " + entry.getValue());
+					 }
+			 }
+			 
+			 System.out.println( "________________________GET THE TOPIC ASSIGNMENT AS UNIGRAMS CONTENT __________________________" );
+			 for (int i=0; i< tng.topics.length; i++){
+				 for (Entry<String, List<String>> entry : getTopicUnigramsDocument(tng, i, -1, 0.0, 100, 10, false).entrySet()){
+					 System.out.println((entry.getKey()) + " ->-> " + entry.getValue());
+					 }
+			 }
+			 
+			 System.out.println( "________________________GET THE TOPIC ASSIGNMENT AND PROPORTIONS __________________________" );
+			 for (Entry<String, List<Double>> entry : getDoumentTopicProportion(tng).entrySet()){
+				 System.out.println((entry.getKey())); 
+				 System.out.println(" **** ");
+				 for (Object z : entry.getValue().toArray()){
+					 System.out.println(z);
+				 	}
+				 }
+				 
+			 System.out.println( "________________________TEST FOR SIMILARITY MEASUREMENTS __________________________" );
+			  
+			 	 
 			// run the method to get topic proportions for each doc.
-			tng.printDocumentTopics( out, 0.0, -1 );
-			out.close();
+			 printDocTopicprobs(tng, path, "Authors", "Trainer");
+			
 
 			System.out.println( "_____________________________________________________________________________________" );
-			// Start the procedure of merging the contents of file for mapping
-			// the documents with their "bag-of-words" topics
-
-			@SuppressWarnings( "resource" )
-			BufferedReader docs = new BufferedReader( new FileReader( "C:/Users/Piro/Desktop/Outputs/DocTopic-Ngrams.txt" ) );
-			@SuppressWarnings( "resource" )
-			BufferedReader tops = new BufferedReader( new FileReader( "C:/Users/Piro/Desktop/Outputs/Uni-Ngrams.txt" ) );
-			String document, topic;
-
-			// get line by line the bag of words for each of the topics starting
-			// from the bottom
-			List<String> listtopic = new ArrayList<String>();
-			while ( ( topic = tops.readLine() ) != null )
-			{
-				if ( topic.contains( ":" ) != true )
-				{
-					if ( ( topic.contains( "Topic" ) && topic.contains( "bigrams" ) ) || ( topic.contains( "_" ) && topic.contains( "." ) ) )
-					{
-						listtopic.add( topic );
-					}
-				}
-			}
-
-			for ( int i = 1; i < listtopic.size(); i++ )
-			{
-				String numbis = listtopic.get( i );
-				if ( numbis.contains( "Topic" ) )
-				{
-					listtopic.set( i, ( numbis.split( "\\s+" )[1] ) );
-				}
-			}
-
-			for ( String i : listtopic )
-			{
-				System.out.println( i );
-			}
-
-			// get Line by line the topic distribution for each of the documents
-			List<String> listdoc = new ArrayList<String>();
-			while ( ( document = docs.readLine() ) != null )
-			{
-				listdoc.add( document );
-			}
-
-			// connect the two files so that one has the mapping document ->
-			// phrases
-			for ( int i = 1; i < listdoc.size() - 1; i++ )
-			{
-				String docu[] = listdoc.get( i ).split( ".txt" );
-				if ( docu[1] != null )
-				{
-					Integer index = listtopic.indexOf( docu[1].split( "\\s+" )[1] );
-					Integer index2 = listtopic.indexOf( ( Integer.parseInt( docu[1].split( "\\s+" )[1] ) + 1 ) + "" );
-					System.out.print( docu[0] + " -> " );
-					for ( int j = index + 1; j < index2; j++ )
-					{
-						System.out.print( listtopic.get( j ) + " " );
-					}
-					System.out.println();
-				}
-				else
-				{
-					System.out.print( docu[0] + " ->  NULL" );
-				}
-
-			}
-
+		
 		}
 		catch ( Exception e )
 		{
 			e.printStackTrace();
 			}
 	}
-
-	// this method is used to get data and transforms it to a .mallet file
-	// get the .mallet file and returns InstanceList ready for further
-	// processing
-	public InstanceList getInstanceData( String path, String purpose, String specify )
+	
+	// USE CMD or the other class ImportDataNgram http://stackoverflow.com/questions/15464111/run-cmd-commands-through-java
+	// purpose - {Authors, Publications, Conferences, Years} specify - {Trainer, Infer}
+	
+	public InstanceList getInstanceData( String path, String purpose, String specify ) throws IOException
 	{
-		importDataNgram importer = new importDataNgram();
-		InstanceList instances = importer.readDirectory( new File( path + "/" + purpose + "/" + purpose ) ); // +
-																												// "/"+
-																												// specify
-																												// ));
-		instances.save( new File( path + purpose + "/" + purpose + "-" + specify + ".mallet" ) );
-		InstanceList training = InstanceList.load( new File( path + purpose + "/" + purpose + "-" + specify + ".mallet" ) );
+		 // Get the data from a directory and convert it into mallet format
+		 // Use importData Class to make input traverse through the following pipes
+		 // 1. Input2CharSequence
+		 // 2. CharSequence2TokenSequence
+		 // 3. TokenSequenceLowercase
+		 // 4. TokenSequenceRemoveStopwords
+		 // 5. TokenSequence2FeatureSequenceBigrams
+		ProcessBuilder builder = new ProcessBuilder(
+	            "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-dir --input C:\\Users\\Piro\\Desktop\\"+ purpose + "\\" + purpose +
+	            " --keep-sequence-bigrams --remove-stopwords "
+	            + "--output C:\\Users\\Piro\\Desktop\\" + purpose + "\\" + purpose + "-N-" + specify + ".mallet");
+		builder.redirectErrorStream(true);
+        Process p = builder.start();
+        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        while (true) {
+            line = r.readLine();
+            if (line == null) { break; }
+        }
+		InstanceList training = InstanceList.load( new File( path + purpose + "/" + purpose + "-N-" + specify + ".mallet" ) );
 		return training;
 	}
 
-	// set the number of topics
-	public int setNumberTopics( int numTopics )
+	// set the number of topics to the model and returns a model constructed by the given number 
+	public TopicalNGrams setNumberTopics( int numTopics )
 	{
-		if ( numTopics <= 0 )
-		{
-			System.out.print( "Wrong input" );
-			return -1;
-		}
-		else
-		{
-			return numTopics;
-		}
+		TopicalNGrams m = new TopicalNGrams(numTopics, 50.0, 0.01, 0.01, 0.03, 0.2, 1000);
+			return m;
 	}
+	
+	public int getNumTopics( TopicalNGrams m ){
+		return m.numTopics;
+	}
+
+	// create a model of reference using training corpus
+	public TopicalNGrams createModel(String path, String purpose, String specify, int numTopics) throws IOException{
+		
+		TopicalNGrams ngram = new TopicalNGrams(numTopics, 50.0, 0.01, 0.01, 0.03, 0.2, 1000);
+		InstanceList trained = getInstanceData(path, purpose, specify);
+		ngram.estimate(trained, 200, 1, 0, null, new Randoms());
+		return ngram;
+		}
+
+	// purpose - {Authors, Publications, Conferences, Years} ; specify - {Trainer, Infer} File version
+	public void printDocTopicprobs(TopicalNGrams m,String path, String purpose, String specify){
+			try
+			{	
+				PrintWriter out = new PrintWriter( new File( path + purpose + "/DocTopic-NGram-" +purpose +"-"+specify +".txt" ) );
+				m.printDocumentTopics( out, 0.0, -1 );
+				out.close();
+			} catch ( IOException e )
+			{
+				e.printStackTrace(); }
+				}
+		
+	// returns an array of Strings with each element a topic followed by its bag of ngrams 
+	public String[] getStringDocumentTopicIndex (TopicalNGrams m, double threshold, int max, boolean weight){
+		String[] document = m.documentTopics( threshold, max, weight ).split( "\n");
+	return document;
+	}
+	
+	// returns a List of Strings with each element a topic followed by its bag of ngrams 
+	public List<String> getListDocumentTopicIndex (TopicalNGrams m, double threshold, int max, boolean weight){
+		String[] document = m.documentTopics( threshold, max, weight ).split( "\n");
+		List<String> topics = new ArrayList<String>();
+		for (String d : document)
+			topics.add( d );
+	return topics;
+	}
+	
+	// returns the list of all the topic proportions for all the documents (they are not ordered so it can serve as an input to document similarity
+	public HashMap<String, List<Double>> getDoumentTopicProportion(TopicalNGrams m){
+		HashMap<String, List<Double>> h = new HashMap<String, List<Double>>();
+		h = m.documentAllTopicsasMap();
+		return h;
+	}
+	
+	// returns an array of Strings with each element a topic followed by its bag of unigrams
+	public String[] getStringTopicsUnigrams (TopicalNGrams m, int nwords, boolean weight){
+		
+		String[] topics = m.printUnigrams( nwords, weight ).split( "\n" );
+		
+		return topics;
+		}
+
+	// returns list of strings of topics where each element is topic followed by its bag of unigrams
+	public List<String> getListTopicsUnigrams (TopicalNGrams m, int nwords, boolean weight){
+			
+			List<String> listtopics = new ArrayList<String>();
+			String[] topics = m.printUnigrams( nwords,weight ).split( "\n" );
+			for (String topic : topics){
+				listtopics.add( topic );
+			}
+		return listtopics;
+		}
+	
+	// returns an array of Strings with each element a topic followed by its bag of Ngrams 
+	public String[] getStringTopicsNgrams (TopicalNGrams m, int nwords, boolean weight){
+			String[] topics = m.printNgrams( nwords, weight ).split( "\n" );
+		return topics;
+		}
+
+	// returns list of strings of topics where each element is topic followed by its bag of unigrams
+	public List<String> getListTopicsNgrams (TopicalNGrams m, int nwords, boolean weight){
+			List<String> listtopics = new ArrayList<String>();
+			String[] topics = m.printNgrams( nwords, weight ).split( "\n" );
+			for (String topic : topics){
+				listtopics.add( topic );
+			}
+		return listtopics;
+		}		
+		
+	// create some random files
+	public  File createTempDirectory() throws IOException{
+		    final File temp;
+
+		    temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
+
+		    if(!(temp.delete()))
+		    {
+		        throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
+		    }
+
+		    if(!(temp.mkdir()))
+		    {
+		        throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
+		    }
+
+		    return (temp);
+		}
+
+	// gets some random files from path/purpose and pastes them on path/purpose/specify specify = Trainer
+	public void getRandomTrainerFiles(String path, String purpose){
+		int count = 20;
+		String[] trainer = new File (path + purpose + "/" + purpose).list();
+		while (count != 0){
+			int random = new Random().nextInt(trainer.length-1);
+			try
+			{	Files.copy( new File (path + purpose + "/" + purpose, trainer[random]).toPath(), new File(path + purpose + "/Trainer", trainer[random] ).toPath(), StandardCopyOption.REPLACE_EXISTING);// Here can be also used ATOMIC_MOVE
+			} 	catch ( IOException e )
+			{	e.printStackTrace();	}
+			count--;	}
+		}
+
+	// this methods maps the best topic with the suitable document
+	// used only for initial version - files as output (File Version)
+	public void DocTopicMapper(String path, String purpose, String specify) throws IOException{
+		@SuppressWarnings( "resource" )
+		BufferedReader docs = new BufferedReader(new FileReader(path + purpose + "/DocTopic-" + purpose + "-" + specify + ".txt"));
+		@SuppressWarnings( "resource" )
+		BufferedReader tops = new BufferedReader(new FileReader(path + purpose + "/TopWords-" + purpose + "-" + specify + ".txt"));
+		String document, topic;
+		
+		// get Line by line the bag of words for each of the topics
+		List<String> listtopic = new ArrayList<String>();
+		while(( topic = tops.readLine())!=null){
+			listtopic.add( topic );
+		}
+		
+		// get Line by line the topic distribution for each of the documents
+		List<String> listdoc = new ArrayList<String>();
+		while((document=docs.readLine())!=null){
+			listdoc.add( document );
+		}
+		
+		// map documents to topic's bag-of-words
+		for (int i=1; i<listdoc.size();i++){
+			int numTopics = 50;
+			String[] docsplit = listdoc.get( i ).split( "\\s+" );
+			for(int j =0;j<numTopics;j++){
+				if (listtopic.get( j ).startsWith( docsplit[2]) == true){
+					System.out.println(docsplit[1] +" -> " + listtopic.get( j ).substring( 10 ));
+						break;			
+						
+					} 
+				}
+			}
+		}
+		
+	// Returns a map <DocumentID, Top Ngrams Topic Assigned to it> which shows the topic assigned to a specific document with given ID
+	// When calling max = -1, threshold = 0.05, 
+	public HashMap<String, List<String>> getTopicNgramsDocument( TopicalNGrams m, int docID, int max, double threshold, int numTopics, int numWords, boolean weight ){
+		
+			HashMap<String, List<String>> h = new HashMap<String, List<String>>();
+			List<String> topdoc = new ArrayList<String>();//getListDocumentTopic(m,threshold,max,weight);
+			List<String> topics = getListTopicsNgrams(m, numWords, weight);
+			
+			
+			 int docLen;
+			    double topicDist[] = new double[m.numTopics];
+			      docLen = m.topics[docID].length;
+			      for (int ti = 0; ti < numTopics; ti++)
+			        topicDist[ti] = (((float)m.docTopicCounts[docID][ti])/docLen);
+			      if (max < 0) max = numTopics;
+			      for (int tp = 0; tp < max; tp++) {
+			        double maxvalue = 0;
+			        int maxindex = -1;
+			        for (int ti = 0; ti < numTopics; ti++)
+			          if (topicDist[ti] > maxvalue) {
+			            maxvalue = topicDist[ti];
+			            maxindex = ti;
+			          }
+			        if (maxindex == -1 || topicDist[maxindex] < threshold)
+			          break;
+			        //(maxindex+" "+topicDist[maxindex]+" ");
+			        topicDist[maxindex] = 0;
+			        topdoc.add( topics.get( maxindex ) );
+			      }
+			      
+			h.put(m.ilist.get(docID).getSource().toString().replace( "\\",";").split( ";" )[6].replace( ".txt", "" ), topdoc);
+			return h;
+		}
+
+	// Returns a map <DocumentID, Top Unigrams Topic Assigned to it> which shows the topic assigned to a specific document with given ID
+	// When calling max = -1, threshold = 0.05, 
+	public HashMap<String,  List<String>> getTopicUnigramsDocument( TopicalNGrams m, int docID, int max, double threshold, int numTopics, int numWords, boolean weight ){
+		
+		HashMap<String, List<String>> h = new HashMap<String, List<String>>();
+		List<String> topdoc = new ArrayList<String>();//getListDocumentTopic(m,threshold,max,weight);
+		List<String> topics = getListTopicsUnigrams(m, numWords, weight);
+		
+		
+		 int docLen;
+		    double topicDist[] = new double[m.numTopics];
+		      docLen = m.topics[docID].length;
+		      for (int ti = 0; ti < numTopics; ti++)
+		        topicDist[ti] = (((float)m.docTopicCounts[docID][ti])/docLen);
+		      if (max < 0) max = numTopics;
+		      for (int tp = 0; tp < max; tp++) {
+		        double maxvalue = 0;
+		        int maxindex = -1;
+		        for (int ti = 0; ti < numTopics; ti++)
+		          if (topicDist[ti] > maxvalue) {
+		            maxvalue = topicDist[ti];
+		            maxindex = ti;
+		          }
+		        if (maxindex == -1 || topicDist[maxindex] < threshold)
+		          break;
+		        //(maxindex+" "+topicDist[maxindex]+" ");
+		        topicDist[maxindex] = 0;
+		        topdoc.add( topics.get( maxindex ) );
+		      }
+		      
+		h.put(m.ilist.get(docID).getSource().toString().replace( "\\",";").split( ";" )[6].replace( ".txt", "" ), topdoc);
+		return h;
+	}
+	
+	//produce a Map wish holds <DocumentId, List<TopicWeight, String of Words>> 
+	public HashMap<String, List<String>> getAllDocumentTopics( ParallelTopicModel m, int docID, int max, double threshold, int numTopics ){
+			
+			HashMap<String, List<String>> h = new HashMap<String, List<String>>();
+			List<String> topics = new ArrayList<String>();
+			int[] topicCounts = new int[numTopics];
+			int docLen = 0;
+			int topicID = 0;
+			double topicWeight = 0;
+			IDSorter[] sortedTopics = new IDSorter[numTopics];
+			for ( int topic = 0; topic < numTopics; topic++ )
+			{
+				// Initialize the sorters with dummy values
+				sortedTopics[topic] = new IDSorter( topic, topic );
+			}
+		
+			if ( max < 0 || max > numTopics )
+				{
+				max = numTopics;
+			}
+
+			LabelSequence topicSequence = (LabelSequence) m.data.get( docID ).topicSequence;
+			int[] currentDocTopics = topicSequence.getFeatures();
+
+			docLen = currentDocTopics.length;
+
+			// Count up the tokens
+			for ( int token = 0; token < docLen; token++ )
+				{
+				topicCounts[currentDocTopics[token]]++;
+				}
+
+			// And normalize
+			for ( int topic = 0; topic < numTopics; topic++ )
+				{
+				sortedTopics[topic].set( topic, ( m.alpha[topic] + topicCounts[topic] ) / ( docLen + m.alphaSum ) );
+				}
+
+			Arrays.sort( sortedTopics );
+			
+			// m.data.get(docID).instance.getName(); // can be also
+			// model.data.get(doc).instance.getID(); or whatever :))))
+			for ( int i = 0; i < max; i++ )
+			{
+				if ( sortedTopics[i].getWeight() < threshold ){	break; }
+				
+					topicID = sortedTopics[i].getID();
+					topicWeight = sortedTopics[i].getWeight();
+					topics.add( topicID + "-" + topicWeight );
+			}
+			h.put( m.data.get(docID).instance.getName()+ "", topics );
+			Arrays.fill( topicCounts, 0 );
+			return h;
+		}
+
+	// function used to get the sorted words per topic
+	public ArrayList<TreeSet<IDSorter>> getSortedWords( ParallelTopicModel m, int numTopics ){
+
+			ArrayList<TreeSet<IDSorter>> topicSortedWords = new ArrayList<TreeSet<IDSorter>>( numTopics );
+
+			// Initialize the tree sets
+			for ( int topic = 0; topic < numTopics; topic++ )
+			{
+				topicSortedWords.add( new TreeSet<IDSorter>() );
+			}
+
+			// Collect counts
+			for ( int type = 0; type < m.numTypes; type++ )
+			{
+
+				int[] topicCounts = m.typeTopicCounts[type];
+
+				int index = 0;
+				while ( index < topicCounts.length && topicCounts[index] > 0 )
+				{
+
+					int topic = topicCounts[index] & m.topicMask;
+					int count = topicCounts[index] >> m.topicBits;
+
+					topicSortedWords.get( topic ).add( new IDSorter( type, count ) );
+
+					index++;
+				}
+			}
+
+			return topicSortedWords;
+		}
+
 }

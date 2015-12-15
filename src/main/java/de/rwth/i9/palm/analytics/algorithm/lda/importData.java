@@ -35,7 +35,11 @@ public class importData {
 
         return new SerialPipes(pipeList);
     }
-
+    
+    
+    // Possible to add into a list or TreeSet all the files followed by the String of text 
+    // add it into Pipe
+    // go on with the other Pipe functionalities
     public InstanceList readDirectory(File directory) {
         return readDirectories(new File[] {directory});
     }

@@ -6,8 +6,8 @@ import de.rwth.i9.palm.analytics.algorithm.corephrase.CorePhrase;
 import de.rwth.i9.palm.analytics.algorithm.corephrase.CorePhraseImpl;
 import de.rwth.i9.palm.analytics.algorithm.cvalue.CValue;
 import de.rwth.i9.palm.analytics.algorithm.cvalue.CValueAlgorithm;
+import de.rwth.i9.palm.analytics.algorithm.lda.LDAJob;
 import de.rwth.i9.palm.analytics.algorithm.lda.Lda;
-import de.rwth.i9.palm.analytics.algorithm.lda.LdaImpl;
 import de.rwth.i9.palm.analytics.opennlp.OpenNLP;
 import de.rwth.i9.palm.analytics.opennlp.OpenNLPImpl;
 import de.rwth.i9.palm.analytics.textcompare.TextCompare;
@@ -54,7 +54,7 @@ public class PalmAnalyticsImpl implements PalmAnalytics
 	public Lda getLdaAlgorithm()
 	{
 		if ( this.lda == null )
-			this.lda = new LdaImpl();
+			this.lda = new LDAJob();
 
 		return this.lda;
 	}
