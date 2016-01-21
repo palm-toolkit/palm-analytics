@@ -6,14 +6,20 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +30,9 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import cc.mallet.topics.MarginalProbEstimator;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
+import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.IDSorter;
+import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
 import cc.mallet.util.MalletLogger;
@@ -50,7 +58,110 @@ public class dynamicLDA
 		//		5.	TokenSequence2FeatureSequence
 		
 			String path = "C:/Users/Piro/Desktop/";
-
+			
+			ParallelTopicModel years = createModel(path, "Years",10 , 5);
+			
+			TemporalTopicModel tot = new TemporalTopicModel();
+			int[][] trial = new int[10][10];
+			for(int i = 0; i<10;i++){
+				for (int j =0; j<10; j++){
+					trial[i][j] = (int)(Math.random() * 10);
+				}
+			}
+			tot.addInstances( trial, generateTimestamps(11), years.data.size(), 10 );
+			tot.run(100);
+			
+			//System.out.print((toksperdoc.get(1).split( "\n" )[4]).split( " " )[1] + " " + (toksperdoc.get(1).split( "\n" )[5]).split( " " )[1]);
+			//System.out.println();
+//			int[][] matrix = new int[years.data.size()][years.getAlphabet().size()];
+//			for (int i = 0; i < years.data.size(); i++){
+//				for (int j = 0; j< ( (FeatureSequence) years.data.get( i).instance.getData() ).size(); j++){
+//					
+//				}
+//			}
+			
+			
+//			for (int i = 0 ; i< years.data.size(); i++){
+//				System.out.println(((FeatureSequence) years.data.get( i ).instance.getData() ).size());
+//				System.out.println(years.data.get( i ).instance.getData().toString());
+//			}
+//			
+//			for (String l : getListTopics(years, 6)){
+//				System.out.println(l);
+//			}
+//			
+//			
+//			for (int i=0; i< years.data.size(); i++){
+//				System.out.println( ((years.data.get( i ).instance.getName() + "").split( "/" )[7]).replaceAll(".txt",""));
+//				for (Entry<Integer, Double> entry : getTopicProportion(years, 0.0, i, 10, years.getNumTopics()).entrySet()){
+//					System.out.println(/*entry.getKey() + "-> " + */(new DecimalFormat("#.######").format(entry.getValue())));
+//					}
+//			}
+			
+//			double[] a = null;
+//			for (int i =0; i< years.data.size(); i++){
+//				 a = years.getTopicProbabilities( i );
+//				for (double j : a ){
+//					System.out.print(" " + j + " ");
+//				}'
+//				System.out.println("");
+//			}
+//			
+//			double[][] c = getTopicProbabilityAll(years);
+//			for (int m = 0; m < years.data.size(); m++){
+//				for (int n =0; n < years.numTopics; n++){
+//					System.out.print(" " + c[m][n] + " ");
+//				}
+//				System.out.println();
+//			}
+//			
+//			for (int topic = 0; topic < years.numTopics; topic++) {
+//				for (int type = 0; type < years.numTypes; type++) {
+//
+//					int[] topicCounts = years.typeTopicCounts[type];
+//					
+//					double weight = years.beta;
+//
+//					int index = 0;
+//					while (index < topicCounts.length &&
+//						   topicCounts[index] > 0) {
+//
+//						int currentTopic = topicCounts[index] & years.topicMask;
+//						
+//						
+//						if (currentTopic == topic) {
+//							weight += topicCounts[index] >> years.topicBits;
+//							break;
+//						}
+//
+//						index++;
+//					}
+//
+//					System.out.println(topic + "\t" + years.alphabet.lookupObject(type) + "\t" + weight);
+//				}
+//			}	
+//			for (int i=0; i< years.data.size(); i++){
+//				System.out.println( ((years.data.get( i ).instance.getName() + "").split( "/" )[7]).replaceAll(".txt",""));
+//			for (Entry<Integer, Double> entry : (sortHashMapByValues(getTopicProportion(years, 0.0, i, 10, years.getNumTopics())).entrySet())){
+//				System.out.println(entry.getKey() + "-> " + entry.getValue());
+//				}
+//			}
+//			
+//			
+//			for (int i=0; i< years.data.size(); i++){
+//				System.out.println( ((years.data.get( i ).instance.getName() + "").split( "/" )[7]).replaceAll(".txt",""));
+//			for (Entry<Integer, Double> entry : (getTopicProportion(years, 0.0, i, 10, years.getNumTopics())).entrySet()){
+//				System.out.println(entry.getKey() + "-> " + entry.getValue());
+//				}
+//			}
+//			
+//			for (int i =0; i< years.data.size(); i++){
+//				for (int j=0; j< years.numTopics; j++){
+//					System.out.print(" " + getTopicProbabilityAll(years)[i][j] + " ");
+//				}
+//				System.out.println();
+//			}
+//			
 			// USE THE METHOD Below to get the data (call directly the create
 			// model method ;)
 			// importData importer = new importData();
@@ -65,36 +176,36 @@ public class dynamicLDA
 			// InstanceList training = InstanceList.load (texting);
 			//
 			// System.out.println ("Data loaded.");
-		
-			ParallelTopicModel model = createModel( path, "Years", 10, 10 );
-
-		// define number of Topics 
-		int numTopics = 70;
-
-		// call ParallelTopicModel class to run simple parallel version of LDA with
-		// alpha=0.1 (sumalpha)50 beta=0,01 numTopics=5
-		ParallelTopicModel lda = new ParallelTopicModel (numTopics, 50.0 , 0.01);
-		lda.printLogLikelihood = true;
-		
-		// Start the printing of results. Other methods can be called 
-		MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("printing state");
-		
-		// get the top words for each topic 
-			// USE THE OTHER METHODS TO GET THIS AS STRING (Or later change to
-			// get kinda list)
-			// lda.printTopWords( new
-			// File("C:/Users/Piro/Desktop/Outputs/TopWords-NEW.txt"), 11, false
-			// );
-			model.displayTopWords( 10, true );
-		
-		// get the topic distribution for each of the files
-			// Instead use one of the two below methods
-		lda.printDocumentTopics( new File("C:/Users/Piro/Desktop/Outputs/DocTopic-NEW.txt") );
-		
-		// get the weight of each word if needed
-			lda.printTopicWordWeights( new File( "C:/Users/Piro/Desktop/Outputs/Wordweight.txt" ) );
-		
-		MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("finished printing");
+//		
+//			ParallelTopicModel model = createModel( path, "Years", 10, 10 );
+//
+//		// define number of Topics 
+//		int numTopics = 70;
+//
+//		// call ParallelTopicModel class to run simple parallel version of LDA with
+//		// alpha=0.1 (sumalpha)50 beta=0,01 numTopics=5
+//		ParallelTopicModel lda = new ParallelTopicModel (numTopics, 50.0 , 0.01);
+//		lda.printLogLikelihood = true;
+//		
+//		// Start the printing of results. Other methods can be called 
+//		MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("printing state");
+//		
+//		// get the top words for each topic 
+//			// USE THE OTHER METHODS TO GET THIS AS STRING (Or later change to
+//			// get kinda list)
+//			// lda.printTopWords( new
+//			// File("C:/Users/Piro/Desktop/Outputs/TopWords-NEW.txt"), 11, false
+//			// );
+//			model.displayTopWords( 10, true );
+//		
+//		// get the topic distribution for each of the files
+//			// Instead use one of the two below methods
+//		lda.printDocumentTopics( new File("C:/Users/Piro/Desktop/Outputs/DocTopic-NEW.txt") );
+//		
+//		// get the weight of each word if needed
+//			lda.printTopicWordWeights( new File( "C:/Users/Piro/Desktop/Outputs/Wordweight.txt" ) );
+//		
+//		MalletLogger.getLogger(ParallelTopicModel.class.getName()).info("finished printing");
 		
 			// From Now on this will not be any more possible
 		//Start the procedure of merging the contents of file for mapping
@@ -189,10 +300,8 @@ public class dynamicLDA
 	}
 
 	//// Return the default LDA number of topics
-	public int getNumTopics()
+	public int getNumTopics(ParallelTopicModel lda)
 	{
-
-		ParallelTopicModel lda = new ParallelTopicModel( 50, 50.0, 0.1 );
 		return lda.getNumTopics();
 	}
 
@@ -334,7 +443,17 @@ public class dynamicLDA
 		String[] topics = m.displayTopWords( nwords, false ).split( "\n" );
 		return topics;
 	}
-
+	
+	// similar to the above method, but with List as an output
+	public List<String> getListTopics (ParallelTopicModel m, int nwords){
+		List<String> listtopics = new ArrayList<String>();
+		String[] topics = m.displayTopWords( nwords, false ).split( "\n" );
+		for (String topic : topics){
+			listtopics.add( topic );
+		}
+	return listtopics;
+	}
+	
 	// The above method but in this case with the possibility to have a List of
 	// strings as output
 	public HashMap<Integer, Map<Double, String>> getlistTopics( ParallelTopicModel m, int nwords, int numTopics, int numWords )
@@ -354,6 +473,56 @@ public class dynamicLDA
 		return topics;
 	}
 
+	// get the topic proportion per instance (in this case one instance corresponds to a specific timestamp [year])
+	public HashMap<Integer, Double> getTopicProportion( ParallelTopicModel m, double threshold, int docID, int max, int numTopics )
+	{
+		HashMap<Integer, Double> topics = new HashMap<Integer, Double>();
+		int[] topicCounts = new int[numTopics];
+		int docLen = 0;
+		int topicID = 0;
+		double topicWeight = 0;
+		IDSorter[] sortedTopics = new IDSorter[numTopics];
+		for ( int topic = 0; topic < numTopics; topic++ )
+		{
+			// Initialize the sorters with dummy values
+			sortedTopics[topic] = new IDSorter( topic, topic );
+		}
+
+		if ( max < 0 || max > numTopics )
+		{
+			max = numTopics;
+		}
+
+		LabelSequence topicSequence = (LabelSequence) m.data.get( docID ).topicSequence;
+		int[] currentDocTopics = topicSequence.getFeatures();
+
+		docLen = currentDocTopics.length;
+
+		// Count up the tokens
+		for ( int token = 0; token < docLen; token++ )
+		{
+			topicCounts[currentDocTopics[token]]++;
+		}
+
+		// And normalize
+		for ( int topic = 0; topic < numTopics; topic++ )
+		{
+			sortedTopics[topic].set( topic, ( m.alpha[topic] + topicCounts[topic] ) / ( docLen + m.alphaSum ) );
+		}
+
+		Arrays.sort( sortedTopics );
+		for ( int i = 0; i < max; i++ )
+		{
+			if ( sortedTopics[i].getWeight() < threshold ){	break; }
+			
+				topicID = sortedTopics[i].getID();
+				topicWeight = sortedTopics[i].getWeight();
+				topics.put( topicID, topicWeight);
+		}
+		Arrays.fill( topicCounts, 0 );
+		return topics;
+	}
+	
 	// USe the tree-struct to get the sorted words for each topic
 	public ArrayList<TreeSet<IDSorter>> getSortedWords( ParallelTopicModel m, int numTopics )
 	{
@@ -503,5 +672,94 @@ public class dynamicLDA
 			Arrays.fill( topicCounts, 0 );
 		}
 		return h;
+	}
+	
+	public LinkedHashMap<Integer,Double> sortHashMapByValues(HashMap<Integer,Double> passedMap) {
+		   List<Integer> mapKeys = new ArrayList<Integer>(passedMap.keySet());
+		   List<Double> mapValues = new ArrayList<Double>(passedMap.values());
+		   Collections.sort(mapValues);
+		   Collections.sort(mapKeys);
+
+		   LinkedHashMap<Integer,Double> sortedMap = new LinkedHashMap<Integer,Double>();
+
+		   Iterator<Double> valueIt = mapValues.iterator();
+		   while (valueIt.hasNext()) {
+		       Object val = valueIt.next();
+		       Iterator<Integer> keyIt = mapKeys.iterator();
+
+		       while (keyIt.hasNext()) {
+		           Object key = keyIt.next();
+		           String comp1 = passedMap.get(key).toString();
+		           String comp2 = val.toString();
+
+		           if (comp1.equals(comp2)){
+		               passedMap.remove(key);
+		               mapKeys.remove(key);
+		               sortedMap.put((Integer)key, (Double)val);
+		               break;
+		           }
+		       }
+		   }
+		   return sortedMap;
+		}
+	
+	
+	public double[][] getTopicProbabilityAll(ParallelTopicModel m){
+		double[][] a = new double[m.data.size()][m.numTopics];
+		double[] temp = new double[m.data.size()];
+		for (int i =0; i< m.data.size(); i++){
+			temp = m.getTopicProbabilities( i );
+			for ( int j=0; j < m.numTopics; j++){
+			 a[i][j] = temp[j];
+			}
+		}
+		return a;
+	}
+	
+ // create the term frequency matrix
+	public int[][] generateTermFreqMatrix(ParallelTopicModel m){
+		List<String> alphabet = new ArrayList<String>();
+		List<String> toksperdoc = new ArrayList<String>();
+		List<String[]> toksperdocArray = new ArrayList<String[]>();
+		List<String[]> tokens = new ArrayList<String[]>();
+		int[][] termfreq = new int[m.data.size()][m.alphabet.size()];
+		
+		// get the alphabet as a List<String>
+		for (Object o : m.getAlphabet().toArray())
+			alphabet.add( o.toString() );
+		for (int i = 0; i < m.data.size(); i++)
+				toksperdoc.add( (String) m.data.get(i).instance.getData().toString() );
+		for (String s : toksperdoc)
+			toksperdocArray.add( s.split( "\n" ) );
+		
+		// tokens as terms per document in an array for each document 
+		for (int i=0; i < toksperdocArray.size(); i++){
+			String[] temporal = new String[toksperdocArray.get(i).length];
+			for (int j=0; j< toksperdocArray.get(i).length; j++){
+				temporal[j] = (toksperdocArray.get( i )[j]).split(" ")[1];
+			}
+			tokens.add( temporal );
+		}
+
+		// generate the matrix with term frequency for each document
+		for (int i=0; i < m.data.size(); i++){
+			for (int j= 0; j< tokens.get( i ).length; j++){
+				if (alphabet.indexOf( tokens.get( i )[j] ) != -1)
+					termfreq[i][alphabet.indexOf( tokens.get( i )[j] )]++;
+			}
+		}
+		
+		return termfreq;
+	}
+	
+	// create timestamps vector 
+	// range has to be: 7-weeks, 30-months, 4-quarters, x-years
+	public double[] generateTimestamps(int range){
+		double[] timest = new double[range];
+		for(int i=0; i<timest.length; i++){
+			timest[i] = i/range;
+		}
+		return timest;
+		
 	}
 }

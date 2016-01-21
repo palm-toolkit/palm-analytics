@@ -7,9 +7,9 @@ public class TopicOverTime
 	{
 		TemporalTopicModel t = new TemporalTopicModel();
 
-		// t.addInstances( documentsInput, timeStamps, sizeOfVocabulary,
-		// numOfTopics );
-
+		// t.addInstances( documentsInput, timeStamps, sizeOfVocabulary,numOfTopics );
+		
+		
 	}
 
 }

@@ -1,6 +1,5 @@
 package de.rwth.i9.palm.analytics.algorithm.ngram;
 
-	import java.util.ArrayList;
 
 /* Copyright (C) 2005 Univ. of Massachusetts Amherst, Computer Science Dept.
 	   This file is part of "MALLET" (MAchine Learning for LanguagE Toolkit).
@@ -10,16 +9,16 @@ package de.rwth.i9.palm.analytics.algorithm.ngram;
 	   information, see the file `LICENSE' included with this distribution. */
 
 
-	import java.util.Arrays;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.io.*;
-
-	import cc.mallet.types.*;
-	import cc.mallet.util.Randoms;
-
+import java.util.ArrayList;
+import cc.mallet.types.*;
+import cc.mallet.util.Randoms;
+	
 	/**
 	 * Like Latent Dirichlet Allocation, but with integrated phrase discovery.
 	 * @author Andrew McCallum <a href="mailto:mccallum@cs.umass.edu">mccallum@cs.umass.edu</a>

@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cc.mallet.topics.MarginalProbEstimator;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
+import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
@@ -36,7 +37,6 @@ import de.rwth.i9.palm.analytics.config.AppConfig;
 @Transactional
 public class LDAJob implements Lda
 {	
-
 @Test
 public void test() throws Exception {
 	
@@ -53,41 +53,51 @@ public void test() throws Exception {
 			 
 			 // create the respective models for authors, publications
 			 ParallelTopicModel authors = createModel(path, "Authors", "Authors", 50, 10);
-// 				ParallelTopicModel publications = createModel(path,"Publications", "Trainer", 70, 10);
+  			 ParallelTopicModel publications = createModel(path,"Publications", "Trainer", 70, 10);
+			 
+//			 for (int doc = 0; doc < authors.data.size(); doc++) {
+//					FeatureSequence tokenSequence =
+//						(FeatureSequence) authors.data.get(doc).instance.getData();
+//					
+//			 }
+			 
+			 System.out.println(authors.getAlphabet());
+			 System.out.println("-");
+			 System.out.println(publications.getAlphabet());
 			 
 			 // print the Top x Words for each Topic
-			 printTopWords(authors, 10, path, "Authors", "Trainer");
+//			 printTopWords(authors, 10, path, "Authors", "Trainer");
 // 				printTopWords(publications, 10, path, "Publications", "Trainer");
-				List<String> author = getListTopics(authors, 10);
-			 
-			 
-			 for (int i=0; i< authors.data.size(); i++){
-				 for (Entry<String, String> entry : getTopicDocument(authors, i, -1, 0.00, authors.getNumTopics(), 11 ).entrySet()){
-					 System.out.println((entry.getKey().split( "/" )[7]).replaceAll(".txt","") + " ->-> " + entry.getValue().replaceAll( "[^a-z\\s]", "" ));
-					 }
-			 }
-			 
-			 for (int i=0; i< authors.data.size(); i++){
-				 for (Entry<String, Double> entry : getTopicWeight(authors, i, -1, 0.00, authors.getNumTopics(), 11 ).entrySet()){
-					 System.out.println((entry.getKey().split( "/" )[7]).replaceAll(".txt","") + " ->-> " + entry.getValue());
-					 }
-			 }
-			 
+//				List<String> author = getListTopics(authors, 10);
+//			 
+//			 
+//			 for (int i=0; i< authors.data.size(); i++){
+//				 for (Entry<String, String> entry : getTopicDocument(authors, i, -1, 0.00, authors.getNumTopics(), 11 ).entrySet()){
+//					 System.out.println((entry.getKey().split( "/" )[7]).replaceAll(".txt","") + " ->-> " + entry.getValue().replaceAll( "[^a-z\\s]", "" ));
+//					 }
+//			 }
+//			 
+//			 for (int i=0; i< authors.data.size(); i++){
+//				 for (Entry<String, Double> entry : getTopicWeight(authors, i, -1, 0.00, authors.getNumTopics(), 11 ).entrySet()){
+//					 System.out.println((entry.getKey().split( "/" )[7]).replaceAll(".txt","") + " ->-> " + entry.getValue());
+//					 }
+//			 }
+//			 
 			 // For the visualization (update it later on)
 			 
-			 System.out.println();
-			 System.out.println("_________________________________");
-			 System.out.println("");
-			 for (int i=0; i< authors.data.size(); i++){
-				 for (Entry<String, List<String>> entry : getAllDocumentTopics(authors, i, -1, 0.005, authors.getNumTopics() ).entrySet()){
-					 System.out.println((entry.getKey().split( "/" )[7]).replaceAll(".txt","") + " ->-> " );
-					 for (String a : entry.getValue()){
-						 System.out.println(  author.get(Integer.parseInt( a.split( "-" )[0])  ));
-					 }
-					 }
-			 }
+//			 System.out.println();
+//			 System.out.println("_________________________________");
+//			 System.out.println("");
+//			 for (int i=0; i< authors.data.size(); i++){
+//				 for (Entry<String, List<String>> entry : getAllDocumentTopics(authors, i, -1, 0.005, authors.getNumTopics() ).entrySet()){
+//					 System.out.println((entry.getKey().split( "/" )[7]).replaceAll(".txt","") + " ->-> " );
+//					 for (String a : entry.getValue()){
+//						 System.out.println(  author.get(Integer.parseInt( a.split( "-" )[0])  ));
+//					 }
+//					 }
+//			 }
 			 // print the Topic proportions for each document
-			 	printDocTopicprobs(authors, path, "Authors", "Trainer");
+//			 	printDocTopicprobs(authors, path, "Authors", "Trainer");
 // 				printDocTopicprobs(publications, path, "Publications","Trainer");
 		
 			 // Alternative way to get the topics without using the files TopWords per topic"
@@ -117,6 +127,7 @@ public void test() throws Exception {
 		InstanceList instances = importer.readDirectory(new File (path +"/"+ purpose +"/"+ purpose)); //+ "/"+ specify ));
 		instances.save( new File( path + purpose + "/" + purpose + "-" + specify + ".mallet") );
 		InstanceList training = InstanceList.load (new File( path + purpose + "/" + purpose + "-" +specify + ".mallet"));
+		
 		return training;
 	}
  
@@ -291,7 +302,6 @@ try
 		String[] topicNames;
 		int docLen = 0;
 		int topicID = 0;
-		double topicWeight = 0;
 		IDSorter[] sortedTopics = new IDSorter[numTopics];
 		for ( int topic = 0; topic < numTopics; topic++ )
 		{
@@ -329,7 +339,6 @@ try
 		for (int i=0; i<max; i++)
 			if ( sortedTopics[0].getWeight() > threshold ){	 
 			topicID = sortedTopics[0].getID();
-			topicWeight = sortedTopics[0].getWeight();
 		}
 		topicNames = getStringTopics( m, numWords);
 		h.put(  m.data.get( docID ).instance.getName() + "", topicNames[topicID]);
@@ -342,9 +351,7 @@ try
 		
 		HashMap<String, Double> h = new HashMap<String, Double>();
 		int[] topicCounts = new int[numTopics];
-		String[] topicNames;
 		int docLen = 0;
-		int topicID = 0;
 		double topicWeight = 0;
 		IDSorter[] sortedTopics = new IDSorter[numTopics];
 		for ( int topic = 0; topic < numTopics; topic++ )
@@ -382,10 +389,8 @@ try
 		
 		for (int i=0; i<max; i++)
 		if ( sortedTopics[0].getWeight() > threshold ){	 
-		topicID = sortedTopics[0].getID();
 		topicWeight = sortedTopics[0].getWeight();
 		}
-		topicNames = getStringTopics( m, numWords);
 		h.put(  m.data.get( docID ).instance.getName() + "", topicWeight);// in case weight is needed just add: topicWeight
 		Arrays.fill( topicCounts, 0 );
 		return h;

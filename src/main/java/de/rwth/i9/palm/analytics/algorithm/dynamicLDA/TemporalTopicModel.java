@@ -1,6 +1,4 @@
 package de.rwth.i9.palm.analytics.algorithm.dynamicLDA;
-// package com.google.profiles.arnimbleier;
-
 import java.util.Stack;
 
 import org.apache.commons.math3.special.Beta;
@@ -30,25 +28,29 @@ public class TemporalTopicModel
 	public int[] numOfWordsByTopic;
 	public int[][] documents;
 	public double alpha = 1.5, beta = 0.5;
-	public int[][] z;
+	public int[][] z; // topic assigned to the ith token/term in the document d 
 	public double[][] betaDistrByTopic;
 	private double[] timeStamps;
 
-	// get the number of topics by using mallet ( gettopic number)
+	// get the number of topics by using mallet ( getTopic number)
 	// get the length of documents by using mallet -> DocumentLengths
 	// size of vocabulary by mallet -> getAlphabet.size()
-
+	// number of documents InstanceList.data.size()
+	// get the tokens for each of the documents data.get(docID).instance.getData()
+		// if needed the length of document is data.get(docID).instance.getData().size()
+	
+	// Initialization phase point 1. of algorithm
 	public void addInstances( int[][] documentsInput, double[] timeStamps, int sizeOfVocabulary, int numOfTopics )
 	{
-		documents = documentsInput;
-		K = numOfTopics;
-		V = sizeOfVocabulary;
-		z = new int[documents.length][];
-		this.timeStamps = timeStamps;
-		countTerm_Topic = new int[sizeOfVocabulary][K];
-		countDoc_Topic = new int[documents.length][K];
-		numOfWordsByTopic = new int[K];
-		for ( int m = 0; m < documents.length; m++ )
+		documents = documentsInput;	
+		K = numOfTopics;		// number of topics that need to be discovered in a corpora
+		V = sizeOfVocabulary; 		// number of unique words
+		z = new int[documents.length][];		// topic assigned to the ith token/term in the document d 
+		this.timeStamps = timeStamps;		// normalized time interval chosen to analyze the data
+		countTerm_Topic = new int[sizeOfVocabulary][K];		// countTerm_Topic (VxK) - terms in each of the topics 
+		countDoc_Topic = new int[documents.length][K];		// countDoc_Topic ( N.docs x K) - topic appearance in all documents 
+		numOfWordsByTopic = new int[K];		//  number of words for each of the K topics 
+		for ( int m = 0; m < documents.length; m++ )		// 
 		{
 			z[m] = new int[documents[m].length];
 			for ( int n = 0; n < documents[m].length; n++ )
@@ -74,12 +76,15 @@ public class TemporalTopicModel
 			double[] p;
 			double pSum = 0.0, u;
 			int topic, i, k;
-			double[] tProb = new double[K];
+			double[] tProb = new double[K]; // vector of topic probabilities for each timestamp 
 			for ( int d = 0; d < documents.length; d++ )
 			{
-				for ( k = 0; k < K; k++ )
+				System.out.println("Data for document : " + d+1 );
+				for ( k = 0; k < K; k++ ){
 					tProb[k] = ( ( Math.pow( 1 - timeStamps[d], betaDistrByTopic[k][0] - 1 ) * Math.pow( timeStamps[d], betaDistrByTopic[k][1] - 1 ) ) / beta( betaDistrByTopic[k][0], betaDistrByTopic[k][1] ) );
-				for ( i = 0; i < documents[d].length; i++ )
+					System.out.println(tProb[k]);
+				}
+					for ( i = 0; i < documents[d].length; i++ )
 				{
 					p = new double[K];
 					pSum = 0.0;
@@ -87,11 +92,12 @@ public class TemporalTopicModel
 					countTerm_Topic[documents[d][i]][topic]--;
 					countDoc_Topic[d][topic]--;
 					numOfWordsByTopic[topic]--;
-
+					System.out.println("Sometthing regarding p[k]");
 					for ( k = 0; k < K; k++ )
 					{
 						pSum += ( countDoc_Topic[d][k] + alpha ) * ( ( countTerm_Topic[documents[d][i]][k] + beta ) / ( numOfWordsByTopic[k] + V * beta ) ) * tProb[k];
 						p[k] = pSum;
+						System.out.println(p[k]);
 					}
 
 					u = Math.random() * pSum;
@@ -104,7 +110,9 @@ public class TemporalTopicModel
 					numOfWordsByTopic[topic]++;
 					z[d][i] = topic;
 				}
+				
 			}
+			
 			for ( k = 0; k < K; k++ )
 				betaDistrByTopic[k] = estimateBetaParams( getTimeStamps( k ) );
 		}
@@ -126,7 +134,6 @@ public class TemporalTopicModel
 
 	/*
 	 * Method of Moments
-	 *
 	 * Modified as discussed in
 	 * http://comments.gmane.org/gmane.comp.ai.mallet.devel/1669
 	 */
@@ -139,8 +146,8 @@ public class TemporalTopicModel
 			sum = sum + i;
 		double mean = sum / _n;
 		for ( double i : _x )
-			_var = Math.pow( mean - i, 2 );
-		double variance = ( 1 / _n ) * ( _var / _n ) + 0.001;
+			_var += Math.pow( mean - i, 2 );
+		double variance = ( _var / _n ) + 0.001;
 		double commonTerm = Math.abs( ( ( mean * ( 1.0 - mean ) ) / variance ) - 1.0 );
 		shapes[0] = mean * commonTerm;
 		shapes[1] = ( 1 - mean ) * commonTerm;
@@ -152,4 +159,30 @@ public class TemporalTopicModel
 		return Math.exp( Beta.logBeta( a, b ) );
 	}
 
+	/*
+	 * Calculate the theta parameter for the model 
+	 */
+	public double[][] getTheta() {
+        double[][] theta = new double[documents.length][K];
+        for (int m = 0; m < documents.length; m++) {
+            for (int k = 0; k < K; k++) {
+                theta[m][k] = (countDoc_Topic[m][k] + alpha) / (documents[m].length + K * alpha);
+            }
+        }
+        return theta;
+   }
+	
+	
+	/*
+	 * Calculate the phi parameter for the model 
+	 */
+    public double[][] getPhi() {
+        double[][] phi = new double[K][V];
+        for (int k = 0; k < K; k++) {
+            for (int w = 0; w < V; w++) {
+                phi[k][w] = (countTerm_Topic[w][k] + beta) / (numOfWordsByTopic[k] + V * beta);
+            }
+        }
+        return phi;
+    }
 }

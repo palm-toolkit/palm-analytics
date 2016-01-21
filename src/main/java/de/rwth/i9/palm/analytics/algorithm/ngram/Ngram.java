@@ -41,9 +41,26 @@ import de.rwth.i9.palm.analytics.config.AppConfig;
 @ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
 public class Ngram
 {
+	public TopicalNGrams model;
+	public Ngram(){
+		try
+		{
+			TopicalNGrams tng = createModel( "C:/Users/Piro/Desktop/", "Authors", "Trainer", 100);
+			model = tng;
+		}
+		catch ( IOException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+	}
+	
 	@Test
 	public void test() throws Exception
 	{	
+		
+
 		
 		try{
 
@@ -58,56 +75,130 @@ public class Ngram
 
 			// tng.printTopWords( 10, true );
 			 
+			long start = System.nanoTime();
 			 System.out.println( "________________________GET THE TOPICS AS UNIGRAMS__________________________" );
 			 String[] u = getStringTopicsUnigrams(tng, 10, false);
 			 for (String h : u){
 				 System.out.println(h);
 			 }
+			 long end = System.nanoTime();
+			 System.out.println("Time for getting unigrams: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
 			 
+			 start = System.nanoTime();
 			 System.out.println( "________________________GET THE TOPICS AS N-GRAMS__________________________" );
 			 String[] n =  getStringTopicsNgrams(tng, 10, false);
 			 for (String h : n){
 				 System.out.println(h);
 			 }
+			 end = System.nanoTime();
+			 System.out.println("Time for getting Ngrams: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
 			 
+			 start = System.nanoTime();
 			 System.out.println( "________________________GET THE TOP X TOPICS FOLLOWED BY THEIR PROPORTIONS__________________________" );
 			 String[] d = getStringDocumentTopicIndex(tng, 0.0, -1, true);
 			 for (String h : d){
 				 System.out.println(h);
 			 }
+			 end = System.nanoTime();
+			 System.out.println("Time for getting x - Topics: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
 			 
+			 start = System.nanoTime();
 			 System.out.println( "________________________GET THE TOPIC ASSIGNMENT AS N-GRAMS CONTENT __________________________" );
 			 for (int i=0; i< tng.topics.length; i++){
 				 for (Entry<String, List<String>> entry : getTopicNgramsDocument(tng, i, -1, 0.0, 100, 10, false).entrySet()){
 					 System.out.println((entry.getKey()) + " ->-> " + entry.getValue());
 					 }
 			 }
+			 end = System.nanoTime();
+			 System.out.println("Time for getting Topic Assigned presented as N-grams: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
 			 
+			 start = System.nanoTime();
 			 System.out.println( "________________________GET THE TOPIC ASSIGNMENT AS UNIGRAMS CONTENT __________________________" );
 			 for (int i=0; i< tng.topics.length; i++){
 				 for (Entry<String, List<String>> entry : getTopicUnigramsDocument(tng, i, -1, 0.0, 100, 10, false).entrySet()){
 					 System.out.println((entry.getKey()) + " ->-> " + entry.getValue());
 					 }
 			 }
+			 end = System.nanoTime();
+			 System.out.println("Time for getting Topic Assigned presented as Unigrams: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
 			 
+			 start = System.nanoTime();
 			 System.out.println( "________________________GET THE TOPIC ASSIGNMENT AND PROPORTIONS __________________________" );
 			 for (Entry<String, List<Double>> entry : getDoumentTopicProportion(tng).entrySet()){
 				 System.out.println((entry.getKey())); 
 				 System.out.println(" **** ");
-				 for (Object z : entry.getValue().toArray()){
+				 for (Double z : entry.getValue()){
 					 System.out.println(z);
 				 	}
 				 }
-				 
-			 System.out.println( "________________________TEST FOR SIMILARITY MEASUREMENTS __________________________" );
-			  
-			 	 
+			end = System.nanoTime();
+			System.out.println("Time for getting all unordered Topics and corresponding proportions: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
+			
+//			 start = System.nanoTime();
+//			 System.out.println( "________________________TEST FOR SIMILARITY MEASUREMENTS AND RECOMMENDED PUBLICATIONS __________________________" );
+//			 similarityMeasures similarity = new similarityMeasures();
+//			 for (Entry<String, List<Double>> entry : getDoumentTopicProportion(tng).entrySet()){
+//				 double[] cos = new double[tng.ilist.size()];
+//				 double[] euc = new double[tng.ilist.size()];
+//				 double[] pea = new double[tng.ilist.size()];
+//				 int i = 0;
+//				 //System.out.println(entry.getKey()  + " Compared to : " ); 
+//				 System.out.println("Recommended Documents for : " + entry.getKey() );
+//				 for (Entry<String, List<Double>> entry1 : getDoumentTopicProportion(tng).entrySet()){
+//					 //System.out.print(entry1.getKey() + " ");
+//					 cos[i] = similarity.cosineSimilarity( entry.getValue(), entry1.getValue() );
+//					 euc[i] = similarity.sqrtEuclidianSimilarity( entry.getValue(), entry1.getValue() );
+//					 pea[i] = similarity.pearsonCorrelation( entry.getValue(), entry1.getValue() );
+//					 boolean c = false, e = false ,p = false;
+//					 if (cos[i] > 0.5 && cos[i] < 1.0){
+////						 System.out.print(" C " + entry1.getKey() + " ");
+////						 System.out.println(" " + cos[i] + " ");
+//						 c = true;
+//					 }
+//					 if (euc[i] < 0.6 && euc[i] >= 0){
+////						 System.out.print(" E " + entry1.getKey() + " ");
+////						 System.out.println(" " + euc[i] + " ");
+//						 e = true;
+//					 }
+//					 if (pea[i] > 0.5 && pea[i] < 1.0){
+////						 System.out.print(" P " + entry1.getKey() + " ");
+////						 System.out.println(" " + pea[i] + " ");
+//						 p = true;
+//					 }
+//					 if ( (c && e) || (e && p) || (c && p) ){
+//						 System.out.println(entry1.getKey());
+//					 }
+//					 i++;
+//				 	}
+//				 System.out.println("* END RECOMMENDATION FOR THIS PUBLICATION *");
+//				 }
+//			 end = System.nanoTime();
+			 
+			 for (Entry<String, List<String>> entry : recommendSimilar(tng).entrySet()){
+				 System.out.println("RECOMMENDATIONS FOR " + entry.getKey());
+				 int i = 1;
+				 for (String s : entry.getValue()){
+					 System.out.print(i + " - "  );
+					 System.out.println("  " + s );
+					 i++;
+				 }
+			 }
+			 System.out.println("Time for getting Recommendations based on topic distribution: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
+			 
+			 System.out.println( "_____________________________________________________________________________________" );
+			 System.out.println("TEST THE SIMILARITY RETRIEVAL METHOD");
+			 for (Entry<String, HashMap<List<String>, List<Double>>> entry : similarityResult(tng, 1).entrySet() ){
+				 System.out.println(entry.getKey() + " -------------------------------------");
+				 for (Entry<List<String>, List<Double>> d1 : entry.getValue().entrySet()){
+					 System.out.println(d1.getKey() + " -> " + d1.getValue());
+					 System.out.println();
+				 }
+			 }
 			// run the method to get topic proportions for each doc.
 			 printDocTopicprobs(tng, path, "Authors", "Trainer");
-			
-
-			System.out.println( "_____________________________________________________________________________________" );
 		
+			System.out.println( "_____________________________________________________________________________________" );
+			
 		}
 		catch ( Exception e )
 		{
@@ -422,7 +513,7 @@ public class Ngram
 			return h;
 		}
 
-	// function used to get the sorted words per topic
+	// used to get the sorted words per topic
 	public ArrayList<TreeSet<IDSorter>> getSortedWords( ParallelTopicModel m, int numTopics ){
 
 			ArrayList<TreeSet<IDSorter>> topicSortedWords = new ArrayList<TreeSet<IDSorter>>( numTopics );
@@ -454,5 +545,77 @@ public class Ngram
 
 			return topicSortedWords;
 		}
-
+	
+	// creates a hashmap <String, List<Double>> holding for each document, its distance with other documents (can be used later on for publications and authors)
+	// the second parameter is used to specify which similarity measurement will be used among Euclidian(0), Cosine(1), Pearson(2) 
+	public HashMap<String, HashMap<List<String>, List<Double>>> similarityResult (TopicalNGrams tng, int choise){
+		
+		HashMap<String, HashMap<List<String>, List<Double>>> distance = new HashMap<String, HashMap<List<String>, List<Double>>>();
+		 
+		similarityMeasures similarity = new similarityMeasures();
+		 for (Entry<String, List<Double>> entry : getDoumentTopicProportion(tng).entrySet()){
+			 List<String> name = new ArrayList<String>();
+			 int i=0;
+			 HashMap<List<String>, List<Double>> temp = new HashMap<List<String>, List<Double>>();
+			 double[] simcalc = new double[tng.ilist.size()];
+			 List<Double> sim = new ArrayList<Double>();
+			 for (Entry<String, List<Double>> entry1 : getDoumentTopicProportion(tng).entrySet()){
+				 
+				 switch (choise){
+				 case 0: {
+					 simcalc[i] = similarity.sqrtEuclidianSimilarity( entry.getValue(), entry1.getValue() );
+				 	}
+				 case 1: {
+					 simcalc[i] = similarity.cosineSimilarity( entry.getValue(), entry1.getValue() );
+				 	}
+				 case 2:{
+					 simcalc[i] = similarity.pearsonCorrelation( entry.getValue(), entry1.getValue() );
+					 }
+				 }
+				 sim.add( simcalc[i] );
+				 i++;
+				 name.add( entry1.getKey() );
+			 }
+			 temp.put( name, sim );
+			 distance.put( entry.getKey(), temp);
+		 }
+		return distance;
+	}
+	
+	// based on similarity results, we recommend most similar publications/authors 
+	// criteria for this is that a pub. is considered "similar" by at least two similarity measures 
+	public HashMap<String, List<String>> recommendSimilar(TopicalNGrams tng){
+		HashMap<String, List<String>> result = new HashMap<String, List<String>>();
+		similarityMeasures similarity = new similarityMeasures();
+		for (Entry<String, List<Double>> entry : getDoumentTopicProportion(tng).entrySet()){
+			List<String> recommend = new ArrayList<String>();
+			 double[] cos = new double[tng.ilist.size()];
+			 double[] euc = new double[tng.ilist.size()];
+			 double[] pea = new double[tng.ilist.size()];
+			 int i = 0;
+			 for (Entry<String, List<Double>> entry1 : getDoumentTopicProportion(tng).entrySet()){
+				 
+				 cos[i] = similarity.cosineSimilarity( entry.getValue(), entry1.getValue() );
+				 euc[i] = similarity.sqrtEuclidianSimilarity( entry.getValue(), entry1.getValue() );
+				 pea[i] = similarity.pearsonCorrelation( entry.getValue(), entry1.getValue() );
+				 boolean c = false, e = false ,p = false;
+				 if (cos[i] > 0.5 && cos[i] < 1.0){
+					 c = true;
+				 }
+				 if (euc[i] < 0.6 && euc[i] >= 0){
+					 e = true;
+				 }
+				 if (pea[i] > 0.5 && pea[i] < 1.0){
+					 p = true;
+				 }
+				 if ( (c && e) || (e && p) || (c && p) ){
+					 recommend.add( entry1.getKey() );
+				 }
+				 i++;
+			 	}
+			 result.put( entry.getKey(), recommend );
+			 
+			 }
+		return result;
+	}
 }
