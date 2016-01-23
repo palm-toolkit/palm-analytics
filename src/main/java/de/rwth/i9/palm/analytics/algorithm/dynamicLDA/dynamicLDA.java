@@ -61,16 +61,51 @@ public class dynamicLDA
 			
 			ParallelTopicModel years = createModel(path, "Years",10 , 5);
 			
+//			System.out.println(years.alphabet);
+
 			TemporalTopicModel tot = new TemporalTopicModel();
-			int[][] trial = new int[10][10];
-			for(int i = 0; i<10;i++){
-				for (int j =0; j<10; j++){
-					trial[i][j] = (int)(Math.random() * 10);
-				}
-			}
-			tot.addInstances( trial, generateTimestamps(11), years.data.size(), 10 );
-			tot.run(100);
+			int[][] trial = new int[years.data.size()][];
+			trial = wordIndicesperDocument(years);
+//			for(int i = 0; i<trial.length;i++){
+//				for (int j =0; j<trial[i].length; j++){
+//					System.out.print(trial[i][j] + " ");
+//				}
+//				System.out.println();
+//			}
 			
+			
+			double[] timestamp = {0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.99};
+			tot.addInstances( trial, timestamp, years.alphabet.size(), 10 );
+			tot.run(10);
+			double[][] tria1 = new double[10][];
+			tria1 = tot.betaDistrByTopic;
+			
+			System.out.println(" BETA ------------");
+			for(int i = 0; i<tria1.length;i++){
+			for (int j =0; j<tria1[i].length; j++){
+				System.out.print(tria1[i][j] + " ");
+			}
+			System.out.println();
+		}
+			
+			
+			double [][] theta = tot.getTheta();
+			for(int i = 0; i<theta.length;i++){
+				for (int j =0; j<theta[i].length; j++){
+					System.out.print(theta[i][j] + " ");
+				}
+				System.out.println();
+			}
+			
+			double[] time = new double[timestamp.length];
+			for (int k = 0; k<10; k++){
+				time = tot.getTimeStamps( k );
+				System.out.println("Timestamps for topic - " + (k + 1) );
+				for (double s : time){
+					System.out.print(s + " ");
+				}
+				System.out.println("");
+			}
 			//System.out.print((toksperdoc.get(1).split( "\n" )[4]).split( " " )[1] + " " + (toksperdoc.get(1).split( "\n" )[5]).split( " " )[1]);
 			//System.out.println();
 //			int[][] matrix = new int[years.data.size()][years.getAlphabet().size()];
@@ -106,7 +141,7 @@ public class dynamicLDA
 //				}'
 //				System.out.println("");
 //			}
-//			
+			
 //			double[][] c = getTopicProbabilityAll(years);
 //			for (int m = 0; m < years.data.size(); m++){
 //				for (int n =0; n < years.numTopics; n++){
@@ -161,7 +196,7 @@ public class dynamicLDA
 //				}
 //				System.out.println();
 //			}
-//			
+			
 			// USE THE METHOD Below to get the data (call directly the create
 			// model method ;)
 			// importData importer = new importData();
@@ -722,7 +757,7 @@ public class dynamicLDA
 		List<String> toksperdoc = new ArrayList<String>();
 		List<String[]> toksperdocArray = new ArrayList<String[]>();
 		List<String[]> tokens = new ArrayList<String[]>();
-		int[][] termfreq = new int[m.data.size()][m.alphabet.size()];
+		int[][] termfreq = new int[m.data.size()][];
 		
 		// get the alphabet as a List<String>
 		for (Object o : m.getAlphabet().toArray())
@@ -743,12 +778,15 @@ public class dynamicLDA
 
 		// generate the matrix with term frequency for each document
 		for (int i=0; i < m.data.size(); i++){
-			for (int j= 0; j< tokens.get( i ).length; j++){
+			termfreq[i] = new int[tokens.get( i ).length];
+			int j = 0;
+			for (j= 0; j< termfreq[i].length; j++){
 				if (alphabet.indexOf( tokens.get( i )[j] ) != -1)
 					termfreq[i][alphabet.indexOf( tokens.get( i )[j] )]++;
+				else
+					termfreq[i][alphabet.indexOf( tokens.get( i )[j] )] = 0;
 			}
 		}
-		
 		return termfreq;
 	}
 	
@@ -757,9 +795,46 @@ public class dynamicLDA
 	public double[] generateTimestamps(int range){
 		double[] timest = new double[range];
 		for(int i=0; i<timest.length; i++){
-			timest[i] = i/range;
+			timest[i] = (double) i/range;
 		}
 		return timest;
+	}
+	
+	// create the input for documents 
+	// a int[][] containing the indices of words found in the document
+	public int[][] wordIndicesperDocument(ParallelTopicModel m){
+		int[][] documents = new int[m.data.size()][];
+		List<String> alphabet = new ArrayList<String>();
+		List<String> toksperdoc = new ArrayList<String>();
+		List<String[]> toksperdocArray = new ArrayList<String[]>();
+		List<String[]> tokens = new ArrayList<String[]>();
 		
+		// get the alphabet as a List<String>
+		for (Object o : m.getAlphabet().toArray())
+			alphabet.add( o.toString() );
+		for (int i = 0; i < m.data.size(); i++)
+			toksperdoc.add( (String) m.data.get(i).instance.getData().toString() );
+		for (String s : toksperdoc)
+			toksperdocArray.add( s.split( "\n" ) );		
+		
+		// tokens as terms per document in an array for each document 
+		for (int i=0; i < toksperdocArray.size(); i++){
+			String[] temporal = new String[toksperdocArray.get(i).length];
+			for (int j=0; j< toksperdocArray.get(i).length; j++){
+				temporal[j] = (toksperdocArray.get( i )[j]).split(" ")[1];
+			}
+			tokens.add( temporal );
+		}
+
+		// generate the matrix with term frequency for each document
+		for (int i=0; i < m.data.size(); i++){
+			documents[i] = new int[tokens.get( i ).length];
+			for (int j= 0; j< tokens.get( i ).length; j++){
+				if (alphabet.indexOf( tokens.get( i )[j] ) != -1)
+					documents[i][j] = alphabet.indexOf( tokens.get( i )[j] );
+			}
+		}
+			
+		return documents;
 	}
 }

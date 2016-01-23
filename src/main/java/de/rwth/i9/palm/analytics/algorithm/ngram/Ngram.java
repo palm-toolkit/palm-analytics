@@ -11,9 +11,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeSet;
@@ -24,43 +22,21 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import cc.mallet.topics.MarginalProbEstimator;
-import cc.mallet.topics.TopicInferencer;
 import cc.mallet.topics.ParallelTopicModel;
-import cc.mallet.types.Alphabet;
-import cc.mallet.types.AugmentableFeatureVector;
-import cc.mallet.types.FeatureSequenceWithBigrams;
 import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
 import cc.mallet.util.Randoms;
-import de.rwth.i9.palm.analytics.algorithm.lda.importData;
 import de.rwth.i9.palm.analytics.config.AppConfig;
 
 @RunWith( SpringJUnit4ClassRunner.class )
 @ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
-public class Ngram
+public class Ngram implements NGrams
 {
-	public TopicalNGrams model;
-	public Ngram(){
-		try
-		{
-			TopicalNGrams tng = createModel( "C:/Users/Piro/Desktop/", "Authors", "Trainer", 100);
-			model = tng;
-		}
-		catch ( IOException e )
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		
-	}
 	
 	@Test
 	public void test() throws Exception
 	{	
-		
-
 		
 		try{
 
@@ -198,7 +174,7 @@ public class Ngram
 			 printDocTopicprobs(tng, path, "Authors", "Trainer");
 		
 			System.out.println( "_____________________________________________________________________________________" );
-			
+
 		}
 		catch ( Exception e )
 		{

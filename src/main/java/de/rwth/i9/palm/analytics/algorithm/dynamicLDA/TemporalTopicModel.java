@@ -17,17 +17,13 @@ public class TemporalTopicModel
 	 * Notes on the implementations as at
 	 * http://comments.gmane.org/gmane.comp.ai.mallet.devel/1669
 	 * 
-	 * 
-	 * @author arnim.bleier@gmail.com
-	 * @date 2014
-	 * 
 	 */
 
 	public int[][] countTerm_Topic, countDoc_Topic;
 	public int K, V;
 	public int[] numOfWordsByTopic;
 	public int[][] documents;
-	public double alpha = 1.5, beta = 0.5;
+	public double alpha = 1.5, beta = 0.1;
 	public int[][] z; // topic assigned to the ith token/term in the document d 
 	public double[][] betaDistrByTopic;
 	private double[] timeStamps;
@@ -79,7 +75,7 @@ public class TemporalTopicModel
 			double[] tProb = new double[K]; // vector of topic probabilities for each timestamp 
 			for ( int d = 0; d < documents.length; d++ )
 			{
-				System.out.println("Data for document : " + d+1 );
+				System.out.println("Data for document : " + d );
 				for ( k = 0; k < K; k++ ){
 					tProb[k] = ( ( Math.pow( 1 - timeStamps[d], betaDistrByTopic[k][0] - 1 ) * Math.pow( timeStamps[d], betaDistrByTopic[k][1] - 1 ) ) / beta( betaDistrByTopic[k][0], betaDistrByTopic[k][1] ) );
 					System.out.println(tProb[k]);
@@ -92,12 +88,10 @@ public class TemporalTopicModel
 					countTerm_Topic[documents[d][i]][topic]--;
 					countDoc_Topic[d][topic]--;
 					numOfWordsByTopic[topic]--;
-					System.out.println("Sometthing regarding p[k]");
 					for ( k = 0; k < K; k++ )
 					{
 						pSum += ( countDoc_Topic[d][k] + alpha ) * ( ( countTerm_Topic[documents[d][i]][k] + beta ) / ( numOfWordsByTopic[k] + V * beta ) ) * tProb[k];
 						p[k] = pSum;
-						System.out.println(p[k]);
 					}
 
 					u = Math.random() * pSum;
@@ -161,6 +155,7 @@ public class TemporalTopicModel
 
 	/*
 	 * Calculate the theta parameter for the model 
+	 * It represents the multinomial topic distribution for each document  
 	 */
 	public double[][] getTheta() {
         double[][] theta = new double[documents.length][K];

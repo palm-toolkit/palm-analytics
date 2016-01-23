@@ -1,0 +1,206 @@
+package de.rwth.i9.palm.analytics.algorithm.ngram;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeSet;
+import cc.mallet.topics.ParallelTopicModel;
+import cc.mallet.types.IDSorter;
+import cc.mallet.types.InstanceList;
+
+public interface NGrams
+{
+	/**
+	 * 
+	 * @param path
+	 * @param purpose
+	 * @param specify
+	 * @return
+	 * @throws IOException
+	 */
+	public InstanceList getInstanceData( String path, String purpose, String specify ) throws IOException;
+	
+	
+	/**
+	 * 
+	 * @param numTopics
+	 * @return
+	 */
+	public TopicalNGrams setNumberTopics( int numTopics );
+	
+	/**
+	 * 
+	 * @param m
+	 * @return
+	 */
+	public int getNumTopics( TopicalNGrams m );
+
+	/**
+	 * 
+	 * @param path
+	 * @param purpose
+	 * @param specify
+	 * @param numTopics
+	 * @return
+	 * @throws IOException
+	 */
+	public TopicalNGrams createModel(String path, String purpose, String specify, int numTopics) throws IOException;
+
+	/**
+	 * 
+	 * @param m
+	 * @param path
+	 * @param purpose
+	 * @param specify
+	 */
+	public void printDocTopicprobs(TopicalNGrams m,String path, String purpose, String specify);
+		
+	/**
+	 *  
+	 * @param m
+	 * @param threshold
+	 * @param max
+	 * @param weight
+	 * @return
+	 */
+	public String[] getStringDocumentTopicIndex (TopicalNGrams m, double threshold, int max, boolean weight);
+	
+	/**
+	 *  
+	 * @param m
+	 * @param threshold
+	 * @param max
+	 * @param weight
+	 * @return
+	 */
+	public List<String> getListDocumentTopicIndex (TopicalNGrams m, double threshold, int max, boolean weight);
+	
+	/**
+	 * 
+	 * @param m
+	 * @return
+	 */
+	public HashMap<String, List<Double>> getDoumentTopicProportion(TopicalNGrams m);
+	
+	/**
+	 * 
+	 * @param m
+	 * @param nwords
+	 * @param weight
+	 * @return
+	 */
+	public String[] getStringTopicsUnigrams (TopicalNGrams m, int nwords, boolean weight);
+
+	/**
+	 * 
+	 * @param m
+	 * @param nwords
+	 * @param weight
+	 * @return
+	 */
+	public List<String> getListTopicsUnigrams (TopicalNGrams m, int nwords, boolean weight);
+	
+	/**
+	 *  
+	 * @param m
+	 * @param nwords
+	 * @param weight
+	 * @return
+	 */
+	public String[] getStringTopicsNgrams (TopicalNGrams m, int nwords, boolean weight);
+
+	/**
+	 * 
+	 * @param m
+	 * @param nwords
+	 * @param weight
+	 * @return
+	 */
+	public List<String> getListTopicsNgrams (TopicalNGrams m, int nwords, boolean weight);	
+		
+	/**
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public  File createTempDirectory() throws IOException;
+
+	/**
+	 * 
+	 * @param path
+	 * @param purpose
+	 */
+	public void getRandomTrainerFiles(String path, String purpose);
+
+	/**
+	 * 
+	 * @param path
+	 * @param purpose
+	 * @param specify
+	 * @throws IOException
+	 */
+	public void DocTopicMapper(String path, String purpose, String specify) throws IOException;
+		
+	/**
+	 *  
+	 * @param m
+	 * @param docID
+	 * @param max
+	 * @param threshold
+	 * @param numTopics
+	 * @param numWords
+	 * @param weight
+	 * @return
+	 */
+	public HashMap<String, List<String>> getTopicNgramsDocument( TopicalNGrams m, int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
+
+	/**
+	 *  
+	 * @param m
+	 * @param docID
+	 * @param max
+	 * @param threshold
+	 * @param numTopics
+	 * @param numWords
+	 * @param weight
+	 * @return
+	 */
+	public HashMap<String,  List<String>> getTopicUnigramsDocument( TopicalNGrams m, int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
+	
+	/**
+	 * 
+	 * @param m
+	 * @param docID
+	 * @param max
+	 * @param threshold
+	 * @param numTopics
+	 * @return
+	 */
+	public HashMap<String, List<String>> getAllDocumentTopics( ParallelTopicModel m, int docID, int max, double threshold, int numTopics );
+	
+	/**
+	 * 
+	 * @param m
+	 * @param numTopics
+	 * @return
+	 */
+	public ArrayList<TreeSet<IDSorter>> getSortedWords( ParallelTopicModel m, int numTopics );
+	
+	/**
+	 * 
+	 * @param tng
+	 * @param choise
+	 * @return
+	 */
+	public HashMap<String, HashMap<List<String>, List<Double>>> similarityResult (TopicalNGrams tng, int choise);
+	
+	/**
+	 *  
+	 * @param tng
+	 * @return
+	 */
+	public HashMap<String, List<String>> recommendSimilar(TopicalNGrams tng);
+
+}
