@@ -1,4 +1,9 @@
 package de.rwth.i9.palm.analytics.algorithm.dynamicLDA;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import org.apache.commons.math3.special.Beta;
@@ -17,6 +22,8 @@ public class TemporalTopicModel
 	 * Notes on the implementations as at
 	 * http://comments.gmane.org/gmane.comp.ai.mallet.devel/1669
 	 * 
+	 * Author: Arnim Bleir
+	 * Author: Piro Lena - updated "Estimate Beta parameters", Phi, Theta 
 	 */
 
 	public int[][] countTerm_Topic, countDoc_Topic;
@@ -27,6 +34,7 @@ public class TemporalTopicModel
 	public int[][] z; // topic assigned to the ith token/term in the document d 
 	public double[][] betaDistrByTopic;
 	private double[] timeStamps;
+	//public double[][] psmth;
 
 	// get the number of topics by using mallet ( getTopic number)
 	// get the length of documents by using mallet -> DocumentLengths
@@ -46,6 +54,7 @@ public class TemporalTopicModel
 		countTerm_Topic = new int[sizeOfVocabulary][K];		// countTerm_Topic (VxK) - terms in each of the topics 
 		countDoc_Topic = new int[documents.length][K];		// countDoc_Topic ( N.docs x K) - topic appearance in all documents 
 		numOfWordsByTopic = new int[K];		//  number of words for each of the K topics 
+		//psmth = new double[documentsInput.length][numOfTopics];
 		for ( int m = 0; m < documents.length; m++ )		// 
 		{
 			z[m] = new int[documents[m].length];
@@ -70,16 +79,15 @@ public class TemporalTopicModel
 		{
 			System.out.format( "iter: %04d\n", iter );
 			double[] p;
+			double[] pcopy = new double[K];
 			double pSum = 0.0, u;
 			int topic, i, k;
 			double[] tProb = new double[K]; // vector of topic probabilities for each timestamp 
 			for ( int d = 0; d < documents.length; d++ )
 			{
-				System.out.println("Data for document : " + d );
 				for ( k = 0; k < K; k++ ){
 					tProb[k] = ( ( Math.pow( 1 - timeStamps[d], betaDistrByTopic[k][0] - 1 ) * Math.pow( timeStamps[d], betaDistrByTopic[k][1] - 1 ) ) / beta( betaDistrByTopic[k][0], betaDistrByTopic[k][1] ) );
-					System.out.println(tProb[k]);
-				}
+				}	
 					for ( i = 0; i < documents[d].length; i++ )
 				{
 					p = new double[K];
@@ -93,7 +101,8 @@ public class TemporalTopicModel
 						pSum += ( countDoc_Topic[d][k] + alpha ) * ( ( countTerm_Topic[documents[d][i]][k] + beta ) / ( numOfWordsByTopic[k] + V * beta ) ) * tProb[k];
 						p[k] = pSum;
 					}
-
+					pcopy = tProb.clone();
+					
 					u = Math.random() * pSum;
 					for ( topic = 0; topic < K - 1; topic++ )
 						if ( u < p[topic] )
@@ -104,7 +113,11 @@ public class TemporalTopicModel
 					numOfWordsByTopic[topic]++;
 					z[d][i] = topic;
 				}
-				
+					
+					
+//					for ( k = 0; k < K; k++ ){
+//						psmth[d][k] = pcopy[k];
+//					}
 			}
 			
 			for ( k = 0; k < K; k++ )
@@ -179,5 +192,50 @@ public class TemporalTopicModel
             }
         }
         return phi;
+    }
+    
+	/*
+	 * return indicies of the words for each topic ordered by their probability 
+	 * of appearance in that toppic
+	 */
+	public Integer[][] sortedIndicesperTopic( double[][] phi )
+	{
+		Integer[][] indexes  = new Integer[phi.length][phi[0].length];
+		for (int i=0; i < phi.length; i++){
+			arrayIndexComparator comparator = new arrayIndexComparator(getDouble(phi[i]));
+			indexes[i] = comparator.createIndexArray();
+			Arrays.sort(indexes[i], comparator);
+		}
+		return indexes;
+	}
+
+	/*
+	 * Convert from double to Double
+	 */
+	public  Double[] getDouble(double[] array){
+		Double[] d = new Double[array.length];
+		int i = 0;
+		for (double arr : array)
+			d[i++] = arr;
+		return d;
+	}
+	
+	public  Integer[] getInteger(int[] array){
+		Integer[] d = new Integer[array.length];
+		int i = 0;
+		for (int arr : array)
+			d[i++] = arr;
+		return d;
+	}
+	
+	/*
+	 * Eliminate duplicates to from an array
+	 */
+	public static String[] removeDuplicate(String[] words) {
+        Set<String> wordSet = new LinkedHashSet<String>();
+        for (String word : words) {
+            wordSet.add(word);
+        }
+        return wordSet.toArray(new String[wordSet.size()]);
     }
 }

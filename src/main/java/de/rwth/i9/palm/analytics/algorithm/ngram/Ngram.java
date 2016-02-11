@@ -29,8 +29,8 @@ import cc.mallet.types.LabelSequence;
 import cc.mallet.util.Randoms;
 import de.rwth.i9.palm.analytics.config.AppConfig;
 
-@RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
+//@RunWith( SpringJUnit4ClassRunner.class )
+//@ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
 public class Ngram implements NGrams
 {
 	
@@ -103,12 +103,12 @@ public class Ngram implements NGrams
 			 for (Entry<String, List<Double>> entry : getDoumentTopicProportion(tng).entrySet()){
 				 System.out.println((entry.getKey())); 
 				 System.out.println(" **** ");
+				 int i =0;
 				 for (Double z : entry.getValue()){
 					 System.out.println(z);
 				 	}
 				 }
 			end = System.nanoTime();
-			System.out.println("Time for getting all unordered Topics and corresponding proportions: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
 			
 //			 start = System.nanoTime();
 //			 System.out.println( "________________________TEST FOR SIMILARITY MEASUREMENTS AND RECOMMENDED PUBLICATIONS __________________________" );

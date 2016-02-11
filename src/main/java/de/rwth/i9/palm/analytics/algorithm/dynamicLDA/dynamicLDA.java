@@ -6,41 +6,28 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeSet;
-import java.util.Map.Entry;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-
 import cc.mallet.topics.MarginalProbEstimator;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
-import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.IDSorter;
-import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
-import cc.mallet.util.MalletLogger;
 import de.rwth.i9.palm.analytics.algorithm.lda.importData;
-import de.rwth.i9.palm.analytics.config.AppConfig;
 
-@RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
+//@RunWith( SpringJUnit4ClassRunner.class )
+//@ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
 public class dynamicLDA
 {
 	@Test
@@ -59,37 +46,40 @@ public class dynamicLDA
 		
 			String path = "C:/Users/Piro/Desktop/";
 			
-			ParallelTopicModel years = createModel(path, "Years",10 , 5);
-			
-//			System.out.println(years.alphabet);
+			// Temporal Topic Modeling 
+			ParallelTopicModel years = createModel(path, "Years",5 , 5);
 
 			TemporalTopicModel tot = new TemporalTopicModel();
 			int[][] trial = new int[years.data.size()][];
 			trial = wordIndicesperDocument(years);
-//			for(int i = 0; i<trial.length;i++){
-//				for (int j =0; j<trial[i].length; j++){
-//					System.out.print(trial[i][j] + " ");
-//				}
-//				System.out.println();
-//			}
+			for(int i = 0; i<trial.length;i++){
+				for (int j =0; j<trial[i].length; j++){
+					System.out.print(trial[i][j] + " ");
+				}
+				System.out.println();
+			}
 			
 			
-			double[] timestamp = {0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.99};
-			tot.addInstances( trial, timestamp, years.alphabet.size(), 10 );
-			tot.run(10);
-			double[][] tria1 = new double[10][];
-			tria1 = tot.betaDistrByTopic;
+			double[] timestamp = generateTimestamps(years.data.size(), 11);
+			tot.addInstances( trial, timestamp, years.alphabet.size(), 5 );
+			tot.run(30);
+			
+			
+			double[][] beta = new double[10][];
+			beta = tot.betaDistrByTopic;
 			
 			System.out.println(" BETA ------------");
-			for(int i = 0; i<tria1.length;i++){
-			for (int j =0; j<tria1[i].length; j++){
-				System.out.print(tria1[i][j] + " ");
+			for(int i = 0; i<beta.length;i++){
+				for (int j =0; j<beta[i].length; j++){
+					System.out.print(beta[i][j] + " ");
 			}
 			System.out.println();
 		}
 			
 			
-			double [][] theta = tot.getTheta();
+			double [][] theta = new double[years.data.size()][tot.K];
+			theta = tot.getTheta();
+			System.out.println(" THETA ------------");
 			for(int i = 0; i<theta.length;i++){
 				for (int j =0; j<theta[i].length; j++){
 					System.out.print(theta[i][j] + " ");
@@ -97,15 +87,69 @@ public class dynamicLDA
 				System.out.println();
 			}
 			
-			double[] time = new double[timestamp.length];
-			for (int k = 0; k<10; k++){
-				time = tot.getTimeStamps( k );
-				System.out.println("Timestamps for topic - " + (k + 1) );
-				for (double s : time){
-					System.out.print(s + " ");
+			double [][] phi = new double[tot.K][years.alphabet.size()];
+			phi = tot.getPhi();
+			System.out.println(" PHI ------------");
+			for(int i = 0; i<phi.length;i++){
+				for (int j =0; j<phi[i].length; j++){
+					System.out.print(phi[i][j] + " ");
 				}
-				System.out.println("");
+				System.out.println();
 			}
+			
+			
+			String indexes[][] = getWordsperTopic(years, tot);
+			System.out.println("ALL WORDS ------------");
+			for(int i = 0; i< indexes.length;i++){
+				for (int j =0; j< indexes[i].length; j++){
+					System.out.print(indexes[i][j] + " ");
+				}
+				System.out.println();
+			}
+			
+			String x[][] = getTopWordsperTopic(years, tot, 10);
+			System.out.println(" TOP WORDS ------------");
+			for(int i = 0; i< x.length;i++){
+				for (int j =0; j< 10; j++){
+					System.out.print(x[i][j] + " ");
+				}
+				System.out.println();
+			}
+			System.out.println("-----");
+			for (Entry<String, List<String>> entry : getTopWordperTopic(years, tot, 10).entrySet()){
+				System.out.print(entry.getKey());
+				for (String list: entry.getValue())
+					System.out.print(" " + list + " ");
+				System.out.println();
+			}
+			
+			
+			for (Entry<Integer, List<Double>> entry : getTopicDistribution(tot).entrySet()){
+				System.out.print(entry.getKey());
+				for (Double list: entry.getValue())
+					System.out.print(" " + list + " ");
+				System.out.println();
+			}
+			
+			
+			for (Entry<String, List<Double>> entry : TopicEvolution(tot).entrySet()){
+				System.out.print(entry.getKey());
+				for (Double list: entry.getValue())
+					System.out.print(" " + list + " ");
+				System.out.println();
+			}
+			
+			
+			
+//			double[] time = new double[timestamp.length];
+//			for (int k = 0; k<10; k++){
+//				time = tot.getTimeStamps( k );
+//				System.out.println("Timestamps for topic - " + (k + 1) );
+//				for (double s : time){
+//					System.out.print(s + " ");
+//				}
+//				System.out.println("");
+//			}
 			//System.out.print((toksperdoc.get(1).split( "\n" )[4]).split( " " )[1] + " " + (toksperdoc.get(1).split( "\n" )[5]).split( " " )[1]);
 			//System.out.println();
 //			int[][] matrix = new int[years.data.size()][years.getAlphabet().size()];
@@ -282,6 +326,10 @@ public class dynamicLDA
 		}
 	}
 
+	/*
+	 * METHODS USED FOR DISCRETE TIME DYNAMIC TOPIC MODEL
+	 */
+	
 	// purpose - {Authors, Publications, Conferences, Years}
 	// specify - {Trainer, Infer}
 	public InstanceList getInstanceData( String path, String purpose )
@@ -790,14 +838,26 @@ public class dynamicLDA
 		return termfreq;
 	}
 	
+	/*
+	 * METHODS USED ON TOPIC OVER TIME MODEL 
+	 */
 	// create timestamps vector 
 	// range has to be: 7-weeks, 30-months, 4-quarters, x-years
-	public double[] generateTimestamps(int range){
+	public double[] generateTimestamps(int ndocs, int range){
 		double[] timest = new double[range];
-		for(int i=0; i<timest.length; i++){
-			timest[i] = (double) i/range;
+		double[] result = new double[ndocs];
+		for (int i=0; i < result.length; i++)
+			result[i] = 0.0;
+		
+		timest[0] = 0.01;
+		timest[range-1] = 0.99;
+		for(int i=1; i< range - 1 ; i++){
+			timest[i] = timest[i-1] + (double) 1/range;
 		}
-		return timest;
+		for(int i=0; i < ndocs; i++){
+			result[i] = timest[(int) Math.random()*10];
+		}
+		return result;
 	}
 	
 	// create the input for documents 
@@ -834,7 +894,93 @@ public class dynamicLDA
 					documents[i][j] = alphabet.indexOf( tokens.get( i )[j] );
 			}
 		}
-			
 		return documents;
+	}
+	
+	
+	// Method used to get the list of significant words per topic
+	public String[][] getWordsperTopic (ParallelTopicModel m, TemporalTopicModel t){
+		String[][] words = new String[t.K][t.V];
+		List<String> alphabet = new ArrayList<String>();
+		Integer[][] indices = t.sortedIndicesperTopic(t.getPhi());
+		
+		for (Object o : m.getAlphabet().toArray())
+			alphabet.add( o.toString() );
+
+		for (int i=0; i< indices.length; i++){
+			for (int j=0; j<indices[i].length; j++){
+				words[i][j] = alphabet.get(indices[i][j]);
+			}
+		}
+		return words;
+	}
+	
+	// Method used to return the top words per topic
+	public String[][] getTopWordsperTopic (ParallelTopicModel m, TemporalTopicModel t,int nwords){
+		String[][] topwords = new String[t.K][nwords];
+		String[][] words = getWordsperTopic(m,t);
+		for (int i=0; i < words.length; i++){
+			int count=0;
+			for (int j= words[i].length - nwords; j< words[i].length; j++){
+				topwords[i][count++] = words[i][j];
+			}
+		}
+		return topwords;
+	}
+	
+	// Method used to return the top words per topic
+	public LinkedHashMap<String, List<String>> getTopWordperTopic(ParallelTopicModel m, TemporalTopicModel t, int nwords){
+		LinkedHashMap<String, List<String>> words = new LinkedHashMap<>();
+		String[][] wordresult = getTopWordsperTopic(m,t,nwords);
+		for (int i =0; i< wordresult.length; i++){
+			List<String> wordlist = new ArrayList<>();
+			for (int j=0; j < wordresult[i].length; j++){
+				wordlist.add( wordresult[i][j]);
+			}
+			words.put( "Topic " +i, wordlist );
+		}
+		return words;
+	}
+	
+	// Method used to return the topic distribution for each year
+	public LinkedHashMap<Integer, List<Double>> getTopicDistribution(TemporalTopicModel t){
+		LinkedHashMap<Integer, List<Double>> words = new LinkedHashMap<>();
+		double[][] topicresult = t.getTheta();
+		for (int i =0; i< topicresult.length; i++){
+			List<Double> wordlist = new ArrayList<>();
+			for (int j=0; j < topicresult[i].length; j++){
+				wordlist.add( topicresult[i][j]);
+			}
+			words.put(i + 2005, wordlist );
+		}
+		return words;
+	}
+	
+	// Method used to return the topic evolution over years
+	public LinkedHashMap<String, List<Double>> TopicEvolution(TemporalTopicModel t){
+		LinkedHashMap<String, List<Double>> evolution = new LinkedHashMap<>();
+		double[][] topicresult = transposeMatrix(t.getTheta());
+		for (int i =0; i< topicresult.length; i++){
+			List<Double> wordlist = new ArrayList<>();
+			for (int j=0; j < topicresult[i].length; j++){
+				wordlist.add( topicresult[i][j]);
+			}
+			evolution.put("Topic" + i, wordlist );
+		}
+		return evolution;
+	}
+	
+	// method used to facilitate the above method of TopicEvolution
+	private double[][] transposeMatrix( double[][] theta )
+	{
+		double[][] result = new double[theta[0].length][theta.length];
+		int j =0;
+		while( j < theta[0].length){
+			for (int i=0; i< theta.length; i++){
+				result[j][i] = theta[i][j];
+			}
+			j++;
+		}
+		return result;
 	}
 }
