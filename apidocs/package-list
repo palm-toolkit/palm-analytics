@@ -1,0 +1,9 @@
+de.rwth.i9.palm.analytics.algorithm.corephrase
+de.rwth.i9.palm.analytics.algorithm.cvalue
+de.rwth.i9.palm.analytics.algorithm.lda
+de.rwth.i9.palm.analytics.api
+de.rwth.i9.palm.analytics.config
+de.rwth.i9.palm.analytics.opennlp
+de.rwth.i9.palm.analytics.service
+de.rwth.i9.palm.analytics.textcompare
+de.rwth.i9.palm.analytics.util
