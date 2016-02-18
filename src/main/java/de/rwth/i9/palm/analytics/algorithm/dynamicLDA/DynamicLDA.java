@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,7 +16,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeSet;
+
 import org.junit.Test;
+
 import cc.mallet.topics.MarginalProbEstimator;
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.IDSorter;
@@ -27,9 +28,9 @@ import de.rwth.i9.palm.analytics.algorithm.lda.importData;
 
 //@RunWith( SpringJUnit4ClassRunner.class )
 //@ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
-public class dynamicLDA implements dynamicTopicModel
+public class DynamicLDA implements DynamicTopicModel
 {	
-	public String path = "C:/Users/Piro/Desktop/";
+	public String path = "C:\\Users\\nifry\\Desktop\\Years\\";
 	public ParallelTopicModel years = createModel(path, "Years", 5 , 10);
 	public TemporalTopicModel tot;
 	
@@ -362,10 +363,10 @@ public class dynamicLDA implements dynamicTopicModel
 	}
 	
 	// similar to the above method, but with List as an output
-	public List<String> getListTopics ( int nwords)
+	public List<String> getListTopics( ParallelTopicModel m, int nwords )
 	{
 		List<String> listtopics = new ArrayList<String>();
-		String[] topics = years.displayTopWords( nwords, false ).split( "\n" );
+		String[] topics = m.displayTopWords( nwords, false ).split( "\n" );
 		for (String topic : topics){
 			listtopics.add( topic );
 		}
@@ -375,14 +376,14 @@ public class dynamicLDA implements dynamicTopicModel
 	public HashMap<String, String[]> getlistTopics( int numTopics, int numWords )
 	{
 		HashMap<String, String[]> topics = new HashMap<String, String[]>();
-		for (int i =0; i< getListTopics(numWords).size(); i++){
-			topics.put("Topic" + i, (getListTopics(numWords).get( i ).split(" ")));
-		}
+//		for (int i =0; i< getListTopics(numWords).size(); i++){
+//			topics.put("Topic" + i, (getListTopics(numWords).get( i ).split(" ")));
+//		}
 		return topics;
 	}
 
 	// get the topic proportion per instance (in this case one instance corresponds to a specific timestamp [year])
-	public HashMap<Integer, Double> getTopicProportion( double threshold, int docID, int max, int numTopics )
+	public HashMap<Integer, Double> getTopicProportion( ParallelTopicModel m, double threshold, int docID, int max, int numTopics )
 	{
 		HashMap<Integer, Double> topics = new HashMap<Integer, Double>();
 		int[] topicCounts = new int[numTopics];
@@ -400,7 +401,7 @@ public class dynamicLDA implements dynamicTopicModel
 			max = numTopics;
 		}
 
-		LabelSequence topicSequence = (LabelSequence) years.data.get( docID ).topicSequence;
+		LabelSequence topicSequence = (LabelSequence) m.data.get( docID ).topicSequence;
 		int[] currentDocTopics = topicSequence.getFeatures();
 		docLen = currentDocTopics.length;
 
@@ -413,7 +414,7 @@ public class dynamicLDA implements dynamicTopicModel
 		// And normalize
 		for ( int topic = 0; topic < numTopics; topic++ )
 		{
-			sortedTopics[topic].set( topic, ( years.alpha[topic] + topicCounts[topic] ) / ( docLen + years.alphaSum ) );
+			sortedTopics[topic].set( topic, ( m.alpha[topic] + topicCounts[topic] ) / ( docLen + m.alphaSum ) );
 		}
 
 		Arrays.sort( sortedTopics );
@@ -430,14 +431,17 @@ public class dynamicLDA implements dynamicTopicModel
 	}
 	
 	// get the document topic proportions in the form of <DocID, List<Double>>
-	public LinkedHashMap <String, List<Double>> getTopicDistributionforDocuments(double threshold, int max, int numTopics){
+	public LinkedHashMap<String, List<Double>> getTopicDistributionforDocuments( ParallelTopicModel m, double threshold, int max, int numTopics )
+	{
 		LinkedHashMap<String, List<Double>> topicdist = new LinkedHashMap<String, List<Double>>();
-		for (int i=0; i< years.data.size(); i++){
+		for ( int i = 0; i < m.data.size(); i++ )
+		{
 			List<Double> proportions = new ArrayList<Double>();
-			for (Entry<Integer, Double> entry : getTopicProportion(threshold, i, max, numTopics).entrySet()){
+			for ( Entry<Integer, Double> entry : getTopicProportion( m, threshold, i, max, numTopics ).entrySet() )
+			{
 				proportions.add( entry.getValue());
 				}
-			topicdist.put( ((years.data.get( i ).instance.getName() + "").split( "/" )[7]).replaceAll(".txt",""), proportions );
+			topicdist.put( ( ( m.data.get( i ).instance.getName() + "" ).split( "/" )[7] ).replaceAll( ".txt", "" ), proportions );
 		}
 		
 		return topicdist;
@@ -487,17 +491,17 @@ public class dynamicLDA implements dynamicTopicModel
 	{
 		LinkedHashMap<String, String> toptopic = new LinkedHashMap<String, String>();
 		int maxindex = -1;
-		List<String> topics = getListTopics(numWords);
-		for (Entry<String, List<Double>> entry : getTopicDistributionforDocuments(threshold, max, numTopics).entrySet()){
-			Double tempmax = -1.0;
-			for (int i=0; i< entry.getValue().size(); i++){
-				if (entry.getValue().get( i ) > tempmax){
-					tempmax = entry.getValue().get( i );
-					maxindex = i;
-				}
-			}
-		toptopic.put( entry.getKey(), topics.get( maxindex ) );
-		}
+//		List<String> topics = getListTopics(numWords);
+//		for (Entry<String, List<Double>> entry : getTopicDistributionforDocuments(threshold, max, numTopics).entrySet()){
+//			Double tempmax = -1.0;
+//			for (int i=0; i< entry.getValue().size(); i++){
+//				if (entry.getValue().get( i ) > tempmax){
+//					tempmax = entry.getValue().get( i );
+//					maxindex = i;
+//				}
+//			}
+//		toptopic.put( entry.getKey(), topics.get( maxindex ) );
+//		}
 		return toptopic;
 	}
 	
