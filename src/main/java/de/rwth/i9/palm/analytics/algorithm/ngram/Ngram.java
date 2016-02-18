@@ -16,25 +16,15 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeSet;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
 import cc.mallet.util.Randoms;
-import de.rwth.i9.palm.analytics.config.AppConfig;
 
-//@RunWith( SpringJUnit4ClassRunner.class )
-//@ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
 public class Ngram implements NGrams
 {
 	
-	@Test
 	public void test() throws Exception
 	{	
 		
