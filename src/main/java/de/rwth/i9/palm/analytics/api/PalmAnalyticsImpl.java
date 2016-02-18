@@ -8,6 +8,8 @@ import de.rwth.i9.palm.analytics.algorithm.cvalue.CValue;
 import de.rwth.i9.palm.analytics.algorithm.cvalue.CValueAlgorithm;
 import de.rwth.i9.palm.analytics.algorithm.lda.LDAJob;
 import de.rwth.i9.palm.analytics.algorithm.lda.Lda;
+import de.rwth.i9.palm.analytics.algorithm.ngram.NGrams;
+import de.rwth.i9.palm.analytics.algorithm.ngram.Ngram;
 import de.rwth.i9.palm.analytics.opennlp.OpenNLP;
 import de.rwth.i9.palm.analytics.opennlp.OpenNLPImpl;
 import de.rwth.i9.palm.analytics.textcompare.TextCompare;
@@ -30,6 +32,9 @@ public class PalmAnalyticsImpl implements PalmAnalytics
 	@Autowired( required = false )
 	private OpenNLP openNLP;
 	
+	@Autowired( required = false )
+	private NGrams nGrams;
+
 	@Autowired( required = false )
 	private TextCompare textCompare;
 
@@ -66,6 +71,15 @@ public class PalmAnalyticsImpl implements PalmAnalytics
 			this.openNLP = new OpenNLPImpl();
 
 		return this.openNLP;
+	}
+
+	@Override
+	public NGrams getNGrams()
+	{
+		if ( this.nGrams == null )
+			this.nGrams = new Ngram();
+
+		return this.nGrams;
 	}
 
 	@Override
