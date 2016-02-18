@@ -6,8 +6,8 @@ import de.rwth.i9.palm.analytics.algorithm.corephrase.CorePhrase;
 import de.rwth.i9.palm.analytics.algorithm.corephrase.CorePhraseImpl;
 import de.rwth.i9.palm.analytics.algorithm.cvalue.CValue;
 import de.rwth.i9.palm.analytics.algorithm.cvalue.CValueAlgorithm;
-import de.rwth.i9.palm.analytics.algorithm.lda.LDAJob;
-import de.rwth.i9.palm.analytics.algorithm.lda.Lda;
+import de.rwth.i9.palm.analytics.algorithm.dynamicLDA.DynamicLDA;
+import de.rwth.i9.palm.analytics.algorithm.dynamicLDA.DynamicTopicModel;
 import de.rwth.i9.palm.analytics.algorithm.ngram.NGrams;
 import de.rwth.i9.palm.analytics.algorithm.ngram.Ngram;
 import de.rwth.i9.palm.analytics.opennlp.OpenNLP;
@@ -27,7 +27,7 @@ public class PalmAnalyticsImpl implements PalmAnalytics
 	private CValue cValue;
 
 	@Autowired( required = false )
-	private Lda lda;
+	private DynamicTopicModel dynamicTopicModel;
 
 	@Autowired( required = false )
 	private OpenNLP openNLP;
@@ -56,12 +56,12 @@ public class PalmAnalyticsImpl implements PalmAnalytics
 	}
 
 	@Override
-	public Lda getLdaAlgorithm()
+	public DynamicTopicModel getDynamicTopicModel()
 	{
-		if ( this.lda == null )
-			this.lda = new LDAJob();
+		if ( this.dynamicTopicModel == null )
+			this.dynamicTopicModel = new DynamicLDA();
 
-		return this.lda;
+		return this.dynamicTopicModel;
 	}
 
 	@Override
