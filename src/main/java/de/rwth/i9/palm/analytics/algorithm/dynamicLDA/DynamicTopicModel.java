@@ -6,13 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
 
 import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
 
-public interface dynamicTopicModel
+public interface DynamicTopicModel
 {
 	
 	/**
@@ -124,7 +123,7 @@ public interface dynamicTopicModel
 	 * @param nwords
 	 * @return
 	 */
-	public List<String> getListTopics (int nwords);
+	public List<String> getListTopics( ParallelTopicModel ptm, int nwords );
 	
 
 	/**
@@ -136,7 +135,7 @@ public interface dynamicTopicModel
 	 * @param numTopics
 	 * @return
 	 */
-	public HashMap<Integer, Double> getTopicProportion( double threshold, int docID, int max, int numTopics );
+	public HashMap<Integer, Double> getTopicProportion( ParallelTopicModel m, double threshold, int docID, int max, int numTopics );
 	
 	/**
 	 * 
@@ -145,7 +144,7 @@ public interface dynamicTopicModel
 	 * @param numTopics
 	 * @return
 	 */
-	public LinkedHashMap <String, List<Double>> getTopicDistributionforDocuments(double threshold, int max, int numTopics);
+	public LinkedHashMap<String, List<Double>> getTopicDistributionforDocuments( ParallelTopicModel m, double threshold, int max, int numTopics );
 	
 	/**
 	 * 
