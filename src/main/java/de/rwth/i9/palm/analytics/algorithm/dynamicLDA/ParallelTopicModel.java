@@ -1206,7 +1206,6 @@ public class ParallelTopicModel implements Serializable {
 			Iterator<IDSorter> iterator = sortedWords.iterator();
 
 			if (usingNewLines) {
-				out.append (topic + "\t" + formatter.format(alpha[topic]) + "\n");
 				while (iterator.hasNext() && word < numWords) {
 					IDSorter info = iterator.next();
 					out.append(alphabet.lookupObject(info.getID()) + "\t" + formatter.format(info.getWeight()) + "\n");
@@ -1214,9 +1213,7 @@ public class ParallelTopicModel implements Serializable {
 				}
 			}
 			else {
-				out.append (topic + "\t" + formatter.format(alpha[topic]) + "\t");
-
-				while (iterator.hasNext() && word < numWords) {
+					while (iterator.hasNext() && word < numWords) {
 					IDSorter info = iterator.next();
 					out.append(alphabet.lookupObject(info.getID()) + " ");
 					word++;
@@ -1224,7 +1221,6 @@ public class ParallelTopicModel implements Serializable {
 				out.append ("\n");
 			}
 		}
-
 		return out.toString();
 	}
 	

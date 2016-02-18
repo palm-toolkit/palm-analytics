@@ -1,8 +1,6 @@
 package de.rwth.i9.palm.analytics.algorithm.dynamicLDA;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
@@ -79,7 +77,6 @@ public class TemporalTopicModel
 		{
 			System.out.format( "iter: %04d\n", iter );
 			double[] p;
-			double[] pcopy = new double[K];
 			double pSum = 0.0, u;
 			int topic, i, k;
 			double[] tProb = new double[K]; // vector of topic probabilities for each timestamp 
@@ -101,8 +98,6 @@ public class TemporalTopicModel
 						pSum += ( countDoc_Topic[d][k] + alpha ) * ( ( countTerm_Topic[documents[d][i]][k] + beta ) / ( numOfWordsByTopic[k] + V * beta ) ) * tProb[k];
 						p[k] = pSum;
 					}
-					pcopy = tProb.clone();
-					
 					u = Math.random() * pSum;
 					for ( topic = 0; topic < K - 1; topic++ )
 						if ( u < p[topic] )
