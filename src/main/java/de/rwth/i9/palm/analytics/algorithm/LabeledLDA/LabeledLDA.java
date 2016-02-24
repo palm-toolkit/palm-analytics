@@ -32,7 +32,7 @@ import cc.mallet.types.LabelSequence;
 import cc.mallet.util.CommandOption;
 import cc.mallet.util.MalletLogger;
 import cc.mallet.util.Randoms;
-import de.rwth.i9.palm.analytics.algorithm.dynamicLDA.ParallelTopicModel;
+import de.rwth.i9.palm.analytics.algorithm.LabeledLDA.ParallelTopicModel;
 
 
 /**
@@ -242,6 +242,7 @@ public class LabeledLDA implements Serializable {
 
 	public int[][] getTypeTopicCounts() { return typeTopicCounts; }
 	public int[] getTopicTotals() { return tokensPerTopic; }
+
 
 	public void addInstances (InstanceList training) {
 
@@ -564,6 +565,31 @@ public class LabeledLDA implements Serializable {
 			output.append("\n");
 		}
 
+		return output.toString();
+	}
+	
+	public String modifiedtopWords (int numWords) {
+
+		StringBuilder output = new StringBuilder();
+
+		IDSorter[] sortedWords = new IDSorter[numTypes];
+
+		for (int topic = 0; topic < numTopics; topic++) {
+			if (tokensPerTopic[topic] == 0) { continue; }
+			
+			for (int type = 0; type < numTypes; type++) {
+				sortedWords[type] = new IDSorter(type, typeTopicCounts[type][topic]);
+			}
+
+			Arrays.sort(sortedWords);
+			
+			output.append(labelAlphabet.lookupObject(topic) + "\t");
+			for (int i=0; i < numWords; i++) {
+				if (sortedWords[i].getWeight() == 0) { break; }
+				output.append(alphabet.lookupObject(sortedWords[i].getID()) + " ");
+			}
+			output.append("\n");
+		}
 		return output.toString();
 	}
 

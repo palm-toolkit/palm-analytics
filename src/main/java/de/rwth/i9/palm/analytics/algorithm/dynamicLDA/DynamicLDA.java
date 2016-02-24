@@ -30,7 +30,7 @@ import de.rwth.i9.palm.analytics.algorithm.lda.importData;
 //@ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
 public class DynamicLDA implements DynamicTopicModel
 {	
-	public String path = "C:\\Users\\nifry\\Desktop\\Years\\";
+	public String path = "C:\\Users\\Piro\\Desktop\\Years\\";
 	public ParallelTopicModel years = createModel(path, "Years", 5 , 10);
 	public TemporalTopicModel tot;
 	

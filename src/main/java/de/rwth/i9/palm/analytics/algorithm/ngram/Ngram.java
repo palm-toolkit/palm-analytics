@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeSet;
-
+import org.junit.Test;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
@@ -24,7 +24,7 @@ import cc.mallet.util.Randoms;
 
 public class Ngram implements NGrams
 {
-	
+	@Test
 	public void test() throws Exception
 	{	
 		
