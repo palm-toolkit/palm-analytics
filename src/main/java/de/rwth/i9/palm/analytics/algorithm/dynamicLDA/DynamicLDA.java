@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,7 +32,7 @@ import de.rwth.i9.palm.analytics.algorithm.lda.importData;
 public class DynamicLDA implements DynamicTopicModel
 {	
 	public String path = "C:\\Users\\Piro\\Desktop\\Years\\";
-	public ParallelTopicModel years = createModel(path, "Years", 5 , 10);
+	public ParallelTopicModel years = createModel(path, "Years", 11 , 10);
 	public TemporalTopicModel tot;
 	
 	@Test
@@ -41,11 +42,11 @@ public class DynamicLDA implements DynamicTopicModel
 		try{			
 			// Temporal Topic Modeling 
 		
-			tot = createTemporalTopicModel(11, 10, 30);
-			
-			double[][] beta = new double[10][];
-			beta = tot.betaDistrByTopic;
-			
+//			tot = createTemporalTopicModel(11, 10, 30);
+//			
+//			double[][] beta = new double[10][];
+//			beta = tot.betaDistrByTopic;
+//			
 //			System.out.println(" BETA ------------");
 //			for(int i = 0; i<beta.length;i++){
 //				for (int j =0; j<beta[i].length; j++){
@@ -53,8 +54,8 @@ public class DynamicLDA implements DynamicTopicModel
 //			}
 //			System.out.println();
 //		}
-			
-			
+//			
+//			
 //			double [][] theta = new double[years.data.size()][tot.K];
 //			theta = tot.getTheta();
 //			System.out.println(" THETA ------------");
@@ -64,7 +65,7 @@ public class DynamicLDA implements DynamicTopicModel
 //				}
 //				System.out.println();
 //			}
-			
+//			
 //			double [][] phi = new double[tot.K][years.alphabet.size()];
 //			phi = tot.getPhi();
 //			System.out.println(" PHI ------------");
@@ -74,8 +75,7 @@ public class DynamicLDA implements DynamicTopicModel
 //				}
 //				System.out.println();
 //			}
-			
-			
+//
 //			String indexes[][] = getWordsperTopic(years, tot);
 //			System.out.println("ALL WORDS ------------");
 //			for(int i = 0; i< indexes.length;i++){
@@ -84,7 +84,7 @@ public class DynamicLDA implements DynamicTopicModel
 //				}
 //				System.out.println();
 //			}
-			
+//			
 //			String x[][] = getTopWordsperTopic(years, tot, 10);
 //			System.out.println(" TOP WORDS ------------");
 //			for(int i = 0; i< x.length;i++){
@@ -93,7 +93,7 @@ public class DynamicLDA implements DynamicTopicModel
 //				}
 //				System.out.println();
 //			}
-		
+//		
 //			System.out.println("-----");
 //			for (Entry<String, List<String>> entry : getTopWordperTemporalTopic(10).entrySet()){
 //				System.out.print(entry.getKey());
@@ -120,18 +120,29 @@ public class DynamicLDA implements DynamicTopicModel
 			
 			// Discrete Topic Modeling 
 			
-//			for (String l : getListTopics(10)){
-//				System.out.println(l);
-//			}
+			
+			List<String> s = new ArrayList<String>();
+			s =  getListTopics( 10);
+			
+			int a = years.data.size();
+			System.out.println(a);
+			for (int i =0; i< 11; i++){
+				System.out.println(s.get( i ));
+				for (Double l : getTopicProportion2(0.0, i, 11, 11)){
+					System.out.print(l + " ");
+				}
+				System.out.println();
+			}
+			
 //			
 //			for (Entry<String, String[]> entry : getlistTopics(5, 10).entrySet()){
 //				System.out.print(entry.getKey());
 //				for (String str : entry.getValue())
 //					System.out.print(" " + str );
 //				System.out.println();
-//		
+//			}
 //			
-//			for (Entry<String, List<Double>> entry : getTopicDistributionforDocuments(0.0, 10, years.getNumTopics()).entrySet()){
+//			for (Entry<String, List<Double>> entry : getTopicDistributionforDocuments(years, 0.0, 10, years.getNumTopics()).entrySet()){
 //				System.out.print(entry.getKey());
 //				for (Double d : entry.getValue())
 //					System.out.print(" " + (new DecimalFormat("#.######").format(d)));
@@ -160,7 +171,6 @@ public class DynamicLDA implements DynamicTopicModel
 //				}
 //				System.out.println();
 //			}
-			
 			
 		}  catch (Exception e) {
 			e.printStackTrace();
@@ -363,11 +373,16 @@ public class DynamicLDA implements DynamicTopicModel
 	}
 	
 	// similar to the above method, but with List as an output
-	public List<String> getListTopics( ParallelTopicModel m, int nwords )
+	public List<String> getListTopics( int nwords )
 	{
 		List<String> listtopics = new ArrayList<String>();
-		String[] topics = m.displayTopWords( nwords, false ).split( "\n" );
+		String[] topics = years.displayTopWords( nwords, false ).split( "\n" );
 		for (String topic : topics){
+			
+			// check the empty topic problem (although probability assigned to them is 0.!!!)
+			if (topic == ""){
+				topic = "No bag of words";
+			}
 			listtopics.add( topic );
 		}
 	return listtopics;
@@ -383,7 +398,7 @@ public class DynamicLDA implements DynamicTopicModel
 	}
 
 	// get the topic proportion per instance (in this case one instance corresponds to a specific timestamp [year])
-	public HashMap<Integer, Double> getTopicProportion( ParallelTopicModel m, double threshold, int docID, int max, int numTopics )
+	public HashMap<Integer, Double> getTopicProportion(ParallelTopicModel m, double threshold, int docID, int max, int numTopics )
 	{
 		HashMap<Integer, Double> topics = new HashMap<Integer, Double>();
 		int[] topicCounts = new int[numTopics];
@@ -425,6 +440,57 @@ public class DynamicLDA implements DynamicTopicModel
 				topicID = sortedTopics[i].getID();
 				topicWeight = sortedTopics[i].getWeight();
 				topics.put( topicID, topicWeight);
+		}
+		Arrays.fill( topicCounts, 0 );
+		return topics;
+	}
+	
+	public List<Double> getTopicProportion2( double threshold, int docID, int max, int numTopics )
+	{
+		List< Double> topics = new ArrayList< Double>();
+		int[] topicCounts = new int[numTopics];
+		int docLen = 0;
+		int topicID = 0;
+		double topicWeight = 0;
+		IDSorter[] sortedTopics = new IDSorter[numTopics];
+		for ( int topic = 0; topic < numTopics; topic++ ){
+			// Initialize the sorters with dummy values
+			sortedTopics[topic] = new IDSorter( topic, topic );
+		}
+
+		if ( max < 0 || max > numTopics )
+		{
+			max = numTopics;
+		}
+
+		LabelSequence topicSequence = (LabelSequence) years.data.get( docID ).topicSequence;
+		int[] currentDocTopics = topicSequence.getFeatures();
+		docLen = currentDocTopics.length;
+
+		// Count up the tokens
+		for ( int token = 0; token < docLen; token++ )
+		{
+			topicCounts[currentDocTopics[token]]++;
+		}
+
+		// And normalize
+		for ( int topic = 0; topic < numTopics; topic++ )
+		{
+			sortedTopics[topic].set( topic, ( years.alpha[topic] + topicCounts[topic] ) / ( docLen + years.alphaSum ) );
+		}
+
+		Arrays.sort( sortedTopics );
+		for ( int i = 0; i < max; i++ )
+		{
+			if ( sortedTopics[i].getWeight() < threshold ){	break; }
+			
+				topicID = sortedTopics[i].getID();
+				topicWeight = sortedTopics[i].getWeight();
+				
+				if (topicWeight < 0.00000000001){
+					topicWeight = 0.0;
+				}
+				topics.add( topicWeight);
 		}
 		Arrays.fill( topicCounts, 0 );
 		return topics;

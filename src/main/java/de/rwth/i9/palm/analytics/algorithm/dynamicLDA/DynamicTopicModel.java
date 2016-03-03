@@ -123,7 +123,7 @@ public interface DynamicTopicModel
 	 * @param nwords
 	 * @return
 	 */
-	public List<String> getListTopics( ParallelTopicModel ptm, int nwords );
+	public List<String> getListTopics( int nwords );
 	
 
 	/**
@@ -135,7 +135,8 @@ public interface DynamicTopicModel
 	 * @param numTopics
 	 * @return
 	 */
-	public HashMap<Integer, Double> getTopicProportion( ParallelTopicModel m, double threshold, int docID, int max, int numTopics );
+	public HashMap<Integer, Double> getTopicProportion(ParallelTopicModel m, double threshold, int docID, int max, int numTopics );
+	public List<Double> getTopicProportion2( double threshold, int docID, int max, int numTopics );
 	
 	/**
 	 * 
