@@ -11,11 +11,14 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeSet;
+
 import org.junit.Test;
+
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
@@ -43,7 +46,7 @@ public class Ngram implements NGrams
 			 
 			long start = System.nanoTime();
 			 System.out.println( "________________________GET THE TOPICS AS UNIGRAMS__________________________" );
-			 String[] u = getStringTopicsUnigrams(tng, 10, false);
+			String[] u = getStringTopicsUnigrams( tng, 5, false );
 			 for (String h : u){
 				 System.out.println(h);
 			 }
@@ -70,7 +73,8 @@ public class Ngram implements NGrams
 			 
 			 start = System.nanoTime();
 			 System.out.println( "________________________GET THE TOPIC ASSIGNMENT AS N-GRAMS CONTENT __________________________" );
-			 for (int i=0; i< tng.topics.length; i++){
+			for ( int i = 0; i < tng.topics.length; i++ )
+			{
 				 for (Entry<String, List<String>> entry : getTopicNgramsDocument(tng, i, -1, 0.0, 100, 10, false).entrySet()){
 					 System.out.println((entry.getKey()) + " ->-> " + entry.getValue());
 					 }
@@ -89,11 +93,10 @@ public class Ngram implements NGrams
 			 System.out.println("Time for getting Topic Assigned presented as Unigrams: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
 			 
 			 start = System.nanoTime();
-			 System.out.println( "________________________GET THE TOPIC ASSIGNMENT AND PROPORTIONS __________________________" );
+			System.out.println( "________________________GET THE TOPIC ASSIGNMENT AND PROPORTIONS NOT ORDERED __________________________" );
 			 for (Entry<String, List<Double>> entry : getDoumentTopicProportion(tng).entrySet()){
 				 System.out.println((entry.getKey())); 
 				 System.out.println(" **** ");
-				 int i =0;
 				 for (Double z : entry.getValue()){
 					 System.out.println(z);
 				 	}
@@ -161,7 +164,7 @@ public class Ngram implements NGrams
 				 }
 			 }
 			// run the method to get topic proportions for each doc.
-			 printDocTopicprobs(tng, path, "Authors", "Trainer");
+			// printDocTopicprobs(tng, path, "Authors", "Trainer");
 		
 			System.out.println( "_____________________________________________________________________________________" );
 
@@ -363,8 +366,6 @@ public class Ngram implements NGrams
 			HashMap<String, List<String>> h = new HashMap<String, List<String>>();
 			List<String> topdoc = new ArrayList<String>();//getListDocumentTopic(m,threshold,max,weight);
 			List<String> topics = getListTopicsNgrams(m, numWords, weight);
-			
-			
 			 int docLen;
 			    double topicDist[] = new double[m.numTopics];
 			      docLen = m.topics[docID].length;
@@ -384,11 +385,20 @@ public class Ngram implements NGrams
 			        //(maxindex+" "+topicDist[maxindex]+" ");
 			        topicDist[maxindex] = 0;
 			        topdoc.add( topics.get( maxindex ) );
-			      }
-			      
+		}
 			h.put(m.ilist.get(docID).getSource().toString().replace( "\\",";").split( ";" )[6].replace( ".txt", "" ), topdoc);
 			return h;
 		}
+
+	public HashMap<String, List<String>> getTopicNGramsAllDocuments( TopicalNGrams m, int max, double threshold, int numTopics, boolean weight )
+	{
+		HashMap<String, List<String>> alldocumentTopics = new HashMap<>();
+		for ( int i = 0; i < m.topics.length; i++ )
+		{
+
+		}
+		return alldocumentTopics;
+	}
 
 	// Returns a map <DocumentID, Top Unigrams Topic Assigned to it> which shows the topic assigned to a specific document with given ID
 	// When calling max = -1, threshold = 0.05, 
@@ -469,10 +479,9 @@ public class Ngram implements NGrams
 			for ( int i = 0; i < max; i++ )
 			{
 				if ( sortedTopics[i].getWeight() < threshold ){	break; }
-				
-					topicID = sortedTopics[i].getID();
-					topicWeight = sortedTopics[i].getWeight();
-					topics.add( topicID + "-" + topicWeight );
+			topicID = sortedTopics[i].getID();
+			topicWeight = sortedTopics[i].getWeight();
+			topics.add( topicID + "-" + topicWeight );
 			}
 			h.put( m.data.get(docID).instance.getName()+ "", topics );
 			Arrays.fill( topicCounts, 0 );
@@ -584,4 +593,28 @@ public class Ngram implements NGrams
 			 }
 		return result;
 	}
+
+	// documentAllTopicsasMap <String, List<Double>> &&
+	// documentAllTopicsasMap<String, List<String>>
+	// this method has to match the String (ID) with List of topics and list of
+	// topic proportions
+	public LinkedHashMap<String, LinkedHashMap<List<String>, List<Double>>> getDocumentTopicDetailMap( TopicalNGrams m, int max, double threshold, int numTopics, int numWords, boolean weight )
+	{
+		LinkedHashMap<String, LinkedHashMap<List<String>, List<Double>>> topicDetails = new LinkedHashMap<>();
+		List<HashMap<String, List<String>>> topicWords = new ArrayList<HashMap<String, List<String>>>();
+		HashMap<String, List<Double>> topicDistribution = new HashMap<>();
+		LinkedHashMap<List<String>, List<Double>> topicWordDistributionMatch = new LinkedHashMap<>();
+		// loop over all the documents to populate the two input maps
+
+		topicDistribution = m.documentAllTopicsasMap();
+
+		// include all the dochashmaps into a List
+		for ( int i = 0; i < m.topics.length; i++ )
+		{
+			topicWords.add( getTopicNgramsDocument( m, i, max, threshold, numTopics, numWords, false ) );
+		}
+
+		return topicDetails;
+	}
+
 }

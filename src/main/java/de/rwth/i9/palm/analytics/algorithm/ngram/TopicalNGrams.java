@@ -1,6 +1,15 @@
 package de.rwth.i9.palm.analytics.algorithm.ngram;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+
 /* Copyright (C) 2005 Univ. of Massachusetts Amherst, Computer Science Dept.
 	   This file is part of "MALLET" (MAchine Learning for LanguagE Toolkit).
 	   http://www.cs.umass.edu/~mccallum/mallet
@@ -13,10 +22,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.io.*;
-import java.util.ArrayList;
-import cc.mallet.types.*;
+
+import cc.mallet.types.Alphabet;
+import cc.mallet.types.AugmentableFeatureVector;
+import cc.mallet.types.FeatureSequence;
+import cc.mallet.types.FeatureSequenceWithBigrams;
+import cc.mallet.types.InstanceList;
 import cc.mallet.util.Randoms;
 	
 	/**
@@ -489,7 +500,7 @@ import cc.mallet.util.Randoms;
 
 //			out.append (" (unigrams "+numUnitypeTokens+"/"+numUnitypeTypes+" bigrams "+numBitypeTokens+"/"+numBitypeTypes
 //			                  +" phrases "+Math.round(afv.oneNorm())+"/"+numNgrams+")\n         ");
-			out.append("Topic "+ ti + ": ");
+			out.append( "Topic " + ti + " : " );
 			//System.out.print (" (unique-ngrams="+numNgrams+" ngram-count="+Math.round(afv.oneNorm())+")\n         ");
 			for (int i = 0; i < Math.min(numNgrams, numWords); i++)
 				if (weight){
@@ -614,7 +625,7 @@ import cc.mallet.util.Randoms;
 	  }
 	  
 	  public void printState (File f) throws IOException
-		{
+	{
 		  PrintWriter writer = new PrintWriter (new FileWriter(f));
 			printState (writer);
 			writer.close();
