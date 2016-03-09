@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -487,7 +486,8 @@ public class DynamicLDA implements DynamicTopicModel
 				topicID = sortedTopics[i].getID();
 				topicWeight = sortedTopics[i].getWeight();
 				
-				if (topicWeight < 0.00000000001){
+			if ( topicWeight < 0.00000001 )
+			{
 					topicWeight = 0.0;
 				}
 				topics.add( topicWeight);

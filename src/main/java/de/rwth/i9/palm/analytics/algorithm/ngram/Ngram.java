@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,22 +46,24 @@ public class Ngram implements NGrams
 			// tng.printTopWords( 10, true );
 			 
 			long start = System.nanoTime();
-			 System.out.println( "________________________GET THE TOPICS AS UNIGRAMS__________________________" );
+			System.out.println( "________________________GET THE TOPICS AS UNIGRAMS__________________________" );
 			String[] u = getStringTopicsUnigrams( tng, 5, false );
-			 for (String h : u){
-				 System.out.println(h);
-			 }
+			for ( String h : u )
+			{
+				System.out.println( h );
+			}
 			 long end = System.nanoTime();
-			 System.out.println("Time for getting unigrams: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
-			 
-			 start = System.nanoTime();
-			 System.out.println( "________________________GET THE TOPICS AS N-GRAMS__________________________" );
-			 String[] n =  getStringTopicsNgrams(tng, 10, false);
-			 for (String h : n){
-				 System.out.println(h);
-			 }
-			 end = System.nanoTime();
-			 System.out.println("Time for getting Ngrams: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
+			System.out.println( "Time for getting unigrams: [" + ( end / Math.pow( 10, 9 ) - start / Math.pow( 10, 9 ) ) + " sec]" );
+
+			start = System.nanoTime();
+			System.out.println( "________________________GET THE TOPICS AS N-GRAMS__________________________" );
+			String[] n = getStringTopicsNgrams( tng, 10, false );
+			for ( String h : n )
+			{
+				System.out.println( h );
+			}
+			end = System.nanoTime();
+			System.out.println( "Time for getting Ngrams: [" + ( end / Math.pow( 10, 9 ) - start / Math.pow( 10, 9 ) ) + " sec]" );
 			 
 			 start = System.nanoTime();
 			 System.out.println( "________________________GET THE TOP X TOPICS FOLLOWED BY THEIR PROPORTIONS__________________________" );
@@ -75,34 +78,57 @@ public class Ngram implements NGrams
 			 System.out.println( "________________________GET THE TOPIC ASSIGNMENT AS N-GRAMS CONTENT __________________________" );
 			for ( int i = 0; i < tng.topics.length; i++ )
 			{
-				 for (Entry<String, List<String>> entry : getTopicNgramsDocument(tng, i, -1, 0.0, 100, 10, false).entrySet()){
+				for ( Entry<String, List<String>> entry : getTopicNgramsDocument( tng, i, -1, 0.0, 100, 10, true ).entrySet() )
+				{
 					 System.out.println((entry.getKey()) + " ->-> " + entry.getValue());
 					 }
 			 }
 			 end = System.nanoTime();
 			 System.out.println("Time for getting Topic Assigned presented as N-grams: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
 			 
-			 start = System.nanoTime();
-			 System.out.println( "________________________GET THE TOPIC ASSIGNMENT AS UNIGRAMS CONTENT __________________________" );
-			 for (int i=0; i< tng.topics.length; i++){
-				 for (Entry<String, List<String>> entry : getTopicUnigramsDocument(tng, i, -1, 0.0, 100, 10, false).entrySet()){
-					 System.out.println((entry.getKey()) + " ->-> " + entry.getValue());
-					 }
-			 }
-			 end = System.nanoTime();
-			 System.out.println("Time for getting Topic Assigned presented as Unigrams: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
-			 
-			 start = System.nanoTime();
-			System.out.println( "________________________GET THE TOPIC ASSIGNMENT AND PROPORTIONS NOT ORDERED __________________________" );
-			 for (Entry<String, List<Double>> entry : getDoumentTopicProportion(tng).entrySet()){
-				 System.out.println((entry.getKey())); 
-				 System.out.println(" **** ");
-				 for (Double z : entry.getValue()){
-					 System.out.println(z);
-				 	}
-				 }
-			end = System.nanoTime();
+			 // used for all the doucuments instead of having a single one
+			for ( Entry<String, List<String>> e : getTopicNGramsAllDocuments( tng, -1, 0.0, 100, 10, false ).entrySet() )
+			{
+				System.out.println( ( e.getKey() ) + " ->-> " + e.getValue() );
+			}
 			
+// 			TO BE TESTED
+//			System.out.println( "________________________GET THE TOPIC ASSIGNMENT and PROPORTIONS FOR EACH ID __________________________" );			 
+//			for (Entry<String, LinkedHashMap<String, Double>> e : getDocumentTopicDetailMap( tng, -1, 0.0, 100, 10, false).entrySet()){
+//				System.out.println("Author Id -> " + e.getKey());
+//				for (Entry<String, Double> p : e.getValue().entrySet()){
+//					System.out.println( p.getKey() + " -> " + p.getValue() );
+//				}
+//				System.out.println();
+//			}
+			start = System.nanoTime();
+			System.out.println( "________________________GET THE TOPIC ASSIGNMENT AS UNIGRAMS CONTENT __________________________" );
+			for ( int i = 0; i < tng.topics.length; i++ )
+			{
+				for ( Entry<String, List<String>> entry : getTopicUnigramsDocument( tng, i, -1, 0.0, 100, 10, false ).entrySet() )
+				{
+					System.out.println( ( entry.getKey() ) + " ->-> " + entry.getValue() );
+				}
+			}
+			end = System.nanoTime();
+			System.out.println( "Time for getting Topic Assigned presented as Unigrams: [" + ( end / Math.pow( 10, 9 ) - start / Math.pow( 10, 9 ) ) + " sec]" );
+			
+			// similar thing as above but used to get all the documents
+			// informations as above
+			
+			start = System.nanoTime();
+			System.out.println( "________________________GET THE TOPIC ASSIGNMENT AND PROPORTIONS NOT ORDERED __________________________" );
+			for ( Entry<String, List<Double>> entry : getDoumentTopicProportion( tng ).entrySet() )
+			{
+				System.out.println( ( entry.getKey() ) );
+				System.out.println( " **** " );
+				for ( Double z : entry.getValue() )
+				{
+					System.out.println( z );
+				}
+			}
+			end = System.nanoTime();
+
 //			 start = System.nanoTime();
 //			 System.out.println( "________________________TEST FOR SIMILARITY MEASUREMENTS AND RECOMMENDED PUBLICATIONS __________________________" );
 //			 similarityMeasures similarity = new similarityMeasures();
@@ -143,26 +169,30 @@ public class Ngram implements NGrams
 //				 }
 //			 end = System.nanoTime();
 			 
-			 for (Entry<String, List<String>> entry : recommendSimilar(tng).entrySet()){
-				 System.out.println("RECOMMENDATIONS FOR " + entry.getKey());
-				 int i = 1;
-				 for (String s : entry.getValue()){
-					 System.out.print(i + " - "  );
-					 System.out.println("  " + s );
-					 i++;
-				 }
-			 }
-			 System.out.println("Time for getting Recommendations based on topic distribution: [" + (end/Math.pow( 10, 9 )-start/Math.pow( 10, 9 )) + " sec]");
-			 
-			 System.out.println( "_____________________________________________________________________________________" );
-			 System.out.println("TEST THE SIMILARITY RETRIEVAL METHOD");
-			 for (Entry<String, HashMap<List<String>, List<Double>>> entry : similarityResult(tng, 1).entrySet() ){
-				 System.out.println(entry.getKey() + " -------------------------------------");
-				 for (Entry<List<String>, List<Double>> d1 : entry.getValue().entrySet()){
-					 System.out.println(d1.getKey() + " -> " + d1.getValue());
-					 System.out.println();
-				 }
-			 }
+			for ( Entry<String, List<String>> entry : recommendSimilar( tng ).entrySet() )
+			{
+				System.out.println( "RECOMMENDATIONS FOR " + entry.getKey() );
+				int i = 1;
+				for ( String s : entry.getValue() )
+				{
+					System.out.print( i + " - " );
+					System.out.println( "  " + s );
+					i++;
+				}
+			}
+			System.out.println( "Time for getting Recommendations based on topic distribution: [" + ( end / Math.pow( 10, 9 ) - start / Math.pow( 10, 9 ) ) + " sec]" );
+
+			System.out.println( "_____________________________________________________________________________________" );
+			System.out.println( "TEST THE SIMILARITY RETRIEVAL METHOD" );
+			for ( Entry<String, HashMap<List<String>, List<Double>>> entry : similarityResult( tng, 1 ).entrySet() )
+			{
+				System.out.println( entry.getKey() + " -------------------------------------" );
+				for ( Entry<List<String>, List<Double>> d1 : entry.getValue().entrySet() )
+				{
+					System.out.println( d1.getKey() + " -> " + d1.getValue() );
+					System.out.println();
+				}
+			}
 			// run the method to get topic proportions for each doc.
 			// printDocTopicprobs(tng, path, "Authors", "Trainer");
 		
@@ -365,7 +395,7 @@ public class Ngram implements NGrams
 		
 			HashMap<String, List<String>> h = new HashMap<String, List<String>>();
 			List<String> topdoc = new ArrayList<String>();//getListDocumentTopic(m,threshold,max,weight);
-			List<String> topics = getListTopicsNgrams(m, numWords, weight);
+		List<String> topics = getListTopicsNgrams( m, numWords, false );
 			 int docLen;
 			    double topicDist[] = new double[m.numTopics];
 			      docLen = m.topics[docID].length;
@@ -382,20 +412,30 @@ public class Ngram implements NGrams
 			          }
 			        if (maxindex == -1 || topicDist[maxindex] < threshold)
 			          break;
-			        //(maxindex+" "+topicDist[maxindex]+" ");
+			if ( weight )
+			{
+				// (maxindex+" "+topicDist[maxindex]+" ");
+
+				topdoc.add( topics.get( maxindex ) + " _-_ " + topicDist[maxindex] );
+			} else {
+				topdoc.add( topics.get( maxindex ) );
+			}
 			        topicDist[maxindex] = 0;
-			        topdoc.add( topics.get( maxindex ) );
+
 		}
 			h.put(m.ilist.get(docID).getSource().toString().replace( "\\",";").split( ";" )[6].replace( ".txt", "" ), topdoc);
 			return h;
 		}
 
-	public HashMap<String, List<String>> getTopicNGramsAllDocuments( TopicalNGrams m, int max, double threshold, int numTopics, boolean weight )
+	public HashMap<String, List<String>> getTopicNGramsAllDocuments( TopicalNGrams m, int max, double threshold, int numTopics, int numWords, boolean weight )
 	{
 		HashMap<String, List<String>> alldocumentTopics = new HashMap<>();
 		for ( int i = 0; i < m.topics.length; i++ )
 		{
-
+			for ( Entry<String, List<String>> topicsOneDoc : getTopicNgramsDocument( m, i, max, threshold, numTopics, numWords, weight ).entrySet() )
+			{
+				alldocumentTopics.put( topicsOneDoc.getKey(), topicsOneDoc.getValue() );
+			}
 		}
 		return alldocumentTopics;
 	}
@@ -406,7 +446,7 @@ public class Ngram implements NGrams
 		
 		HashMap<String, List<String>> h = new HashMap<String, List<String>>();
 		List<String> topdoc = new ArrayList<String>();//getListDocumentTopic(m,threshold,max,weight);
-		List<String> topics = getListTopicsUnigrams(m, numWords, weight);
+		List<String> topics = getListTopicsUnigrams(m, numWords, false);
 		
 		
 		 int docLen;
@@ -426,14 +466,35 @@ public class Ngram implements NGrams
 		        if (maxindex == -1 || topicDist[maxindex] < threshold)
 		          break;
 		        //(maxindex+" "+topicDist[maxindex]+" ");
+		        if(weight){
+		        	 topdoc.add( topics.get( maxindex ) + " _-_ " + topicDist[maxindex]);
+		        } 
+		        else {
+				topdoc.add( topics.get( maxindex ) );
+		        }
 		        topicDist[maxindex] = 0;
-		        topdoc.add( topics.get( maxindex ) );
+		        
+		       
 		      }
 		      
 		h.put(m.ilist.get(docID).getSource().toString().replace( "\\",";").split( ";" )[6].replace( ".txt", "" ), topdoc);
 		return h;
 	}
 	
+	//
+	public HashMap<String, List<String>> getTopicUnigramsAllDocuments( TopicalNGrams m, int max, double threshold, int numTopics, int numWords, boolean weight )
+	{
+		HashMap<String, List<String>> alldocumentTopics = new HashMap<>();
+		for ( int i = 0; i < m.topics.length; i++ )
+		{
+			for ( Entry<String, List<String>> topicsOneDoc : getTopicUnigramsDocument( m, i, max, threshold, numTopics, numWords, weight ).entrySet() )
+			{
+				alldocumentTopics.put( topicsOneDoc.getKey(), topicsOneDoc.getValue() );
+			}
+		}
+		return alldocumentTopics;
+
+	}
 	//produce a Map wish holds <DocumentId, List<TopicWeight, String of Words>> 
 	public HashMap<String, List<String>> getAllDocumentTopics( ParallelTopicModel m, int docID, int max, double threshold, int numTopics ){
 			
@@ -598,21 +659,31 @@ public class Ngram implements NGrams
 	// documentAllTopicsasMap<String, List<String>>
 	// this method has to match the String (ID) with List of topics and list of
 	// topic proportions
-	public LinkedHashMap<String, LinkedHashMap<List<String>, List<Double>>> getDocumentTopicDetailMap( TopicalNGrams m, int max, double threshold, int numTopics, int numWords, boolean weight )
+	public LinkedHashMap<String, LinkedHashMap<String, Double>> getDocumentTopicDetailMap( TopicalNGrams m, int max, double threshold, int numTopics, int numWords, boolean weight )
 	{
-		LinkedHashMap<String, LinkedHashMap<List<String>, List<Double>>> topicDetails = new LinkedHashMap<>();
-		List<HashMap<String, List<String>>> topicWords = new ArrayList<HashMap<String, List<String>>>();
+		LinkedHashMap<String, LinkedHashMap<String, Double>> topicDetails = new LinkedHashMap<>();
+		HashMap<String, List<String>> topicWords = new HashMap<>();
 		HashMap<String, List<Double>> topicDistribution = new HashMap<>();
-		LinkedHashMap<List<String>, List<Double>> topicWordDistributionMatch = new LinkedHashMap<>();
+		LinkedHashMap<String, Double> topicWordDistributionMatch = new LinkedHashMap<>();
 		// loop over all the documents to populate the two input maps
 
 		topicDistribution = m.documentAllTopicsasMap();
-
-		// include all the dochashmaps into a List
-		for ( int i = 0; i < m.topics.length; i++ )
-		{
-			topicWords.add( getTopicNgramsDocument( m, i, max, threshold, numTopics, numWords, false ) );
-		}
+		topicWords = getTopicNGramsAllDocuments( m, max, threshold, numTopics, numWords, weight );
+		for (Entry<String, List<String>> topic : topicWords.entrySet()){
+			for ( Entry<String, List<Double>> distribution : topicDistribution.entrySet() )
+			{
+				for ( int i = 0; i < topic.getValue().size(); i++ )
+				{
+					if ( topic.getKey() == distribution.getKey() )
+					{
+						Collections.sort( distribution.getValue() );
+						Collections.reverse( distribution.getValue() );
+						topicWordDistributionMatch.put( topic.getValue().get( i ), distribution.getValue().get( i ) );
+					}
+				}
+				topicDetails.put( topic.getKey(), topicWordDistributionMatch );
+				}
+			}
 
 		return topicDetails;
 	}
