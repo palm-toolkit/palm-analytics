@@ -436,7 +436,7 @@ import cc.mallet.util.Randoms;
 			Arrays.sort (wp);
 			int numToPrint = Math.min(wp.length, numWords);
 			
-			out.append ("Topic "+ti+": ");
+			out.append( "Topic " + ti + ": " );
 			for (int i = 0; i < numToPrint; i++)
 				if (weight){
 					out.append(uniAlphabet.lookupObject(wp[i].wi).toString() + "-" + wp[i].p/tokensPerTopic[ti] + " ");

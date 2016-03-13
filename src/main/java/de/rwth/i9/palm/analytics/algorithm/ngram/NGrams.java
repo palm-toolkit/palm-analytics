@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeSet;
+
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
@@ -154,7 +156,7 @@ public interface NGrams
 	 * @param weight
 	 * @return
 	 */
-	public HashMap<String, List<String>> getTopicNgramsDocument( TopicalNGrams m, int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
+	public HashMap<String, List<String>> getTopicNgramsDocument( int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
 
 	/**
 	 *  
@@ -167,7 +169,7 @@ public interface NGrams
 	 * @param weight
 	 * @return
 	 */
-	public HashMap<String,  List<String>> getTopicUnigramsDocument( TopicalNGrams m, int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
+	public HashMap<String, List<String>> getTopicUnigramsDocument( int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
 	
 	/**
 	 * 
@@ -202,5 +204,25 @@ public interface NGrams
 	 * @return
 	 */
 	public HashMap<String, List<String>> recommendSimilar(TopicalNGrams tng);
+
+	/**
+	 * 
+	 * @param m
+	 * @param max
+	 * @param threshold
+	 * @param numTopics
+	 * @param numWords
+	 * @param weight
+	 * @return
+	 */
+	public LinkedHashMap<String, LinkedHashMap<String, Double>> getDocumentTopicDetailMap( TopicalNGrams m, int max, double threshold, int numTopics, int numWords, boolean weight );
+
+	/**
+	 * 
+	 * @param m
+	 * @param id
+	 * @return
+	 */
+	public int maptoRealDatabaseID( String id );
 
 }
