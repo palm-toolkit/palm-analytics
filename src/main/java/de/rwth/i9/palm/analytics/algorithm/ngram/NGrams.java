@@ -222,7 +222,8 @@ public interface NGrams
 	 * @param m
 	 * @param id
 	 * @return
+	 * @throws Exception
 	 */
-	public int maptoRealDatabaseID( String id );
+	public int maptoRealDatabaseID( String id ) throws Exception;
 
 }

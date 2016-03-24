@@ -29,7 +29,7 @@ import cc.mallet.util.Randoms;
 public class Ngram implements NGrams
 {
 	public String path = "C:/Users/Piro/Desktop/";
-	public TopicalNGrams tng;
+	public TopicalNGrams tng = createModel( path, "Years", "Trainer", 11 );;
 
 	@Test
 	public void test() throws Exception
@@ -37,13 +37,9 @@ public class Ngram implements NGrams
 
 		
 		try{
-
-			
-
 			// call the TopicalNGrams methods with the following parameters by Blei
 			// numTopics=100 , alpha = 1.0, beta = 0.001, gamma = 0.1, delta = 0.001, delta1 = 0.2, delta2=1000.0
 
-			tng = createModel( path, "Authors", "Trainer", 100 );
 
 			// get the list of unigrams & ngrams
 
@@ -83,7 +79,7 @@ public class Ngram implements NGrams
 			System.out.println( "________________________GET THE TOPIC ASSIGNMENT AS N-GRAMS CONTENT __________________________" );
 			for ( int i = 0; i < tng.topics.length; i++ )
 			{
-				for ( Entry<String, List<String>> entry : getTopicNgramsDocument( i, -1, 0.0, 100, 10, true ).entrySet() )
+				for ( Entry<String, List<String>> entry : getTopicNgramsDocument( i, -1, 0.0, tng.numTopics, 10, true ).entrySet() )
 				{
 					System.out.println( ( entry.getKey() ) + " ->-> " + entry.getValue() );
 				}
@@ -99,8 +95,15 @@ public class Ngram implements NGrams
 			// }
 			
 			// Test of the method regarding finding the id
-			// System.out.println( maptoRealDatabaseID( tng,
+			// System.out.println( maptoRealDatabaseID(
 			// "07397ed7-3deb-442f-a297-bdb5b476d3e6" ) );
+			// for ( Entry<String, List<String>> entry : getTopicNgramsDocument(
+			// maptoRealDatabaseID( "07397ed7-3deb-442f-a297-bdb5b476d3e6" ),
+			// -1, 0.0, tng.numTopics, 10, true ).entrySet() )
+			// {
+			// System.out.println( ( entry.getKey() ) + " ->-> " +
+			// entry.getValue() );
+			// }
 
 // 			TO BE TESTED
 //			System.out.println( "________________________GET THE TOPIC ASSIGNMENT and PROPORTIONS FOR EACH ID __________________________" );
@@ -117,7 +120,7 @@ public class Ngram implements NGrams
 			System.out.println( "________________________GET THE TOPIC ASSIGNMENT AS UNIGRAMS CONTENT __________________________" );
 			for ( int i = 0; i < tng.topics.length; i++ )
 			{
-				for ( Entry<String, List<String>> entry : getTopicUnigramsDocument( i, -1, 0.0, 100, 10, false ).entrySet() )
+				for ( Entry<String, List<String>> entry : getTopicUnigramsDocument( i, -1, 0.0, tng.numTopics, 10, true ).entrySet() )
 				{
 					System.out.println( ( entry.getKey() ) + " ->-> " + entry.getValue() );
 				}
@@ -247,7 +250,8 @@ public class Ngram implements NGrams
 		return training;
 	}
 
-	// set the number of topics to the model and returns a model constructed by the given number 
+	// set the number of topics to the model and returns a model constructed by
+	// the given number
 	public TopicalNGrams setNumberTopics( int numTopics )
 	{
 		TopicalNGrams m = new TopicalNGrams(numTopics, 50.0, 0.01, 0.01, 0.03, 0.2, 1000);
@@ -259,11 +263,21 @@ public class Ngram implements NGrams
 	}
 
 	// create a model of reference using training corpus
-	public TopicalNGrams createModel(String path, String purpose, String specify, int numTopics) throws IOException{
+	public TopicalNGrams createModel( String path, String purpose, String specify, int numTopics )
+	{
 		
 		TopicalNGrams ngram = new TopicalNGrams(numTopics, 50.0, 0.01, 0.01, 0.03, 0.2, 1000);
-		InstanceList trained = getInstanceData(path, purpose, specify);
-		ngram.estimate(trained, 200, 1, 0, null, new Randoms());
+		InstanceList trained;
+		try
+		{
+			trained = getInstanceData( path, purpose, specify );
+			ngram.estimate( trained, 200, 1, 0, null, new Randoms() );
+		}
+		catch ( IOException e )
+		{
+			e.printStackTrace();
+		}
+
 		return ngram;
 		}
 
@@ -408,10 +422,10 @@ public class Ngram implements NGrams
 	public HashMap<String, List<String>> getTopicNgramsDocument( int docID, int max, double threshold, int numTopics, int numWords, boolean weight )
 	{
 		
-			HashMap<String, List<String>> h = new HashMap<String, List<String>>();
-			List<String> topdoc = new ArrayList<String>();//getListDocumentTopic(m,threshold,max,weight);
+		HashMap<String, List<String>> h = new HashMap<String, List<String>>();
+		List<String> topdoc = new ArrayList<String>();// getListDocumentTopic(m,threshold,max,weight);
 		List<String> topics = getListTopicsNgrams( tng, numWords, false );
-			 int docLen;
+		int docLen;
 		double topicDist[] = new double[tng.numTopics];
 		docLen = tng.topics[docID].length;
 			      for (int ti = 0; ti < numTopics; ti++)
@@ -704,10 +718,9 @@ public class Ngram implements NGrams
 
 	// this method is used to return an integer which corresponds to the
 	// Author/Conference/Years/Publication ID from db
-	public int maptoRealDatabaseID( String id )
+	public int maptoRealDatabaseID( String id ) throws Exception
 	{
 		int docID = -1;
-
 		for ( int i = 0; i < tng.ilist.size(); i++ )
 		{
 			String trial = tng.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" );
