@@ -1,6 +1,7 @@
 package de.rwth.i9.palm.analytics.opennlp;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -104,7 +105,8 @@ public class OpenNLPImpl implements OpenNLP
 			try
 			{
 				// sentence detector
-				modelIn = getClass().getResourceAsStream( appService.getOpenNLPSentence() );
+				modelIn = new FileInputStream(appService.getOpenNLPSentence());
+				//getClass().getResourceAsStream( appService.getOpenNLPSentence() );
 				final SentenceModel sentenceModel = new SentenceModel( modelIn );
 				modelIn.close();
 				sentenceDetector = new SentenceDetectorME( sentenceModel );
@@ -153,7 +155,8 @@ public class OpenNLPImpl implements OpenNLP
 			{
 				// tokenizer
 				logger.info( "Loading tokenizer model" );
-				modelIn = getClass().getResourceAsStream( appService.getOpenNLPTokenizer() );
+				modelIn = new FileInputStream( appService.getOpenNLPTokenizer() );
+				//getClass().getResourceAsStream( appService.getOpenNLPTokenizer() );
 				final TokenizerModel tokenModel = new TokenizerModel( modelIn );
 				modelIn.close();
 				tokenizer = new TokenizerME( tokenModel );
@@ -191,7 +194,8 @@ public class OpenNLPImpl implements OpenNLP
 			{
 				// tagger
 				logger.info( "Loading part-of-speech model" );
-				modelIn = getClass().getResourceAsStream( appService.getOpenNLPPos() );
+				modelIn = new FileInputStream( appService.getOpenNLPPos() );
+				//getClass().getResourceAsStream( appService.getOpenNLPPos() );
 				final POSModel posModel = new POSModel( modelIn );
 				modelIn.close();
 				posTagger = new POSTaggerME( posModel );
@@ -283,7 +287,8 @@ public class OpenNLPImpl implements OpenNLP
 		try
 		{
 			logger.info( "Loading " + type + " named entity model" );
-			modelIn = getClass().getResourceAsStream( String.format( appService.getOpenNLPNamefinderFormat(), type ) );
+			modelIn = new FileInputStream(  String.format( appService.getOpenNLPNamefinderFormat(), type ));
+			//getClass().getResourceAsStream( String.format( appService.getOpenNLPNamefinderFormat(), type ) );
 			final TokenNameFinderModel nameFinderModel = new TokenNameFinderModel( modelIn );
 			modelIn.close();
 			return new NameFinderME( nameFinderModel );
@@ -424,7 +429,8 @@ public class OpenNLPImpl implements OpenNLP
 			{
 				// parser
 				logger.info( "Loading the parser model" );
-				modelIn = getClass().getResourceAsStream( appService.getOpenNLPParser() );
+				modelIn = new FileInputStream( appService.getOpenNLPParser() );
+				//getClass().getResourceAsStream( appService.getOpenNLPParser() );
 				final ParserModel parseModel = new ParserModel( modelIn );
 				modelIn.close();
 				parser = ParserFactory.create( parseModel );
@@ -497,7 +503,8 @@ public class OpenNLPImpl implements OpenNLP
 		InputStream modelIn = null;
 		try
 		{
-			modelIn = getClass().getResourceAsStream( appService.getOpenNLPChunker() );
+			modelIn = new FileInputStream( appService.getOpenNLPChunker() );
+			//getClass().getResourceAsStream( appService.getOpenNLPChunker() );
 			model = new ChunkerModel( modelIn );
 		}
 		catch ( IOException e )
