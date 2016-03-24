@@ -18,8 +18,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeSet;
 
-import org.junit.Test;
-
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
@@ -31,7 +29,6 @@ public class Ngram implements NGrams
 	public String path = "C:/Users/Piro/Desktop/";
 	public TopicalNGrams tng = createModel( path, "Years", "Trainer", 11 );;
 
-	@Test
 	public void test() throws Exception
 	{	
 
