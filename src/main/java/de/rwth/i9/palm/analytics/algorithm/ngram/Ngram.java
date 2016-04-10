@@ -29,13 +29,11 @@ import cc.mallet.util.Randoms;
 public class Ngram implements NGrams
 {
 	public String path = "C:/Users/Piro/Desktop/";
-	public TopicalNGrams tng = createModel( path, "Years", "Trainer", 11 );;
+	public TopicalNGrams tng = createModel( path, "Years", "Trainer", 20 );
 
 	@Test
 	public void test() throws Exception
 	{	
-
-		
 		try{
 			// call the TopicalNGrams methods with the following parameters by Blei
 			// numTopics=100 , alpha = 1.0, beta = 0.001, gamma = 0.1, delta = 0.001, delta1 = 0.2, delta2=1000.0
@@ -657,6 +655,7 @@ public class Ngram implements NGrams
 			 double[] euc = new double[tng.ilist.size()];
 			 double[] pea = new double[tng.ilist.size()];
 			 int i = 0;
+			int count = 5;
 			 for (Entry<String, List<Double>> entry1 : getDoumentTopicProportion(tng).entrySet()){
 				 
 				 cos[i] = similarity.cosineSimilarity( entry.getValue(), entry1.getValue() );
@@ -672,8 +671,10 @@ public class Ngram implements NGrams
 				 if (pea[i] > 0.5 && pea[i] < 1.0){
 					 p = true;
 				 }
-				 if ( (c && e) || (e && p) || (c && p) ){
-					 recommend.add( entry1.getKey() );
+				if ( ( ( count > 0 ) && ( c && e ) || ( e && p ) || ( c && p ) ) )
+				{
+					recommend.add( entry1.getKey() );
+					count--;
 				 }
 				 i++;
 			 	}
