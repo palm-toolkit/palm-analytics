@@ -1,6 +1,10 @@
+de.rwth.i9.palm.analytics.algorithm.LabeledLDA
+de.rwth.i9.palm.analytics.algorithm.clustering
 de.rwth.i9.palm.analytics.algorithm.corephrase
 de.rwth.i9.palm.analytics.algorithm.cvalue
+de.rwth.i9.palm.analytics.algorithm.dynamicLDA
 de.rwth.i9.palm.analytics.algorithm.lda
+de.rwth.i9.palm.analytics.algorithm.ngram
 de.rwth.i9.palm.analytics.api
 de.rwth.i9.palm.analytics.config
 de.rwth.i9.palm.analytics.opennlp
