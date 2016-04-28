@@ -1,5 +1,8 @@
 package de.rwth.i9.palm.analytics.algorithm.ngram;
 
+/**
+ * author piro
+ */
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,10 +37,16 @@ public interface NGrams
 	
 	/**
 	 * 
-	 * @param m
-	 * @return
+	 * @return number of topics existing in the model
 	 */
-	public int getNumTopics( TopicalNGrams m );
+	public int getNumTopics();
+
+	/**
+	 * 
+	 * @return the number of instances of the model 1 instance created for each
+	 *         document
+	 */
+	public int getNumIntances();
 
 	/**
 	 * 
@@ -84,7 +93,7 @@ public interface NGrams
 	 * @param m
 	 * @return
 	 */
-	public HashMap<String, List<Double>> getDoumentTopicProportion(TopicalNGrams m);
+	public HashMap<String, List<Double>> getDoumentTopicProportion();
 	
 	/**
 	 * 
@@ -196,14 +205,22 @@ public interface NGrams
 	 * @param choise
 	 * @return
 	 */
-	public HashMap<String, HashMap<List<String>, List<Double>>> similarityResult (TopicalNGrams tng, int choise);
+	public HashMap<String, List<String>> calculateSimilarity( int choise, int maxresult );
 	
 	/**
 	 *  
 	 * @param tng
 	 * @return
 	 */
-	public HashMap<String, List<String>> recommendSimilar(TopicalNGrams tng);
+	public HashMap<String, List<String>> recommendSimilar( int maxresult );
+
+	/**
+	 * 
+	 * @param id
+	 * @param maxresult
+	 * @return
+	 */
+	public List<String> recommendedEntity( String id, int maxresult );
 
 	/**
 	 * 

@@ -42,7 +42,8 @@ import cc.mallet.util.Randoms;
 		Alphabet uniAlphabet;
 		Alphabet biAlphabet;
 		double alpha, beta, gamma, delta, tAlpha, vBeta, vGamma, delta1, delta2;
-		InstanceList ilist; // containing FeatureSequenceWithBigrams in the data field of each instance
+	public InstanceList ilist; // containing FeatureSequenceWithBigrams in the
+								// data field of each instance
 		int[][] topics; // {0...T-1}, the topic index, indexed by <document index, sequence index>
 		int[][] grams; // {0,1}, the bigram status, indexed by <document index, sequence index> TODO: Make this boolean?
 		int numTypes; // number of unique unigrams
