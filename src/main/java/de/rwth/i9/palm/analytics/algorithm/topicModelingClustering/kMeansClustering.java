@@ -64,7 +64,7 @@ public class kMeansClustering
 	public double[][] getTopicModelingResults( Ngram ngrams )
 	{
 		// ngrams.createModel( path, purpose, specify, 20 );
-		double[][] topicModelingResults = addInstances( ngrams.getDoumentTopicProportion(), ngrams.getNumIntances(), ngrams.getNumTopics() );
+		double[][] topicModelingResults = addInstances( ngrams.getDoumentTopicProportion(), ngrams.getNumInstances(), ngrams.getNumTopics() );
 		return topicModelingResults;
 	}
 

@@ -46,7 +46,7 @@ public interface NGrams
 	 * @return the number of instances of the model 1 instance created for each
 	 *         document
 	 */
-	public int getNumIntances();
+	public int getNumInstances();
 
 	/**
 	 * 
@@ -208,12 +208,36 @@ public interface NGrams
 	public HashMap<String, List<String>> calculateSimilarity( int choise, int maxresult );
 	
 	/**
+	 * 
+	 * @param id
+	 * @param maxresult
+	 * @return
+	 */
+	public List<String> similarEntities( String id, int maxresult );
+
+	/**
 	 *  
 	 * @param tng
 	 * @return
 	 */
 	public HashMap<String, List<String>> recommendSimilar( int maxresult );
 
+	/**
+	 * 
+	 * @param similarityMeasure
+	 * @param maxresult
+	 * @return
+	 */
+	public HashMap<String, LinkedHashMap<String, Double>> calculateSimilarityMap( int similarityMeasure, int maxresult );
+
+	/**
+	 * 
+	 * @param id
+	 * @param maxresult
+	 * @param similarityMeasure
+	 * @return
+	 */
+	public List<String> similarEntitiesMap( String id, int maxresult, int similarityMeasure );
 	/**
 	 * 
 	 * @param id

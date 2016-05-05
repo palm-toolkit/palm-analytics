@@ -141,46 +141,6 @@ public class Ngram implements NGrams
 				}
 			}
 			end = System.nanoTime();
-
-//			 start = System.nanoTime();
-//			 System.out.println( "________________________TEST FOR SIMILARITY MEASUREMENTS AND RECOMMENDED PUBLICATIONS __________________________" );
-//			 similarityMeasures similarity = new similarityMeasures();
-//			 for (Entry<String, List<Double>> entry : getDoumentTopicProportion(tng).entrySet()){
-//				 double[] cos = new double[tng.ilist.size()];
-//				 double[] euc = new double[tng.ilist.size()];
-//				 double[] pea = new double[tng.ilist.size()];
-//				 int i = 0;
-//				 //System.out.println(entry.getKey()  + " Compared to : " ); 
-//				 System.out.println("Recommended Documents for : " + entry.getKey() );
-//				 for (Entry<String, List<Double>> entry1 : getDoumentTopicProportion(tng).entrySet()){
-//					 //System.out.print(entry1.getKey() + " ");
-//					 cos[i] = similarity.cosineSimilarity( entry.getValue(), entry1.getValue() );
-//					 euc[i] = similarity.sqrtEuclidianSimilarity( entry.getValue(), entry1.getValue() );
-//					 pea[i] = similarity.pearsonCorrelation( entry.getValue(), entry1.getValue() );
-//					 boolean c = false, e = false ,p = false;
-//					 if (cos[i] > 0.5 && cos[i] < 1.0){
-////						 System.out.print(" C " + entry1.getKey() + " ");
-////						 System.out.println(" " + cos[i] + " ");
-//						 c = true;
-//					 }
-//					 if (euc[i] < 0.6 && euc[i] >= 0){
-////						 System.out.print(" E " + entry1.getKey() + " ");
-////						 System.out.println(" " + euc[i] + " ");
-//						 e = true;
-//					 }
-//					 if (pea[i] > 0.5 && pea[i] < 1.0){
-////						 System.out.print(" P " + entry1.getKey() + " ");
-////						 System.out.println(" " + pea[i] + " ");
-//						 p = true;
-//					 }
-//					 if ( (c && e) || (e && p) || (c && p) ){
-//						 System.out.println(entry1.getKey());
-//					 }
-//					 i++;
-//				 	}
-//				 System.out.println("* END RECOMMENDATION FOR THIS PUBLICATION *");
-//				 }
-//			 end = System.nanoTime();
 			 
 			for ( Entry<String, List<String>> entry : recommendSimilar( 6 ).entrySet() )
 			{
@@ -197,7 +157,7 @@ public class Ngram implements NGrams
 
 			System.out.println( "_____________________________________________________________________________________" );
 			System.out.println( "TEST THE SIMILARITY RETRIEVAL METHOD" );
-			for ( Entry<String, List<String>> entry : calculateSimilarity( 1, 5 ).entrySet() )
+			for ( Entry<String, List<String>> entry : calculateSimilarity( 1, 10 ).entrySet() )
 			{
 				System.out.println( "Similar to :" + entry.getKey() );
 				int i = 1;
@@ -207,6 +167,22 @@ public class Ngram implements NGrams
 					i++;
 				}
 			}
+			
+			System.out.println( "_____________________________________________________________________________________" );
+			System.out.println( "TEST THE SIMILARITY MAP RETRIEVAL METHOD" );
+			for ( Entry<String, LinkedHashMap<String, Double>> entry : calculateSimilarityMap( 1, 10 ).entrySet() )
+			{
+				System.out.println( "Similar to :" + entry.getKey() );
+				int i = 1;
+				for ( Entry<String, Double> value : entry.getValue().entrySet() )
+				{
+					System.out.println( i + ". " + value.getKey() + " -> " + value.getValue() );
+					i++;
+				}
+			}
+			
+			
+
 			// // run the method to get topic proportions for each doc.
 			// // printDocTopicprobs(tng, path, "Authors", "Trainer");
 			//
@@ -262,7 +238,7 @@ public class Ngram implements NGrams
 		return tng.numTopics;
 	}
 
-	public int getNumIntances()
+	public int getNumInstances()
 	{
 		return tng.ilist.size();
 	}
@@ -621,7 +597,7 @@ public class Ngram implements NGrams
 	public HashMap<String, List<String>> calculateSimilarity( int similarityMeasure, int maxresult )
 	{
 		HashMap<String, List<String>> distance = new HashMap<String, List<String>>();
-		
+		LinkedHashMap<String, List<String>> topicdistance = new LinkedHashMap<String, List<String>>();
 		HashMap<String, List<Double>> topicProportions = new HashMap<String, List<Double>>();
 		topicProportions = getDoumentTopicProportion();
 
@@ -648,6 +624,12 @@ public class Ngram implements NGrams
 					similarityperElement[i] = similarity.pearsonCorrelation( entry.getValue(), entry1.getValue() );
 					}
 				}
+
+				// compute the Manhattan distance between each of the topic
+				// distributions
+				// pick the 3 smallest distances and put them into a map to
+				// retrieve later
+
 				i++;
 			 }
 			similarityMatrix[k] = similarityperElement;
@@ -677,7 +659,7 @@ public class Ngram implements NGrams
 						index = j;
 					}
 				}
-				similarIds.add( tng.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) );
+				similarIds.add( tng.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
 				similarityMatrix[i][index] = -1;
 				N++;
 			}
@@ -702,6 +684,106 @@ public class Ngram implements NGrams
 		}
 		return result;
 	}
+
+	// topics wihch contribute to high similarity
+	public LinkedHashMap<String, List<String>> similarTopics( String id, int maxresult )
+	{
+		LinkedHashMap<String, List<String>> result = new LinkedHashMap<String, List<String>>();
+
+		return result;
+	}
+
+	// creates a hashmap <String, List<Double>> holding for each document, its
+	// distance with other documents (can be used later on for publications and
+	// authors)
+	// the second parameter is used to specify which similarity measurement will
+	// be used among Euclidian(0), Cosine(1), Pearson(2)
+	public HashMap<String, LinkedHashMap<String, Double>> calculateSimilarityMap( int similarityMeasure, int maxresult )
+	{
+		HashMap<String, LinkedHashMap<String, Double>> distance = new HashMap<String, LinkedHashMap<String, Double>>();
+
+		HashMap<String, List<Double>> topicProportions = new HashMap<String, List<Double>>();
+		topicProportions = getDoumentTopicProportion();
+
+		similarityMeasures similarity = new similarityMeasures();
+		double[][] similarityMatrix = new double[tng.ilist.size()][tng.ilist.size()];
+
+		// create the matrix which will hold the distances of each document from
+		// all the other documents
+		int k = 0;
+		for ( Entry<String, List<Double>> entry : topicProportions.entrySet() )
+		{
+			int i = 0;
+			double[] similarityperElement = new double[tng.ilist.size()];
+			for ( Entry<String, List<Double>> entry1 : topicProportions.entrySet() )
+			{
+				switch ( similarityMeasure ) {
+				case 0: {
+					similarityperElement[i] = similarity.sqrtEuclidianSimilarity( entry.getValue(), entry1.getValue() );
+				}
+				case 1: {
+					similarityperElement[i] = similarity.cosineSimilarity( entry.getValue(), entry1.getValue() );
+				}
+				case 2: {
+					similarityperElement[i] = similarity.pearsonCorrelation( entry.getValue(), entry1.getValue() );
+				}
+				}
+				i++;
+			}
+			similarityMatrix[k] = similarityperElement;
+			k++;
+		}
+
+		// for each document find the top similar elements, take their id, and
+		// put them to
+
+		for ( int i = 0; i < similarityMatrix.length; i++ )
+		{
+			// the list of similar elements
+			LinkedHashMap<String, Double> similarIds = new LinkedHashMap<String, Double>();
+			// number of maximums you will have to find
+			int N = 0;
+
+			int index = -1;
+			while ( N < maxresult )
+			{
+				double max = similarityMatrix[i][0];
+				// find the maximum in array
+				for ( int j = 0; j < similarityMatrix[i].length; j++ )
+				{
+					if ( similarityMatrix[i][j] >= max )
+					{
+						max = similarityMatrix[i][j];
+						index = j;
+					}
+				}
+				similarIds.put( tng.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), max );
+				similarityMatrix[i][index] = -1;
+				N++;
+			}
+			distance.put( tng.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+		}
+		return distance;
+	}
+
+	// returns the List of top similar entities (author, publication etc)
+	public List<String> similarEntitiesMap( String id, int maxresult, int similarityMeasure )
+	{
+		List<String> result = new ArrayList<String>();
+		HashMap<String, LinkedHashMap<String, Double>> similarMap = new HashMap<String, LinkedHashMap<String, Double>>();
+		similarMap = calculateSimilarityMap( similarityMeasure, maxresult );
+		if ( similarMap.containsKey( id ) )
+		{
+			for ( Entry<String, Double> value : similarMap.get( id ).entrySet() )
+				result.add( value.getKey() );
+		}
+		else
+		{
+			result.add( "Element not found in our list" );
+		}
+		return result;
+	}
+
 	// based on similarity results, we recommend most similar publications/authors 
 	// criteria for this is that a pub. is considered "similar" by at least two similarity measures 
 	public HashMap<String, List<String>> recommendSimilar( int maxresult )
@@ -731,6 +813,7 @@ public class Ngram implements NGrams
 				 if (pea[i] > 0.5 && pea[i] < 1.0){
 					 p = true;
 				 }
+
 				if ( ( count > 0 ) && ( ( c && e ) || ( e && p ) || ( c && p ) ) )
 				{
 					recommend.add( entry1.getKey() );
@@ -817,5 +900,4 @@ public class Ngram implements NGrams
 		}
 		return docID;
 	}
-
 }
