@@ -17,8 +17,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeSet;
 
-import org.junit.Test;
-
 import cc.mallet.topics.MarginalProbEstimator;
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.IDSorter;
@@ -26,15 +24,12 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
 import de.rwth.i9.palm.analytics.algorithm.lda.importData;
 
-//@RunWith( SpringJUnit4ClassRunner.class )
-//@ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
 public class DynamicLDA implements DynamicTopicModel
 {	
 	public String path = "C:\\Users\\Piro\\Desktop\\Years\\";
 	public ParallelTopicModel years = createModel(path, "Years", 11 , 10);
 	public TemporalTopicModel tot;
 	
-	@Test
 	public void test() throws Exception
 	{	
 		

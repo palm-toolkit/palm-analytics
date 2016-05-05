@@ -10,35 +10,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeSet;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 import cc.mallet.topics.MarginalProbEstimator;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
-import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
-import de.rwth.i9.palm.analytics.config.AppConfig;
 
-@RunWith( SpringJUnit4ClassRunner.class )
-@ContextConfiguration( classes = AppConfig.class, loader = AnnotationConfigContextLoader.class )
-@TransactionConfiguration
-@Transactional
 public class LDAJob implements Lda
 {	
-@Test
-public void test() throws Exception {
+	public void test() throws Exception
+	{
 	
 	try {
 			 String path = "C:/Users/Piro/Desktop/";
