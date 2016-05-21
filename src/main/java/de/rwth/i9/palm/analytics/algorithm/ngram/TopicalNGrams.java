@@ -150,7 +150,7 @@ import cc.mallet.util.Randoms;
 				System.out.flush();
 				if (showTopicsInterval != 0 && iterations % showTopicsInterval == 0 && iterations > 0) {
 					System.out.println ();
-					printTopWords (5, false);
+				printTopWords( 10, false );
 				}
 	      if (outputModelInterval != 0 && iterations % outputModelInterval == 0 && iterations > 0) {
 	        this.write (new File(outputModelFilename+'.'+iterations));
@@ -589,23 +589,76 @@ import cc.mallet.util.Randoms;
 		    return out.toString();
 	  }
 	  
-	  public HashMap<String, List<Double>> documentAllTopicsasMap ()
-	  {
-		  	LinkedHashMap<String, List<Double>> m = new LinkedHashMap<String, List<Double>>();
-		  	
-		    int docLen;
-		    double topicDist[] = new double[topics.length];
-		    for (int di = 0; di < topics.length; di++) {
-		    List<Double> list = new ArrayList<Double>();
-		      docLen = topics[di].length;
-		      for (int ti = 0; ti < numTopics; ti++){
-		        topicDist[ti] = (((float)docTopicCounts[di][ti])/docLen);
-		        list.add( topicDist[ti] );
-		      }
-		      m.put( ilist.get(di).getSource().toString().replace( "\\",";").split( ";" )[6].replace( ".txt", "" ), list );
+	public HashMap<String, List<Double>> documentAllTopicsasMap()
+	{
+		LinkedHashMap<String, List<Double>> m = new LinkedHashMap<String, List<Double>>();
+
+		int docLen;
+		double topicDist[] = new double[topics.length];
+		for ( int di = 0; di < topics.length; di++ )
+		{
+			List<Double> list = new ArrayList<Double>();
+			docLen = topics[di].length;
+			for ( int ti = 0; ti < numTopics; ti++ )
+			{
+				topicDist[ti] = ( ( (float) docTopicCounts[di][ti] ) / docLen );
+				list.add( topicDist[ti] );
+			}
+			m.put( ilist.get( di ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), list );
 		    }
 		    return m;
-	  }
+	}
+
+	public HashMap<String, List<Double>> documentTransposedAllTopicsasMap()
+	{
+		LinkedHashMap<String, List<Double>> m = new LinkedHashMap<String, List<Double>>();
+		float[][] inverseTopicCounts = new float[topics.length][numTopics];
+		float[][] inverseTopicDistribution = new float[numTopics][topics.length];
+		double topicDist[] = new double[topics.length];
+		int docLen;
+		for ( int di = 0; di < topics.length; di++ )
+		{
+			docLen = topics[di].length;
+			for ( int ti = 0; ti < numTopics; ti++ )
+			{
+				inverseTopicCounts[di][ti] = ( ( (float) docTopicCounts[di][ti] ) / docLen );
+			}
+		}
+		
+		inverseTopicDistribution = trasposeMatrix( inverseTopicCounts );
+		
+		for ( int ti = 0; ti < numTopics; ti++ )
+		{
+			List<Double> list = new ArrayList<Double>();
+			docLen = topics[ti].length;
+			for ( int di = 0; di < topics.length; di++ )
+			{
+				topicDist[di] = ( ( (float) inverseTopicDistribution[ti][di] ) );
+				list.add( topicDist[di] );
+			}
+			m.put( ti + "", list );
+		}
+
+		return m;
+	}
+
+	public static float[][] trasposeMatrix( float[][] matrix )
+	{
+		int m = matrix.length;
+		int n = matrix[0].length;
+
+		float[][] trasposedMatrix = new float[n][m];
+
+		for ( int x = 0; x < n; x++ )
+		{
+			for ( int y = 0; y < m; y++ )
+			{
+				trasposedMatrix[x][y] = matrix[y][x];
+			}
+		}
+
+		return trasposedMatrix;
+	}
 	  
 	  public String documentAllTopics ()
 	  {
@@ -774,7 +827,7 @@ import cc.mallet.util.Randoms;
 			int numTopWords = args.length > 2 ? Integer.parseInt(args[2]) : 20;
 			System.out.println ("Data loaded.");
 			TopicalNGrams tng = new TopicalNGrams (10);
-			tng.estimate (ilist, 200, 1, 0, null, new Randoms());
+		tng.estimate( ilist, 50, 1, 0, null, new Randoms() );
 			tng.printTopWords (60, true);
 		}
 

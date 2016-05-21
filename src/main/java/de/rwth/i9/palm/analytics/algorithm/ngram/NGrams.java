@@ -1,18 +1,10 @@
 package de.rwth.i9.palm.analytics.algorithm.ngram;
 
-/**
- * author piro
- */
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.TreeSet;
 
-import cc.mallet.topics.ParallelTopicModel;
-import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
 
 public interface NGrams
@@ -25,9 +17,18 @@ public interface NGrams
 	 * @return
 	 * @throws IOException
 	 */
-	public InstanceList getInstanceData( String path, String purpose, String specify ) throws IOException;
+	public InstanceList getInstanceDataDirectoryLevel( String path, String purpose, String specify ) throws IOException;
 	
 	
+	/**
+	 * 
+	 * @param docID
+	 * @param numWords
+	 * @param weight
+	 * @return
+	 */
+	public HashMap<String, List<String>> getEvolutionofTopicOverTime( int docID, int numWords, boolean weight );
+
 	/**
 	 * 
 	 * @param numTopics
@@ -57,7 +58,7 @@ public interface NGrams
 	 * @return
 	 * @throws IOException
 	 */
-	public TopicalNGrams createModel(String path, String purpose, String specify, int numTopics) throws IOException;
+	public TopicalNGrams createModel( String path, String purpose, String specify, int numTopics ) throws IOException;
 
 	/**
 	 * 
@@ -131,12 +132,6 @@ public interface NGrams
 	 */
 	public List<String> getListTopicsNgrams (TopicalNGrams m, int nwords, boolean weight);	
 		
-	/**
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	public  File createTempDirectory() throws IOException;
 
 	/**
 	 * 
@@ -145,14 +140,6 @@ public interface NGrams
 	 */
 	public void getRandomTrainerFiles(String path, String purpose);
 
-	/**
-	 * 
-	 * @param path
-	 * @param purpose
-	 * @param specify
-	 * @throws IOException
-	 */
-	public void DocTopicMapper(String path, String purpose, String specify) throws IOException;
 		
 	/**
 	 *  
@@ -168,7 +155,31 @@ public interface NGrams
 	public HashMap<String, List<String>> getTopicNgramsDocument( int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
 
 	/**
-	 *  
+	 * 
+	 * @param docID
+	 * @param max
+	 * @param threshold
+	 * @param numTopics
+	 * @param numWords
+	 * @param weight
+	 * @return
+	 */
+	public HashMap<String, List<String>> getTopTopicUnigramsDocument( int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
+
+	/**
+	 * 
+	 * @param docID
+	 * @param max
+	 * @param threshold
+	 * @param numTopics
+	 * @param numWords
+	 * @param weight
+	 * @return
+	 */
+	public HashMap<String, List<String>> getTopTopicNgramsDocument( int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
+
+	/**
+	 * 
 	 * @param m
 	 * @param docID
 	 * @param max
@@ -179,25 +190,6 @@ public interface NGrams
 	 * @return
 	 */
 	public HashMap<String, List<String>> getTopicUnigramsDocument( int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
-	
-	/**
-	 * 
-	 * @param m
-	 * @param docID
-	 * @param max
-	 * @param threshold
-	 * @param numTopics
-	 * @return
-	 */
-	public HashMap<String, List<String>> getAllDocumentTopics( ParallelTopicModel m, int docID, int max, double threshold, int numTopics );
-	
-	/**
-	 * 
-	 * @param m
-	 * @param numTopics
-	 * @return
-	 */
-	public ArrayList<TreeSet<IDSorter>> getSortedWords( ParallelTopicModel m, int numTopics );
 	
 	/**
 	 * 
