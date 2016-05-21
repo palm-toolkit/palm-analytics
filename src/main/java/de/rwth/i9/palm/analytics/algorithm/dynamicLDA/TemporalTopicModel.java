@@ -215,6 +215,10 @@ public class TemporalTopicModel
 		return d;
 	}
 	
+
+	/*
+	 * Convert from integer to Integer
+	 */
 	public  Integer[] getInteger(int[] array){
 		Integer[] d = new Integer[array.length];
 		int i = 0;

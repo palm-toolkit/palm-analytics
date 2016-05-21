@@ -1,6 +1,5 @@
 package de.rwth.i9.palm.analytics.algorithm.lda;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,33 +103,19 @@ public interface Lda
 	 * 		   Refer to: <i> https://en.wikipedia.org/wiki/Perplexity </i>
 	 */
 	public void evaluateModel(ParallelTopicModel m, String path, String purpose, String specify);
+
 	
-	/**
-	 * 
-	 * @return This method is tested but never used. Purpose of implementation: Use temporary files for calculation
-	 * @throws IOException
-	 */
-	public File createTempDirectory() throws IOException;
-	
-	/**
-	 * 
-	 * @param path
-	 * @param purpose
-	 * 			Gets ca. 20% of the corpus of documents for training purposes
-	 * 			Used later on for inferencing topics to new documents
-	 */
-	public void getRandomTrainerFiles(String path, String purpose);
-	
-	/**
-	 * 
-	 * @param path
-	 * @param purpose
-	 * @param specify
-	 * @throws IOException
-	 * 			Used when the results were on file format. Mapping list of topics
-	 * 			with topic distribution for each instance.
-	 */
-	public void DocTopicMapper(String path, String purpose, String specify) throws IOException;
+	// /**
+	// *
+	// * @param path
+	// * @param purpose
+	// * @param specify
+	// * @throws IOException
+	// * Used when the results were on file format. Mapping list of topics
+	// * with topic distribution for each instance.
+	// */
+	// public void DocTopicMapper(String path, String purpose, String specify)
+	// throws IOException;
 	
 	/**
 	 * 

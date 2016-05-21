@@ -17,6 +17,8 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeSet;
 
+import org.junit.Test;
+
 import cc.mallet.topics.MarginalProbEstimator;
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.IDSorter;
@@ -30,46 +32,52 @@ public class DynamicLDA implements DynamicTopicModel
 	public ParallelTopicModel years = createModel(path, "Years", 11 , 10);
 	public TemporalTopicModel tot;
 	
+	@Test
 	public void test() throws Exception
 	{	
 		
 		try{			
 			// Temporal Topic Modeling 
 		
-//			tot = createTemporalTopicModel(11, 10, 30);
-//			
-//			double[][] beta = new double[10][];
-//			beta = tot.betaDistrByTopic;
-//			
-//			System.out.println(" BETA ------------");
-//			for(int i = 0; i<beta.length;i++){
-//				for (int j =0; j<beta[i].length; j++){
-//					System.out.print(beta[i][j] + " ");
-//			}
-//			System.out.println();
-//		}
-//			
-//			
-//			double [][] theta = new double[years.data.size()][tot.K];
-//			theta = tot.getTheta();
-//			System.out.println(" THETA ------------");
-//			for(int i = 0; i<theta.length;i++){
-//				for (int j =0; j<theta[i].length; j++){
-//					System.out.print(theta[i][j] + " ");
-//				}
-//				System.out.println();
-//			}
-//			
-//			double [][] phi = new double[tot.K][years.alphabet.size()];
-//			phi = tot.getPhi();
-//			System.out.println(" PHI ------------");
-//			for(int i = 0; i<phi.length;i++){
-//				for (int j =0; j<phi[i].length; j++){
-//					System.out.print(phi[i][j] + " ");
-//				}
-//				System.out.println();
-//			}
-//
+			tot = createTemporalTopicModel( 15, 20, 1000 );
+
+			double[][] beta = new double[10][];
+			beta = tot.betaDistrByTopic;
+
+			System.out.println( " BETA ------------" );
+			for ( int i = 0; i < beta.length; i++ )
+			{
+				for ( int j = 0; j < beta[i].length; j++ )
+				{
+					System.out.print( beta[i][j] + " " );
+				}
+				System.out.println();
+			}
+
+			double[][] theta = new double[years.data.size()][tot.K];
+			theta = tot.getTheta();
+			System.out.println( " THETA ------------" );
+			for ( int i = 0; i < theta.length; i++ )
+			{
+				for ( int j = 0; j < theta[i].length; j++ )
+				{
+					System.out.print( theta[i][j] + " " );
+				}
+				System.out.println();
+			}
+
+			double[][] phi = new double[tot.K][years.alphabet.size()];
+			phi = tot.getPhi();
+			System.out.println( " PHI ------------" );
+			for ( int i = 0; i < phi.length; i++ )
+			{
+				for ( int j = 0; j < phi[i].length; j++ )
+				{
+					System.out.print( phi[i][j] + " " );
+				}
+				System.out.println();
+			}
+
 //			String indexes[][] = getWordsperTopic(years, tot);
 //			System.out.println("ALL WORDS ------------");
 //			for(int i = 0; i< indexes.length;i++){
@@ -87,47 +95,49 @@ public class DynamicLDA implements DynamicTopicModel
 //				}
 //				System.out.println();
 //			}
-//		
-//			System.out.println("-----");
-//			for (Entry<String, List<String>> entry : getTopWordperTemporalTopic(10).entrySet()){
-//				System.out.print(entry.getKey());
-//				for (String list: entry.getValue())
-//					System.out.print(" " + list + " ");
-//				System.out.println();
-//			}
-//			
-//			
-//			for (Entry<Integer, List<Double>> entry : getTemporalTopicDistribution().entrySet()){
-//				System.out.print(entry.getKey());
-//				for (Double list: entry.getValue())
-//					System.out.print(" " + list + " ");
-//				System.out.println();
-//			}
-//			
-//			
-//			for (Entry<String, List<Double>> entry : TemporalTopicEvolution().entrySet()){
-//				System.out.print(entry.getKey());
-//				for (Double list: entry.getValue())
-//					System.out.print(" " + list + " ");
-//				System.out.println();
-//			}
-			
-			// Discrete Topic Modeling 
-			
-			
-			List<String> s = new ArrayList<String>();
-			s =  getListTopics( 10);
-			
-			int a = years.data.size();
-			System.out.println(a);
-			for (int i =0; i< 11; i++){
-				System.out.println(s.get( i ));
-				for (Double l : getTopicProportion2(0.0, i, 11, 11)){
-					System.out.print(l + " ");
-				}
+
+			System.out.println( "-----" );
+			for ( Entry<String, List<String>> entry : getTopWordperTemporalTopic( 20 ).entrySet() )
+			{
+				System.out.print( entry.getKey() );
+				for ( String list : entry.getValue() )
+					System.out.print( " " + list + " " );
 				System.out.println();
 			}
 			
+			
+			for ( Entry<Integer, List<Double>> entry : getTemporalTopicDistribution().entrySet() )
+			{
+				System.out.print( entry.getKey() );
+				for ( Double list : entry.getValue() )
+					System.out.print( " " + list + " " );
+				System.out.println();
+			}
+			
+			
+			for ( Entry<String, List<Double>> entry : TemporalTopicEvolution().entrySet() )
+			{
+				System.out.print( entry.getKey() );
+				for ( Double list : entry.getValue() )
+					System.out.print( " " + list + " " );
+				System.out.println();
+			}
+			
+			// Discrete Topic Modeling
+
+			// List<String> s = new ArrayList<String>();
+			// s = getListTopics( 10);
+			//
+			// int a = years.data.size();
+			// System.out.println(a);
+			// for (int i =0; i< 11; i++){
+			// System.out.println(s.get( i ));
+			// for (Double l : getTopicProportion2(0.0, i, 11, 11)){
+			// System.out.print(l + " ");
+			// }
+			// System.out.println();
+			// }
+			//
 //			
 //			for (Entry<String, String[]> entry : getlistTopics(5, 10).entrySet()){
 //				System.out.print(entry.getKey());
@@ -719,10 +729,10 @@ public class DynamicLDA implements DynamicTopicModel
 	 */
 	
 	// method used to create a topic over time topic model
-	public TemporalTopicModel createTemporalTopicModel( int timerange, int numWords, int numiterations )
+	public TemporalTopicModel createTemporalTopicModel( int timerange, int numTopics, int numiterations )
 	{
 		TemporalTopicModel tot = new TemporalTopicModel();		
-		tot.addInstances( wordIndicesperDocument(), generateTimestamps(years.data.size(), timerange), years.alphabet.size(), numWords );
+		tot.addInstances( wordIndicesperDocument(), generateTimestamps( years.data.size(), timerange ), years.alphabet.size(), numTopics );
 		tot.run(numiterations);
 		return tot;
 	}
