@@ -4,6 +4,7 @@ package de.rwth.i9.palm.analytics.algorithm.ngram;
 import java.util.ArrayList;
 import java.util.List;
 
+import cc.mallet.util.Maths;
 public class similarityMeasures
 {
 	double[] a;
@@ -159,6 +160,24 @@ public class similarityMeasures
 			count--;
 		}
 		return indexoftopSimilarTopics;
-		
 	}
+
+	// get the Jensen-Shannon divergence array version
+	// https://en.wikipedia.org/wiki/Jensen%E2%80%93Shannon_divergence
+	public double divergenceJennsenShannon( double[] a, double[] b )
+	{
+		double divergence = 0.0;
+		divergence = Maths.jensenShannonDivergence( a, b );
+		return divergence;
+	}
+
+	// get the Jensen-Shannon divergence list version
+	// public double divergenceJennsenShannon( List<Double> a, List<Double> b )
+	// {
+	// double divergence = 0.0;
+	//
+	// divergence = Maths.jensenShannonDivergence( a.toArray( new Double[0] ),
+	// b.toArray( new Double[0] ) );
+	// return divergence;
+	// }
 }

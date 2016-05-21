@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.junit.Test;
-
 import de.rwth.i9.palm.analytics.algorithm.ngram.Ngram;
 
 public class kMeansClustering
@@ -26,13 +24,13 @@ public class kMeansClustering
 	public Ngram ngrams = new Ngram();
 	public int numIterations = 500;
 
-	@Test
+	// @Test
 	public void test() throws Exception
 	{
 
 		try
 		{	
-			kMeans( 2000, 3 );
+			kMeans( 1000, 2 );
 
 		}
 		catch ( Exception e )
