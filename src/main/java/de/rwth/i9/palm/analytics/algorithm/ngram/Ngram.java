@@ -169,6 +169,13 @@ public class Ngram implements NGrams
 				}
 			}
 			
+			System.out.println( "_____________________________________________________________________________________" );
+			System.out.println( "TEST THE Entity Level Topic Proportion" );
+			for ( String topic : getTopicProportionEntityLevel( 10, false ) )
+			{
+				System.out.println( topic.split( "_-_" )[0] + " -> " + topic.split( "_-_" )[1] );
+			}
+
 			// System.out.println(
 			// "_____________________________________________________________________________________"
 			// );
@@ -423,6 +430,38 @@ public class Ngram implements NGrams
 		return h;
 	}
 	
+	// this is
+	public List<String> getTopicProportionEntityLevel( int nwords, boolean weight )
+	{
+		List<String> topiconEntity = new ArrayList<String>();
+		HashMap<String, List<Double>> unorderedDistributions = getDoumentTopicProportion();
+		String[] topics = getStringTopicsUnigrams( tng, nwords, weight );
+		double[][] overallTopics = new double[unorderedDistributions.size()][unorderedDistributions.get( unorderedDistributions.keySet().toArray()[0] ).size()];
+		
+		int i = 0;
+		// get the topics of publications
+		for ( Entry<String, List<Double>> distributions : unorderedDistributions.entrySet() )
+		{
+			overallTopics[i] = getdouble( distributions.getValue() );
+			i++;
+		}
+
+		// calculate the average for each topic distribution overall
+		// publications of the author (entity)
+		int j = 0;
+		double[] overallavg = new double[overallTopics[0].length];
+		while ( j < overallTopics[0].length )
+		{
+			for ( int k = 0; k < overallTopics.length; k++ )
+			{
+				overallavg[j] += overallTopics[k][j];
+			}
+			overallavg[j] /= overallTopics.length;
+			topiconEntity.add( topics[j] + "_-_" + overallavg[j] );
+			j++;
+		}
+		return topiconEntity;
+	}
 
 	// returns an array of Strings with each element a topic followed by its bag of unigrams
 	public String[] getStringTopicsUnigrams (TopicalNGrams m, int nwords, boolean weight){
@@ -600,6 +639,7 @@ public class Ngram implements NGrams
 	}
 
 	// get the top x toics for a given entitity docID Unigrams
+	// **************************************************************************************************************
 	public HashMap<String, List<String>> getTopTopicUnigramsDocument( int docID, int max, double threshold, int numTopics, int numWords, boolean weight )
 	{
 
@@ -928,8 +968,6 @@ public class Ngram implements NGrams
 		}
 		return result;
 	}
-
-
 
 	// documentAllTopicsasMap <String, List<Double>> &&
 	// documentAllTopicsasMap<String, List<String>>
