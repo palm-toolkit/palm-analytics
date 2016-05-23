@@ -19,6 +19,20 @@ public interface NGrams
 	 */
 	public InstanceList getInstanceDataDirectoryLevel( String path, String purpose, String specify ) throws IOException;
 	
+	/**
+	 * 
+	 * @param id
+	 * @param path
+	 * @param purpose
+	 * @param maxnumTopics
+	 * @param numTopics
+	 * @param numWords
+	 * @param weight
+	 * @param createmodel
+	 * @param unigram
+	 * @return
+	 */
+	public HashMap<String, List<String>> runTopicComposition( String id, String path, String purpose, int numTopics, int maxnumberTopics, int numWords, boolean weight, boolean createmodel, boolean unigram );
 	
 	/**
 	 * 

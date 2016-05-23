@@ -1,12 +1,19 @@
 package de.rwth.i9.palm.analytics.algorithm.ngram;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.*;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
 
-import cc.mallet.pipe.*;
-import cc.mallet.pipe.iterator.*;
-import cc.mallet.types.*;
+import cc.mallet.pipe.CharSequence2TokenSequence;
+import cc.mallet.pipe.Input2CharSequence;
+import cc.mallet.pipe.Pipe;
+import cc.mallet.pipe.SerialPipes;
+import cc.mallet.pipe.TokenSequence2FeatureSequenceWithBigrams;
+import cc.mallet.pipe.TokenSequenceLowercase;
+import cc.mallet.pipe.TokenSequenceRemoveNonAlpha;
+import cc.mallet.pipe.TokenSequenceRemoveStopwords;
+import cc.mallet.pipe.iterator.FileIterator;
+import cc.mallet.types.InstanceList;
 
 
 public class importDataNgram
@@ -18,7 +25,7 @@ public class importDataNgram
 	    }
 
 	    public Pipe buildPipe() {
-	        ArrayList pipeList = new ArrayList();
+		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
 
 	        // Read data from File objects
 	        pipeList.add(new Input2CharSequence("UTF-8"));
