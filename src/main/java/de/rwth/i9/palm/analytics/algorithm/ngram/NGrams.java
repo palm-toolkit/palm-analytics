@@ -21,21 +21,6 @@ public interface NGrams
 	
 	/**
 	 * 
-	 * @param id
-	 * @param path
-	 * @param purpose
-	 * @param maxnumTopics
-	 * @param numTopics
-	 * @param numWords
-	 * @param weight
-	 * @param createmodel
-	 * @param unigram
-	 * @return
-	 */
-	public HashMap<String, List<String>> runTopicComposition( String id, String path, String purpose, int numTopics, int maxnumberTopics, int numWords, boolean weight, boolean createmodel, boolean unigram );
-	
-	/**
-	 * 
 	 * @param docID
 	 * @param numWords
 	 * @param weight
@@ -219,7 +204,7 @@ public interface NGrams
 	 * @param maxresult
 	 * @return
 	 */
-	public List<String> similarEntities( String id, int maxresult );
+	public List<String> similarEntities( String id, int maxresult, int similarityMeasure );
 
 	/**
 	 *  
@@ -273,4 +258,46 @@ public interface NGrams
 	 */
 	public int maptoRealDatabaseID( String id ) throws Exception;
 
+	/**
+	 * 
+	 * @param id
+	 * @param path
+	 * @param purpose
+	 * @param maxnumTopics
+	 * @param numTopics
+	 * @param numWords
+	 * @param weight
+	 * @param createmodel
+	 * @param unigram
+	 * @return
+	 */
+	public HashMap<String, List<String>> runTopicComposition( String id, String path, String purpose, int numTopics, int maxnumberTopics, int numWords, boolean weight, boolean createmodel, boolean unigram );
+
+	/**
+	 * 
+	 * @param path
+	 * @param purpose
+	 * @param id
+	 * @param numWords
+	 * @param numTopics
+	 * @param maxnumTopics
+	 * @param createmodel
+	 * @param weight
+	 * @param unigrams
+	 * @return
+	 */
+	public LinkedHashMap<String, List<String>> runDiscreteTopicEvolution( String path, String purpose, String id, int numWords, int numTopics, int maxnumTopics, boolean createmodel, boolean weight, boolean unigrams );
+
+	/**
+	 * 
+	 * @param id
+	 * @param path
+	 * @param purpose
+	 * @param numTopics
+	 * @param maxResult
+	 * @param similarityMeasure
+	 * @param createModel
+	 * @return
+	 */
+	public List<String> runSimilarEntities( String id, String path, String purpose, int numTopics, int maxResult, int similarityMeasure, boolean createModel );
 }

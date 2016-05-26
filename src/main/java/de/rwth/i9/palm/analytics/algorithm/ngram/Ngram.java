@@ -25,8 +25,10 @@ public class Ngram implements NGrams
 {
 	public String path = "C:/Users/Piro/Desktop/";
 	// c442983a-0099-4d6d-89b1-6cfc57fa6138
-	public TopicalNGrams tng;// = useTrainedData( path, "Author-Test", "TEST1",
-								// 10 );
+	public TopicalNGrams tng;
+
+	// createModel( path, "Year-Test", "114b11c1-3f38-4348-b6ad-34ae7cdfc903",
+	// 10 );// "c442983a-0099-4d6d-89b1-6cfc57fa6138",
 	// public TopicalNGrams temporaltng;
 
 	// public Ngram( String purpose, String specify, int numTopics )
@@ -192,7 +194,17 @@ public class Ngram implements NGrams
 			// i++;
 			// }
 			// }
-			//
+
+			// System.out.println(
+			// "_____________________________________________________________________________________"
+			// );
+			// System.out.println( "TEST GET SIMILAR ENTITIES METHOD" );
+			// for ( String value : similarEntities(
+			// "c442983a-0099-4d6d-89b1-6cfc57fa6138", 5, 3 ) )
+			// {
+			// System.out.println( value );
+			// }
+
 			// System.out.println(
 			// "_____________________________________________________________________________________"
 			// );
@@ -244,13 +256,25 @@ public class Ngram implements NGrams
 			// {
 			// System.out.println( entry.getKey() + "-->" + entry.getValue() );
 			// }
-			//
+
 			// System.out.println(
 			// "_____________________________________________________________________________________"
 			// );
 			// System.out.println( "TEST THE OVERALL ORDERED" );
 			// for ( Entry<String, List<String>> entry :
-			// getEvolutionofTopicOverTime( 0, 5, true ).entrySet() )
+			// getEvolutionofTopicOverTime( 0, 5, false ).entrySet() )
+			// {
+			// System.out.println( entry.getKey() + "-->" + entry.getValue() );
+			// }
+
+			// System.out.println(
+			// "_____________________________________________________________________________________"
+			// );
+			// System.out.println( "TEST THE Topic Evolution" );
+			// for ( Entry<String, List<String>> entry :
+			// runDiscreteTopicEvolution( path, "Year-Test",
+			// "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10, 10, 10, true, false,
+			// true ).entrySet() )
 			// {
 			// System.out.println( entry.getKey() + "-->" + entry.getValue() );
 			// }
@@ -262,15 +286,25 @@ public class Ngram implements NGrams
 			// "_____________________________________________________________________________________"
 			// );
 
-			System.out.println( "________________________RUN THE TOPIC COMPOSITION NEW APPROACH__________________________" );
-			for ( Entry<String, List<String>> entry : runTopicComposition( "c442983a-0099-4d6d-89b1-6cfc57fa6138", path, "Author-Test", 20, 20, 10, false, true, true ).entrySet() )
+			// System.out.println( "________________________RUN THE TOPIC
+			// COMPOSITION NEW APPROACH__________________________" );//
+			// c442983a-0099-4d6d-89b1-6cfc57fa6138
+			// for ( Entry<String, List<String>> entry : runTopicComposition(
+			// "34897615-b042-4e56-88cb-9948fca68363", path, "Author-Test", 20,
+			// 10, 10, false, true, false ).entrySet() )
+			// {
+			// System.out.println( ( entry.getKey() ) );
+			// System.out.println( " **** " );
+			// for ( String z : entry.getValue() )
+			// {
+			// System.out.println( z );
+			// }
+			// }
+
+			System.out.println( "TESTING THE TAG CLOUD MAP" );
+			for ( Entry<String, Double> weight : runweightedTopicComposition( path, "Author-Test", "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10, 10, 10, true, true ).entrySet() )
 			{
-				System.out.println( ( entry.getKey() ) );
-				System.out.println( " **** " );
-				for ( String z : entry.getValue() )
-				{
-					System.out.println( z );
-				}
+				System.out.println( weight.getKey() + " --> " + weight.getValue() );
 			}
 
 		}
@@ -295,7 +329,7 @@ public class Ngram implements NGrams
 
 		if ( entityId.isEmpty() )
 		{
-			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-dir --input C:\\Users\\Piro\\Desktop\\" + purpose + "\\" + purpose + " --keep-sequence-bigrams --remove-stopwords --extra-stopwords C:\\mallet\\stoplists\\extra-stoplist.txt" + "--output C:\\Users\\Piro\\Desktop\\" + purpose + "\\" + purpose + "-N-Authors" + ".mallet" );
+			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-dir --input C:\\Users\\Piro\\Desktop\\" + purpose + "\\" + purpose + " --keep-sequence-bigrams --remove-stopwords --extra-stopwords C:\\mallet\\stoplists\\extra-stoplist.txt" + " --output C:\\Users\\Piro\\Desktop\\" + purpose + "\\MALLET\\" + purpose + "-N-" + purpose + ".mallet" );
 			builder.redirectErrorStream( true );
 			Process p = builder.start();
 			BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
@@ -309,12 +343,12 @@ public class Ngram implements NGrams
 					break;
 				}
 			}
-			InstanceList training = InstanceList.load( new File( path + purpose + "/" + purpose + "-N-Authors.mallet" ) );
+			InstanceList training = InstanceList.load( new File( path + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet" ) );
 			return training;
 		}
 		else
 		{
-			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-dir --input C:\\Users\\Piro\\Desktop\\" + purpose + "\\" + entityId + " --keep-sequence-bigrams --remove-stopwords --stoplist-file C:\\mallet\\stoplists\\extra-stoplist.txt" + " --output C:\\Users\\Piro\\Desktop\\" + purpose + "\\MALLET\\" + entityId + ".mallet" );
+			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-dir --input C:\\Users\\Piro\\Desktop\\" + purpose + "\\" + entityId + " --keep-sequence-bigrams --remove-stopwords --stoplist-file C:\\mallet\\stoplists\\extra-stoplist.txt --output C:\\Users\\Piro\\Desktop\\" + purpose + "\\MALLET\\" + entityId + ".mallet" );
 			builder.redirectErrorStream( true );
 			Process p = builder.start();
 			BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
@@ -409,7 +443,7 @@ public class Ngram implements NGrams
 		// contain dependent on number of files
 		if ( numFiles > 100 )
 		{
-			numTopics = (int) ( numFiles * 0.25 );
+			numTopics = (int) ( numFiles * 0.15 );
 		}
 		else if ( numFiles < 10 )
 		{
@@ -417,6 +451,7 @@ public class Ngram implements NGrams
 		}
 		else
 		{
+			// default number of topics
 			numTopics = 10;
 		}
 
@@ -439,9 +474,16 @@ public class Ngram implements NGrams
 	public TopicalNGrams useTrainedData( String path, String purpose, String entityId, int numTopics )
 	{
 		TopicalNGrams ngram = new TopicalNGrams( numTopics, 50.0, 0.01, 0.01, 0.03, 0.2, 1000 );
-		InstanceList trained = InstanceList.load( new File( path + purpose + "/MALLET/" + entityId + ".mallet" ) );
+		InstanceList trained;
+		if ( entityId == "" )
+		{
+			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet" ) );
+		}
+		else
+			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + entityId + ".mallet" ) );
+
 		if ( !trained.isEmpty() )
-			ngram.estimate( trained, 200, 1, 0, "C:/Users/Piro/Desktop/Model", new Randoms() );
+			ngram.estimate( trained, 200, 1, 0, "C:/Users/Piro/Desktop/Model.txt", new Randoms() );
 		else
 			return null;
 
@@ -712,8 +754,7 @@ public class Ngram implements NGrams
 		return h;
 	}
 
-	// get the top x toics for a given entitity docID Unigrams
-	// **************************************************************************************************************
+	// get the top x topics for a given entity docID Unigrams
 	public HashMap<String, List<String>> getTopTopicUnigramsDocument( int docID, int max, double threshold, int numTopics, int numWords, boolean weight )
 	{
 
@@ -761,7 +802,7 @@ public class Ngram implements NGrams
 	{
 		LinkedHashMap<String, List<String>> topicevolution = new LinkedHashMap<String, List<String>>();
 		HashMap<String, List<Double>> doctopicsAll = tng.documentTransposedAllTopicsasMap();
-		List<String> topics = getListTopicsUnigrams( tng, numWords, false );
+		List<String> topics = getListTopicsNgrams( tng, numWords, weight );
 
 		for ( Entry<String, List<Double>> topicMapping : doctopicsAll.entrySet() )
 		{
@@ -844,14 +885,33 @@ public class Ngram implements NGrams
 				// find the maximum in array
 				for ( int j = 0; j < similarityMatrix[i].length; j++ )
 				{
-					if ( similarityMatrix[i][j] >= max )
+					if ( similarityMeasure != 3 )
 					{
-						max = similarityMatrix[i][j];
-						index = j;
+						if ( similarityMatrix[i][j] >= max )
+						{
+							max = similarityMatrix[i][j];
+							index = j;
+						}
+					}
+					else
+					{
+						if ( similarityMatrix[i][j] <= max )
+						{
+							max = similarityMatrix[i][j];
+							index = j;
+						}
 					}
 				}
 				similarIds.add( tng.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
-				similarityMatrix[i][index] = -1;
+				if ( similarityMeasure != 3 )
+				{
+					similarityMatrix[i][index] = -1;
+				}
+				else
+				{
+					similarityMatrix[i][index] = +2;
+				}
+
 				N++;
 			}
 			distance.put( tng.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
@@ -859,19 +919,132 @@ public class Ngram implements NGrams
 		return distance;
 	}
 	
+	public HashMap<String, List<String>> calculateSimilarity( TopicalNGrams model, int similarityMeasure, int maxresult )
+	{
+		HashMap<String, List<String>> distance = new HashMap<String, List<String>>();
+		HashMap<String, List<Double>> topicProportions = new HashMap<String, List<Double>>();
+		topicProportions = getDoumentTopicProportion();
+
+		similarityMeasures similarity = new similarityMeasures();
+		double[][] similarityMatrix = new double[model.ilist.size()][model.ilist.size()];
+
+		// create the matrix which will hold the distances of each document from
+		// all the other documents
+		int k = 0;
+		for ( Entry<String, List<Double>> entry : topicProportions.entrySet() )
+		{
+			int i = 0;
+			double[] similarityperElement = new double[model.ilist.size()];
+			for ( Entry<String, List<Double>> entry1 : topicProportions.entrySet() )
+			{
+				switch ( similarityMeasure ) {
+				case 0: {
+					similarityperElement[i] = similarity.sqrtEuclidianSimilarity( entry.getValue(), entry1.getValue() );
+					break;
+				}
+				case 1: {
+					similarityperElement[i] = similarity.cosineSimilarity( entry.getValue(), entry1.getValue() );
+					break;
+				}
+				case 2: {
+					similarityperElement[i] = similarity.pearsonCorrelation( entry.getValue(), entry1.getValue() );
+					break;
+				}
+				case 3: {
+					similarityperElement[i] = similarity.divergenceJennsenShannon( getdouble( entry.getValue() ), getdouble( entry1.getValue() ) );
+					break;
+				}
+				}
+
+				i++;
+			}
+			similarityMatrix[k] = similarityperElement;
+			k++;
+		}
+
+		if ( maxresult > model.ilist.size() )
+			maxresult = model.ilist.size();
+
+		// for each document find the top similar elements, take their id, and
+		// put them to
+
+		for ( int i = 0; i < similarityMatrix.length; i++ )
+		{
+			// the list of similar elements
+			List<String> similarIds = new ArrayList<String>();
+			// number of maximums you will have to find
+			int N = 0;
+
+			int index = -1;
+			while ( N < maxresult )
+			{
+				double max = similarityMatrix[i][0];
+				// find the maximum in array
+				for ( int j = 0; j < similarityMatrix[i].length; j++ )
+				{
+					if ( similarityMeasure != 3 )
+					{
+						if ( similarityMatrix[i][j] >= max )
+						{
+							max = similarityMatrix[i][j];
+							index = j;
+						}
+					}
+					else
+					{
+						if ( similarityMatrix[i][j] <= max )
+						{
+							max = similarityMatrix[i][j];
+							index = j;
+						}
+					}
+				}
+				similarIds.add( model.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
+				if ( similarityMeasure != 3 )
+				{
+					similarityMatrix[i][index] = -1;
+				}
+				else
+				{
+					similarityMatrix[i][index] = +2;
+				}
+
+				N++;
+			}
+			distance.put( model.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+		}
+		return distance;
+	}
+
 	// returns the List of top similar entities (author, publication etc)
-	public List<String> similarEntities( String id, int maxresult )
+	public List<String> similarEntities( String id, int maxresult, int similarityMeasure )
 	{
 		List<String> result = new ArrayList<String>();
 		HashMap<String, List<String>> similarMap = new HashMap<String, List<String>>();
-		similarMap = calculateSimilarity( 1, maxresult );
+		similarMap = calculateSimilarity( similarityMeasure, maxresult );
 		if ( similarMap.containsKey( id ) )
 		{
 			result = similarMap.get( id );
 		}
 		else
 		{
-			result.add( "Element not found in our list" );
+			result.add( "Element not found on our Results!" );
+		}
+		return result;
+	}
+
+	public List<String> similarEntities( TopicalNGrams model, String id, int maxresult, int similarityMeasure )
+	{
+		List<String> result = new ArrayList<String>();
+		HashMap<String, List<String>> similarMap = new HashMap<String, List<String>>();
+		similarMap = calculateSimilarity( model, similarityMeasure, maxresult );
+		if ( similarMap.containsKey( id ) )
+		{
+			result = similarMap.get( id );
+		}
+		else
+		{
+			result.add( "Element not found on our Results!" );
 		}
 		return result;
 	}
@@ -1176,5 +1349,109 @@ public class Ngram implements NGrams
 
 		topicComposition.put( id, addtopics );
 		return topicComposition;
+	}
+
+	// method used to calculate the similarity measure between authors
+	// the general view is taken into consideration for this calculation instead
+	// of individual one
+	public List<String> runSimilarEntities( String id, String path, String purpose, int numTopics, int maxResult, int similarityMeasure, boolean createModel )
+	{
+		List<String> similarEntities = new ArrayList<String>();
+		TopicalNGrams model;
+
+		// check if we need to create an existing model or not
+		if ( createModel )
+		{
+			// create a new model
+			model = createModel( path, purpose, "", numTopics );
+		}
+		else
+		{
+			model = useTrainedData( path, purpose, "", numTopics );
+		}
+
+		// call the method to calculate the similarities
+		similarEntities = similarEntities( model, id, maxResult, similarityMeasure );
+
+		return similarEntities;
+	}
+
+	// method used to calculate the topic Evolution based based on entity level
+	public LinkedHashMap<String, List<String>> runDiscreteTopicEvolution(String path, String purpose, String id, int numWords, int numTopics, int maxnumTopics, boolean createmodel, boolean weight, boolean unigrams)
+	{
+		LinkedHashMap<String, List<String>> topicEvolution = new LinkedHashMap<String, List<String>>();
+		List<String> topics;
+		// create model based on the per year documents of each author
+		TopicalNGrams model; 
+		if ( createmodel )
+		{
+			model = createModel( path, purpose, id, numTopics );
+		}
+		else
+		{
+			model = useTrainedData( path, purpose, id, numTopics );
+		}
+
+		// get the model and provide the transposed matrix for years
+		HashMap<String, List<Double>> doctopicsAll = model.documentTransposedAllTopicsasMap();
+
+		if ( unigrams )
+		{
+			topics = getListTopicsUnigrams( model, numWords, weight );
+		}
+		else
+		{
+			topics = getListTopicsNgrams( model, numWords, weight );
+		}
+
+		for ( Entry<String, List<Double>> topicMapping : doctopicsAll.entrySet() )
+		{
+			List<String> topdoc = new ArrayList<String>();
+			int i = 0;
+			for ( Double topic : topicMapping.getValue() )
+			{
+				topdoc.add( ( model.ilist.get( i ) ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "_-_" + topic );
+				i++;
+			}
+			topicEvolution.put( topics.get( Integer.parseInt( topicMapping.getKey().toString() ) ), topdoc );
+		}
+
+		return topicEvolution;
+	}
+
+	// method used to get the topic composition as weighted words/phrases Tag
+	// Cloud
+	public HashMap<String, Double> runweightedTopicComposition( String path, String purpose, String id, int numTopics, int maxnumTopics, int numWords, boolean createmodel, boolean unigrams )
+	{
+		LinkedHashMap<String, Double> weightedWords = new LinkedHashMap<String, Double>();
+		List<String> topicProportions = new ArrayList<String>();
+		TopicalNGrams model;
+
+		// check if needed to create a new model or use an existing one
+		if ( createmodel )
+		{
+			model = createModel( path, purpose, id, numTopics );
+		}
+		else
+		{
+			model = useTrainedData( path, purpose, id, numTopics );
+		}
+
+		// use the model to get the list of topics and the weighted
+		topicProportions = getTopicProportionEntityLevel( model, unigrams, numWords, true );
+
+		// do the split _-_ to get the topic weight and topic
+		// do the split of the topic " " to ge the words and weight
+		// multiply the topic weight and word weight
+		for (String topic : topicProportions){
+			String topicWordsWeights = topic.split( "_-_" )[0];
+			double topicWeight = Double.parseDouble( topic.split( "_-_" )[1] );
+			for ( String wordweight : topicWordsWeights.split( " " ) )
+			{
+				weightedWords.put( wordweight.split( "-" )[0], ( Double.parseDouble( wordweight.split( "-" )[1] ) * topicWeight ) );
+			}
+		}
+		
+		return weightedWords;
 	}
 }
