@@ -605,7 +605,7 @@ import cc.mallet.util.Randoms;
 				list.add( topicDist[ti] );
 			}
 			m.put( ilist.get( di ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), list );
-		    }
+		}
 		    return m;
 	}
 
