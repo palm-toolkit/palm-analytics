@@ -146,11 +146,14 @@ import cc.mallet.util.Randoms;
 
 	    for (int iterations = 0; iterations < numIterations; iterations++) {
 	      sampleTopicsForAllDocs (r);
-	      if (iterations % 10 == 0) System.out.print (iterations);	else System.out.print (".");
+			if ( iterations % 10 == 0 )
+				System.out.print( iterations );
+			else
+				System.out.print( "." );
 				System.out.flush();
 				if (showTopicsInterval != 0 && iterations % showTopicsInterval == 0 && iterations > 0) {
 					System.out.println ();
-				printTopWords( 10, false );
+				// printTopWords( 10, false );
 				}
 	      if (outputModelInterval != 0 && iterations % outputModelInterval == 0 && iterations > 0) {
 	        this.write (new File(outputModelFilename+'.'+iterations));

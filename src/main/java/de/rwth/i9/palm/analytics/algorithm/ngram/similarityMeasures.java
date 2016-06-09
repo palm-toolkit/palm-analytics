@@ -162,6 +162,33 @@ public class similarityMeasures
 		return indexoftopSimilarTopics;
 	}
 
+	// get the simple difference elements between two Lists of doubles
+	public List<Double> manhattanDistanceList( List<Double> a, List<Double> b )
+	{
+		List<Double> diferenceArray = new ArrayList<Double>( a.size() >= b.size() ? a.size() : b.size() );
+
+		for ( int i = 0; i < ( ( a.size() >= b.size() ) ? a.size() : b.size() ); i++ )
+		{
+			diferenceArray.add( Math.abs( a.get( i ) - b.get( i ) ) );
+		}
+		return diferenceArray;
+	}
+
+	// get the simple difference elements between two Lists of doubles
+	public double[] manhattanDistance( List<Double> a, List<Double> b )
+	{
+		// return the number of count top different topics
+		List<Integer> indexoftopSimilarTopics = new ArrayList<Integer>();
+		int index = -1;
+		double[] diferenceArray = new double[a.size() >= b.size() ? a.size() : b.size()];
+
+		for ( int i = 0; i < ( ( a.size() >= b.size() ) ? a.size() : b.size() ); i++ )
+		{
+			diferenceArray[i] = Math.abs( a.get( i ) - b.get( i ) );
+		}
+		return diferenceArray;
+	}
+
 	// get the Jensen-Shannon divergence array version
 	// https://en.wikipedia.org/wiki/Jensen%E2%80%93Shannon_divergence
 	public double divergenceJennsenShannon( double[] a, double[] b )

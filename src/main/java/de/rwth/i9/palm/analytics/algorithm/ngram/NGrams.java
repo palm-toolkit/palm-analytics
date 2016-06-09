@@ -26,7 +26,7 @@ public interface NGrams
 	 * @param weight
 	 * @return
 	 */
-	public HashMap<String, List<String>> getEvolutionofTopicOverTime( int docID, int numWords, boolean weight );
+	public HashMap<String, List<String>> getEvolutionofTopicOverTime( TopicalNGrams model, int docID, int numWords, boolean weight );
 
 	/**
 	 * 
@@ -151,7 +151,7 @@ public interface NGrams
 	 * @param weight
 	 * @return
 	 */
-	public HashMap<String, List<String>> getTopicNgramsDocument( int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
+	public HashMap<String, List<String>> getTopicNgramsDocument( TopicalNGrams model, int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
 
 	/**
 	 * 
@@ -163,7 +163,7 @@ public interface NGrams
 	 * @param weight
 	 * @return
 	 */
-	public HashMap<String, List<String>> getTopTopicUnigramsDocument( int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
+	public HashMap<String, List<String>> getTopTopicUnigramsDocument( TopicalNGrams model, int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
 
 	/**
 	 * 
@@ -175,7 +175,7 @@ public interface NGrams
 	 * @param weight
 	 * @return
 	 */
-	public HashMap<String, List<String>> getTopTopicNgramsDocument( int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
+	public HashMap<String, List<String>> getTopTopicNgramsDocument( TopicalNGrams model, int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
 
 	/**
 	 * 
@@ -188,7 +188,7 @@ public interface NGrams
 	 * @param weight
 	 * @return
 	 */
-	public HashMap<String, List<String>> getTopicUnigramsDocument( int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
+	public HashMap<String, List<String>> getTopicUnigramsDocument( TopicalNGrams model, int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
 	
 	/**
 	 * 
@@ -256,7 +256,18 @@ public interface NGrams
 	 * @return
 	 * @throws Exception
 	 */
-	public int maptoRealDatabaseID( String id ) throws Exception;
+	public int maptoRealDatabaseID( String id, TopicalNGrams model ) throws Exception;
+
+	/**
+	 * 
+	 * @param model
+	 * @param id
+	 * @param maxresult
+	 * @param simialrityMeasure
+	 * @param numTopics
+	 * @return
+	 */
+	public HashMap<String, List<String>> getTopicLevelSimilarity( TopicalNGrams model, String id, int maxresult, int simialrityMeasure, int numTopics );
 
 	/**
 	 * 
@@ -300,4 +311,62 @@ public interface NGrams
 	 * @return
 	 */
 	public List<String> runSimilarEntities( String id, String path, String purpose, int numTopics, int maxResult, int similarityMeasure, boolean createModel );
+
+	/**
+	 * 
+	 * @param id
+	 * @param path
+	 * @param purpose
+	 * @param numTopics
+	 * @param maxResult
+	 * @param similarityMeasure
+	 * @param createModel
+	 * @return
+	 */
+	public HashMap<String, List<String>> runSimilarEntitiesTopicLevel( String id, String path, String purpose, int numTopics, int maxResult, int similarityMeasure, boolean createModel );
+
+	/**
+	 * 
+	 * @param path
+	 * @param purpose
+	 * @param id
+	 * @param numTopics
+	 * @param maxnumTopics
+	 * @param numWords
+	 * @param createmodel
+	 * @param unigrams
+	 * @return
+	 */
+	public HashMap<String, Double> runweightedTopicComposition( String path, String purpose, String id, int numTopics, int maxnumTopics, int numWords, boolean createmodel, boolean unigrams );
+
+	/**
+	 * 
+	 * @param id
+	 * @param path
+	 * @param purpose
+	 * @param numTopics
+	 * @param maxnumberTopics
+	 * @param numWords
+	 * @param weight
+	 * @param createmodel
+	 * @param unigram
+	 * @return
+	 * @throws Exception
+	 */
+	public HashMap<String, List<String>> runTopicCompositionHighLevel( String id, String path, String purpose, int numTopics, int maxnumberTopics, int numWords, boolean weight, boolean createmodel, boolean unigram ) throws Exception;
+
+	/**
+	 * 
+	 * @param path
+	 * @param purpose
+	 * @param authorIds
+	 * @param publicationId
+	 * @param numTopics
+	 * @param maxnumTopics
+	 * @param numWords
+	 * @param createmodel
+	 * @param unigrams
+	 * @return
+	 */
+	public HashMap<String, List<String>> runTopicsFromListofEntities( String path, String purpose, List<String> authorIds, String publicationId, int numTopics, int maxnumTopics, int numWords, boolean createmodel, boolean unigrams );
 }
