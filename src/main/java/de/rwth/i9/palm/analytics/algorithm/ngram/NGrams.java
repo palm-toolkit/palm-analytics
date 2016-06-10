@@ -368,5 +368,46 @@ public interface NGrams
 	 * @param unigrams
 	 * @return
 	 */
-	public HashMap<String, List<String>> runTopicsFromListofEntities( String path, String purpose, List<String> authorIds, String publicationId, int numTopics, int maxnumTopics, int numWords, boolean createmodel, boolean unigrams );
+	public HashMap<String, List<String>> runTopicsFromListofEntities( String path, String purpose, List<String> authorIds, String publicationId, int numTopics, int maxnumTopics, int numWords, boolean createmodel, boolean unigrams, boolean wordweight );
+
+	/**
+	 * 
+	 * @param model
+	 * @param docID
+	 * @param max
+	 * @param threshold
+	 * @param numTopics
+	 * @param numWords
+	 * @param weight
+	 * @return
+	 */
+	public HashMap<String, List<String>> getTopicNgramsDocumentWordWeight( TopicalNGrams model, int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
+
+	/**
+	 * 
+	 * @param model
+	 * @param docID
+	 * @param max
+	 * @param threshold
+	 * @param numTopics
+	 * @param numWords
+	 * @param weight
+	 * @return
+	 */
+	public HashMap<String, List<String>> getTopicUnigramsDocumentWordWeigth( TopicalNGrams model, int docID, int max, double threshold, int numTopics, int numWords, boolean weight );
+
+	/**
+	 * 
+	 * @param path
+	 * @param purpose
+	 * @param id
+	 * @param numTopics
+	 * @param maxnumTopics
+	 * @param numWords
+	 * @param createmodel
+	 * @param unigrams
+	 * @return
+	 */
+	public HashMap<String, Double> runweightedTopicCompositionforPublications( String path, String purpose, String id, List<String> authorIds, int numTopics, int maxnumTopics, int numWords, boolean createmodel, boolean unigrams );
+
 }

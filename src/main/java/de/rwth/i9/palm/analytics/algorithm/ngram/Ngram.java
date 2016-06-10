@@ -25,8 +25,7 @@ public class Ngram implements NGrams
 {
 	public String path = "C:/Users/Piro/Desktop/";
 	// c442983a-0099-4d6d-89b1-6cfc57fa6138
-	public TopicalNGrams tng;// = createModel( path, "Author-Test",
-								// "fffba6ff-210d-4f97-93ef-5bc979f81f8d", 50 );
+	public TopicalNGrams tng = createModel( path, "Author-Test", "c442983a-0099-4d6d-89b1-6cfc57fa6138", 50 );
 
 	@Test
 	public void test() throws Exception
@@ -281,31 +280,22 @@ public class Ngram implements NGrams
 			// }
 			// }
 
-			// System.out.println( "TESTING THE TAG CLOUD MAP" );
-			// for ( Entry<String, Double> weight : runweightedTopicComposition(
-			// path, "Author-Test", "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10,
-			// 10, 10, true, true ).entrySet() )
-			// {
-			// System.out.println( weight.getKey() + " --> " + weight.getValue()
-			// );
-			// }
+			System.out.println( "TESTING THE TAG CLOUD MAP" );
+			for ( Entry<String, Double> weight : runweightedTopicComposition( path, "Publications", "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10, 10, 10, true, true ).entrySet() )
+			{
+				System.out.println( weight.getKey() + " --> " + weight.getValue() );
+			}
 
 			// System.out.println( "TESTING THE TOPIC LEVEL CONTRIBUTION" );
-			// for ( Entry<String, List<String>> entry :
-			// runSimilarEntitiesTopicLevel(
-			// "a2900553-2ad8-4092-8c41-5760b9eae7dd", path, "Authors", 10, 10,
-			// 3, false ).entrySet() )
+			// for ( String entry : runSimilarEntities(
+			// "fd201481-1fe6-498f-9878-7e511e40e236", path, "Publications", 10,
+			// 10, 3, true ) )
 			// // getTopicLevelSimilarity(
 			// // tng,"a2900553-2ad8-4092-8c41-5760b9eae7dd", 10, 3, 10
 			// // ).entrySet() )
 			// {
-			// System.out.print( entry.getKey() );
-			// for ( String topic : entry.getValue() )
-			// {
-			// System.out.print( " " + topic + " " );
-			// }
-			// System.out.println();
-
+			// System.out.print( entry );
+			//
 			// }
 
 			// for ( String entry : similarEntities( tng,
@@ -697,6 +687,50 @@ public class Ngram implements NGrams
 			return h;
 		}
 
+	// Returns a map <DocumentID, Top Ngrams Topic Assigned to it> which shows
+	// the topic assigned to a specific document with given ID
+	// When calling max = -1, threshold = 0.05,
+	public HashMap<String, List<String>> getTopicNgramsDocumentWordWeight( TopicalNGrams model, int docID, int max, double threshold, int numTopics, int numWords, boolean weight )
+	{
+		LinkedHashMap<String, List<String>> h = new LinkedHashMap<String, List<String>>();
+		List<String> topdoc = new ArrayList<String>();// getListDocumentTopic(m,threshold,max,weight);
+		List<String> topics = getListTopicsNgrams( model, numWords, true );
+		int docLen;
+		double topicDist[] = new double[model.numTopics];
+		docLen = model.topics[docID].length;
+		for ( int ti = 0; ti < numTopics; ti++ )
+			topicDist[ti] = ( ( (float) model.docTopicCounts[docID][ti] ) / docLen );
+		if ( max < 0 )
+			max = numTopics;
+		for ( int tp = 0; tp < max; tp++ )
+		{
+			double maxvalue = 0;
+			int maxindex = -1;
+			for ( int ti = 0; ti < numTopics; ti++ )
+				if ( topicDist[ti] > maxvalue )
+				{
+					maxvalue = topicDist[ti];
+					maxindex = ti;
+				}
+			if ( maxindex == -1 || topicDist[maxindex] < threshold )
+				break;
+			if ( weight )
+			{
+				// (maxindex+" "+topicDist[maxindex]+" ");
+
+				topdoc.add( topics.get( maxindex ) + " _-_ " + topicDist[maxindex] );
+			}
+			else
+			{
+				topdoc.add( topics.get( maxindex ) );
+			}
+			topicDist[maxindex] = 0;
+
+		}
+		h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		return h;
+	}
+
 	// get the top x toics for a given entitity docID NGrams
 	public HashMap<String, List<String>> getTopTopicNgramsDocument( TopicalNGrams model, int docID, int max, double threshold, int numTopics, int numWords, boolean weight )
 	{
@@ -777,6 +811,50 @@ public class Ngram implements NGrams
 			topicDist[maxindex] = 0;
 		}
 		      
+		h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		return h;
+	}
+
+	// Returns a map <DocumentID, Top Unigrams Topic Assigned to it> which shows
+	// the topic assigned to a specific document with given ID
+	// When calling max = -1, threshold = 0.05,
+	public HashMap<String, List<String>> getTopicUnigramsDocumentWordWeigth( TopicalNGrams model, int docID, int max, double threshold, int numTopics, int numWords, boolean weight )
+	{
+		HashMap<String, List<String>> h = new HashMap<String, List<String>>();
+		List<String> topdoc = new ArrayList<String>();// getListDocumentTopic(m,threshold,max,weight);
+		List<String> topics = getListTopicsUnigrams( model, numWords, true );
+
+		int docLen;
+		double topicDist[] = new double[model.numTopics];
+		docLen = model.topics[docID].length;
+		for ( int ti = 0; ti < numTopics; ti++ )
+			topicDist[ti] = ( ( (float) model.docTopicCounts[docID][ti] ) / docLen );
+		if ( max < 0 )
+			max = numTopics;
+		for ( int tp = 0; tp < max; tp++ )
+		{
+			double maxvalue = 0;
+			int maxindex = -1;
+			for ( int ti = 0; ti < numTopics; ti++ )
+				if ( topicDist[ti] > maxvalue )
+				{
+					maxvalue = topicDist[ti];
+					maxindex = ti;
+				}
+			if ( maxindex == -1 || topicDist[maxindex] < threshold )
+				break;
+			// (maxindex+" "+topicDist[maxindex]+" ");
+			if ( weight )
+			{
+				topdoc.add( topics.get( maxindex ) + " _-_ " + topicDist[maxindex] );
+			}
+			else
+			{
+				topdoc.add( topics.get( maxindex ) );
+			}
+			topicDist[maxindex] = 0;
+		}
+
 		h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
 		return h;
 	}
@@ -1742,13 +1820,13 @@ public class Ngram implements NGrams
 		// do the split _-_ to get the topic weight and topic
 		// do the split of the topic " " to get the words and weight
 		// multiply the topic weight and word weight
-		double[] proportion = new double[topicProportions.size()];
-		int i = 0;
-		for ( String topic : topicProportions )
-		{
-			proportion[i] = Double.parseDouble( topic.split( "_-_" )[1] );
-			i++;
-		}
+		// double[] proportion = new double[topicProportions.size()];
+		// int i = 0;
+		// for ( String topic : topicProportions )
+		// {
+		// proportion[i] = Double.parseDouble( topic.split( "_-_" )[1] );
+		// i++;
+		// }
 
 		for (String topic : topicProportions){
 
@@ -1798,9 +1876,80 @@ public class Ngram implements NGrams
 		return weightedWords;
 	}
 
+	// method used to get the topic composition as weighted words/phrases Tag
+	// Cloud
+	public HashMap<String, Double> runweightedTopicCompositionforPublications( String path, String purpose, String id, List<String> authorIds, int numTopics, int maxnumTopics, int numWords, boolean createmodel, boolean unigrams )
+	{
+		LinkedHashMap<String, Double> weightedWords = new LinkedHashMap<String, Double>();
+		List<String> topicProportions = new ArrayList<String>();
+
+		// use the model to get the list of topics and the weighted
+		topicProportions = runTopicsFromListofEntities( path, purpose, authorIds, id, numTopics, maxnumTopics, numWords, createmodel, unigrams, true ).get( id );
+
+		// do the split _-_ to get the topic weight and topic
+		// do the split of the topic " " to get the words and weight
+		// multiply the topic weight and word weight
+		// double[] proportion = new double[topicProportions.size()];
+		// int i = 0;
+		// for ( String topic : topicProportions )
+		// {
+		// proportion[i] = Double.parseDouble( topic.split( "_-_" )[1] );
+		// i++;
+		// }
+
+		for ( String topic : topicProportions )
+		{
+
+			String topicWordsWeights = topic.split( "_-_" )[0];
+			// add the weight factor for each element
+			double topicWeight = Double.parseDouble( topic.split( "_-_" )[1] );
+			if ( topicWeight >= 1 / numTopics )
+			{
+				topicWeight *= 1000;
+			}
+
+			else if ( ( 0.8 / numTopics ) <= topicWeight && topicWeight < numTopics )
+			{
+				topicWeight *= 500;
+			}
+			else if ( ( 0.6 / numTopics ) <= topicWeight && topicWeight < ( 0.8 / numTopics ) )
+			{
+				topicWeight *= 200;
+			}
+			else if ( ( 0.4 / numTopics ) <= topicWeight && topicWeight < ( 0.6 / numTopics ) )
+			{
+				topicWeight *= 100;
+			}
+			else if ( ( 0.2 / numTopics ) <= topicWeight && topicWeight < ( 0.4 / numTopics ) )
+			{
+				topicWeight *= 10;
+			}
+			else
+			{
+				continue;
+			}
+
+			for ( String wordweight : topicWordsWeights.split( " " ) )
+			{
+				// differentiate between unigrams and n-grams
+				if ( unigrams )
+				{
+					weightedWords.put( wordweight.split( "-" )[0], (double) Math.round( ( Double.parseDouble( wordweight.split( "-" )[1] ) * topicWeight ) ) );
+				}
+				else
+				{
+					weightedWords.put( wordweight.split( "-" )[0].replaceAll( "_", " " ), (double) Math.round( ( Double.parseDouble( wordweight.split( "-" )[1] ) * topicWeight ) ) );
+				}
+			}
+
+		}
+
+		return weightedWords;
+	}
+
 	// get the list of topics followed by their proportions from a list of
 	// authorIds
-	public HashMap<String, List<String>> runTopicsFromListofEntities( String path, String purpose, List<String> authorIds, String publicationId, int numTopics, int maxnumTopics, int numWords, boolean createmodel, boolean unigrams )
+	public HashMap<String, List<String>> runTopicsFromListofEntities( String path, String purpose, List<String> authorIds, String publicationId, int numTopics, int maxnumTopics, int numWords, boolean createmodel, boolean unigrams, boolean wordweight )
 	{
 
 		HashMap<String, List<String>> topics = new HashMap<String, List<String>>();
@@ -1826,16 +1975,48 @@ public class Ngram implements NGrams
 
 				if ( unigrams )
 				{
+					if ( wordweight )
+					{
+						List<String> temporalResult = new ArrayList<String>();
+						for ( Entry<String, List<String>> element : getTopicUnigramsDocumentWordWeigth( model, maptoRealDatabaseID( publicationId, model ), -1, 0.0, model.numTopics, numWords, true ).entrySet() )
+						{
+							List<String> partialresult = new ArrayList<String>( element.getValue() );
+							temporalResult.addAll( partialresult );
+						}
+						topics.put( publicationId, temporalResult );
+					}
+					else
+					{
+					List<String> temporalResult = new ArrayList<String>();
 					for ( Entry<String, List<String>> element : getTopicUnigramsDocument( model, maptoRealDatabaseID( publicationId, model ), -1, 0.0, model.numTopics, numWords, true ).entrySet() )
 					{
-						topics.put( element.getKey(), element.getValue() );
+						List<String> partialresult = new ArrayList<String>(element.getValue());
+						temporalResult.addAll(partialresult);
+					}
+					topics.put( publicationId, temporalResult );
 					}
 				}
 				else
 				{
+					if ( wordweight )
+					{
+						List<String> temporalResult = new ArrayList<String>();
+						for ( Entry<String, List<String>> element : getTopicNgramsDocumentWordWeight( model, maptoRealDatabaseID( publicationId, model ), -1, 0.0, model.numTopics, numWords, true ).entrySet() )
+						{
+							List<String> partialresult = new ArrayList<String>( element.getValue() );
+							temporalResult.addAll( partialresult );
+						}
+						topics.put( publicationId, temporalResult );
+					}
+					else
+					{
+					List<String> temporalResult = new ArrayList<String>();
 					for ( Entry<String, List<String>> element : getTopicNgramsDocument( model, maptoRealDatabaseID( publicationId, model ), -1, 0.0, model.numTopics, numWords, true ).entrySet() )
 					{
-						topics.put( element.getKey(), element.getValue() );
+							List<String> partialresult = new ArrayList<String>( element.getValue() );
+							temporalResult.addAll( partialresult );
+					}
+					topics.put( publicationId, temporalResult );
 					}
 				}
 			}

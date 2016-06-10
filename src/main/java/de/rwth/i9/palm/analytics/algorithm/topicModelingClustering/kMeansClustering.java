@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.junit.Test;
+
 import de.rwth.i9.palm.analytics.algorithm.ngram.Ngram;
 
 public class kMeansClustering
@@ -24,13 +26,13 @@ public class kMeansClustering
 	public Ngram ngrams = new Ngram();
 	public int numIterations = 500;
 
-	// @Test
+	@Test
 	public void test() throws Exception
 	{
 
 		try
 		{	
-			kMeans( 1000, 2 );
+			kMeans( 10, 5 );
 
 		}
 		catch ( Exception e )
@@ -354,6 +356,7 @@ public class kMeansClustering
 			System.out.println();
 		}
 		newcentroids = new double[centroids.length][centroids[0].length];
+
 		// one of the stopping criteria (finishing the number of the number of
 		// iterations planned to converge)
 		// continue as long as the stopping criteria is not fulfilled
