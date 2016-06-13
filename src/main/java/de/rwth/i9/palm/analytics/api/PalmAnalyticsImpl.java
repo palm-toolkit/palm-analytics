@@ -2,6 +2,7 @@ package de.rwth.i9.palm.analytics.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import de.rwth.i9.palm.analytics.algorithm.clustering.WekaSimpleKMeans;
 import de.rwth.i9.palm.analytics.algorithm.corephrase.CorePhrase;
 import de.rwth.i9.palm.analytics.algorithm.corephrase.CorePhraseImpl;
 import de.rwth.i9.palm.analytics.algorithm.cvalue.CValue;
@@ -37,6 +38,9 @@ public class PalmAnalyticsImpl implements PalmAnalytics
 
 	@Autowired( required = false )
 	private TextCompare textCompare;
+
+	@Autowired( required = false )
+	private WekaSimpleKMeans simpleKMeans;
 
 	@Override
 	public CorePhrase getCorePhraseAlgorithm()

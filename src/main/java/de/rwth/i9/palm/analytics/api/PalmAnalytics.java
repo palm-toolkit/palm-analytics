@@ -20,5 +20,4 @@ public interface PalmAnalytics
 	public NGrams getNGrams();
 
 	public TextCompare getTextCompare();
-
 }
