@@ -25,7 +25,8 @@ public class Ngram implements NGrams
 {
 	public String path = "C:/Users/Piro/Desktop/";
 	// c442983a-0099-4d6d-89b1-6cfc57fa6138
-	public TopicalNGrams tng = createModel( path, "Author-Test", "c442983a-0099-4d6d-89b1-6cfc57fa6138", 50 );
+	public TopicalNGrams tng; // = createModel( path, "Author-Test",
+								// "c442983a-0099-4d6d-89b1-6cfc57fa6138", 50 );
 
 	@Test
 	public void test() throws Exception
