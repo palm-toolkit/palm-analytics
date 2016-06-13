@@ -451,10 +451,18 @@ public class Ngram implements NGrams
 		if ( entityId.isEmpty() )
 		{
 			numFiles = new File( path + "/" + purpose + "/" + purpose ).listFiles().length;
+			if ( numFiles == 0 )
+			{
+				return null;
+			}
 		}
 		else
 		{
 			numFiles = new File( path + "/" + purpose + "/" + entityId ).listFiles().length;
+			if ( numFiles == 0 )
+			{
+				return null;
+			}
 		}
 
 		// by heuristics decide on maximal number of Topics the model will
