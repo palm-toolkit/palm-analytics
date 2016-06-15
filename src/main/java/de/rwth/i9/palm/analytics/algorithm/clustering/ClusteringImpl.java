@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import de.rwth.i9.palm.model.DataMiningPublication;
 import de.rwth.i9.palm.model.PublicationTopic;
 import de.rwth.i9.palm.persistence.PersistenceStrategy;
@@ -21,11 +19,9 @@ import weka.core.SparseInstance;
 public class ClusteringImpl implements Clustering
 {
 
-	private ObjectMapper mapper = new ObjectMapper();
-
-	public Map<String, Integer> clusterPublications( PersistenceStrategy persistenceStrategy, String algorithm, String relatedObjectId, String relatedObjectType ) throws Exception
+	public Map<DataMiningPublication, Integer> clusterPublications( PersistenceStrategy persistenceStrategy, String algorithm, String relatedObjectId, String relatedObjectType ) throws Exception
 	{
-		Map<String, Integer> resultMap = new HashMap<String, Integer>();
+		Map<DataMiningPublication, Integer> resultMap = new HashMap<DataMiningPublication, Integer>();
 
 		List<DataMiningPublication> publications;
 		if ( relatedObjectId != null && relatedObjectType != null )
@@ -112,7 +108,7 @@ public class ClusteringImpl implements Clustering
 				int i = 0;
 				for ( int clusterNum : result.getAssignments() )
 				{
-					resultMap.put( mapper.writeValueAsString( publications.get( i ).getJsonStub() ), clusterNum );
+					resultMap.put( publications.get( i ), clusterNum );
 					i++;
 				}
 			}
