@@ -1,5 +1,6 @@
 package de.rwth.i9.palm.analytics.api;
 
+import de.rwth.i9.palm.analytics.algorithm.clustering.Clustering;
 import de.rwth.i9.palm.analytics.algorithm.corephrase.CorePhrase;
 import de.rwth.i9.palm.analytics.algorithm.cvalue.CValue;
 import de.rwth.i9.palm.analytics.algorithm.dynamicLDA.DynamicTopicModel;
@@ -20,4 +21,6 @@ public interface PalmAnalytics
 	public NGrams getNGrams();
 
 	public TextCompare getTextCompare();
+
+	public Clustering getClustering();
 }
