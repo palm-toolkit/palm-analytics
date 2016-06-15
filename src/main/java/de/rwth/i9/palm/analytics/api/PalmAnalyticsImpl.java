@@ -101,8 +101,6 @@ public class PalmAnalyticsImpl implements PalmAnalytics
 	{
 		if ( this.clustering == null )
 			this.clustering = new ClusteringImpl();
-
-		System.out.println( "HIER " + this.clustering );
 		return this.clustering;
 	}
 
