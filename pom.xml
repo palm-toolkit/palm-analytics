@@ -91,7 +91,20 @@
 	</dependency>
 	-->
 
+	<!-- I have added this external jar file to dependency -->
+	<dependency>
+		<groupId>Gephi</groupId>
+		<artifactId>gephi-toolkit</artifactId>
+		<scope>system</scope>
+		<version>0.9-SNAPSHOT</version>
+		<systemPath>${basedir}\src\main\resources\lib\gephi-toolkit.jar</systemPath>
+	</dependency>
 	
+	<dependency>
+	    <groupId>org.json</groupId>
+	    <artifactId>json</artifactId>
+	    <version>20160212</version>
+	</dependency>
 
 	<dependency>
 		<groupId>org.apache.mahout</groupId>
