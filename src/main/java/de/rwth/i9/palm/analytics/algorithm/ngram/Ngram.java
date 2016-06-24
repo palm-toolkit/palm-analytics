@@ -25,13 +25,13 @@ public class Ngram implements NGrams
 {
 	public String path = "C:/Users/Piro/Desktop/";
 	// c442983a-0099-4d6d-89b1-6cfc57fa6138
-	public TopicalNGrams tng; // = createModel( path, "Author-Test",
-								// "c442983a-0099-4d6d-89b1-6cfc57fa6138", 50 );
+	public TopicalNGrams tng;
 
 	@Test
 	public void test() throws Exception
 	{	
 		try{
+			// tng = createModel( path, "Authors", "", 50 );
 			// call the TopicalNGrams methods with the following parameters by Blei
 			// numTopics=100 , alpha = 1.0, beta = 0.001, gamma = 0.1, delta = 0.001, delta1 = 0.2, delta2=1000.0
 
@@ -281,21 +281,31 @@ public class Ngram implements NGrams
 			// }
 			// }
 
-			System.out.println( "TESTING THE TAG CLOUD MAP" );
-			for ( Entry<String, Double> weight : runweightedTopicComposition( path, "Publications", "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10, 10, 10, true, true ).entrySet() )
-			{
-				System.out.println( weight.getKey() + " --> " + weight.getValue() );
-			}
+			// System.out.println( "TESTING THE TAG CLOUD MAP" );
+			// for ( Entry<String, Double> weight : runweightedTopicComposition(
+			// path, "Publications", "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10,
+			// 10, 10, true, true ).entrySet() )
+			// {
+			// System.out.println( weight.getKey() + " --> " + weight.getValue()
+			// );
+			// }
 
 			// System.out.println( "TESTING THE TOPIC LEVEL CONTRIBUTION" );
-			// for ( String entry : runSimilarEntities(
-			// "fd201481-1fe6-498f-9878-7e511e40e236", path, "Publications", 10,
-			// 10, 3, true ) )
-			// // getTopicLevelSimilarity(
-			// // tng,"a2900553-2ad8-4092-8c41-5760b9eae7dd", 10, 3, 10
-			// // ).entrySet() )
+			// for ( Entry<String, List<String>> entry :
+			// getTopicLevelSimilarity( tng,
+			// "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10, 3, 10 ).entrySet()
+			// )// runSimilarEntities("fd201481-1fe6-498f-9878-7e511e40e236",
+			// // path,
+			// // "Publications",
+			// // 10,10,
+			// // 3,
+			// // true
+			// // )
+			// // )
 			// {
-			// System.out.print( entry );
+			// System.out.println( entry.getKey() );
+			// for ( String a : entry.getValue() )
+			// System.out.println( a );
 			//
 			// }
 
@@ -479,7 +489,7 @@ public class Ngram implements NGrams
 		else
 		{
 			// default number of topics
-			numTopics = 10;
+
 		}
 
 		TopicalNGrams ngram = new TopicalNGrams( numTopics, 50.0, 0.01, 0.01, 0.03, 0.2, 1000 );
@@ -1316,7 +1326,7 @@ public class Ngram implements NGrams
 
 		// list of topics string
 		List<String> topics = new ArrayList<String>();
-		topics = getListTopicsUnigrams( model, 10, false );
+		topics = getListTopicsNgrams( model, 10, false );
 
 		// declare an array to track the topic similarity for each author
 		double[][] topicSimilarity = new double[maxresult][model.numTopics];
@@ -1335,7 +1345,7 @@ public class Ngram implements NGrams
 		{
 			List<String> topicAuthor = new ArrayList<String>();
 			int N = 0;
-			while ( N < 10 )
+			while ( N < 5 )
 			{
 				double min = topicSimilarity[j][0];
 				int index = -1;
@@ -1352,11 +1362,12 @@ public class Ngram implements NGrams
 				N++;
 			}
 			List<String> topicLevelSimilarity = new ArrayList<String>(topicAuthor.size());
-			topicLevelSimilarity.add( similarAuthors.get( j ).split( "->" )[1] );
+			// topicLevelSimilarity.add( similarAuthors.get( j ).split( "->"
+			// )[1] );
 			for (String entity : topicAuthor)
-				topicLevelSimilarity.add( entity + " " );
+				topicLevelSimilarity.add( entity );
 
-			resultMap.put( similarAuthors.get( j ).split( "->" )[0], topicLevelSimilarity );
+			resultMap.put( similarAuthors.get( j ), topicLevelSimilarity );
 		}
 
 		return resultMap;
