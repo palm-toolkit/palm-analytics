@@ -410,4 +410,14 @@ public interface NGrams
 	 */
 	public HashMap<String, Double> runweightedTopicCompositionforPublications( String path, String purpose, String id, List<String> authorIds, int numTopics, int maxnumTopics, int numWords, boolean createmodel, boolean unigrams );
 
+	/**
+	 * 
+	 * @param model
+	 * @param id
+	 * @param maxresult
+	 * @param simialrityMeasure
+	 * @param numTopics
+	 * @return
+	 */
+	public HashMap<String, List<String>> getTopicLevelSimilarityTopMinDelta( TopicalNGrams model, String id, int maxresult, int simialrityMeasure, int numTopics );
 }
