@@ -25,13 +25,25 @@ public class Ngram implements NGrams
 {
 	public String path = "C:/Users/Piro/Desktop/";
 	// c442983a-0099-4d6d-89b1-6cfc57fa6138
-	public TopicalNGrams tng;
+	public TopicalNGrams tng = createModel( path, "Author-Test", "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10 );
 
 	@Test
 	public void test() throws Exception
 	{	
 		try{
-			// tng = createModel( path, "Authors", "", 50 );
+
+			for ( String a : getListTopicsNgrams( tng, 5, true ) )
+			{
+				System.out.println( a );
+			}
+			for ( String a : getListTopicsNgrams( tng, 5, true ) )
+			{
+				for (String b : a.split( " " )){
+					System.out.println(b.split( "-" )[0] +  " -> " + 0.01* Double.parseDouble(b.split( "-" )[1]) );
+				}
+			}
+			
+			// tng =
 			// call the TopicalNGrams methods with the following parameters by Blei
 			// numTopics=100 , alpha = 1.0, beta = 0.001, gamma = 0.1, delta = 0.001, delta1 = 0.2, delta2=1000.0
 
@@ -1415,54 +1427,39 @@ public class Ngram implements NGrams
 		topicAuthorId = authorsTopic.get( id );
 
 		int N = 0;
-		int[] toptopics = new int[10];
-		while ( N < 10 )
+		int[] toptopics = new int[numTopics];
+		for ( int i = 0; i < topicAuthorId.size(); i++ )
 		{
-			double max = topicAuthorId.get( 0 );
-			int index = -1;
-			for ( int i = 1; i < topicAuthorId.size(); i++ )
+			if ( topicAuthorId.get( i ) >= 0.1 )
 			{
-				if ( topicAuthorId.get( i ) >= max )
-				{
-					max = topicAuthorId.get( i );
-					index = i;
-				}
+				toptopics[i] = 1;
+				N++;
 			}
-			toptopics[index] = 1;
-			topicAuthorId.set( index, -1.0 );
-			N++;
 		}
 
 		// calculate the topicSimilarity for each of the similar authors
 		for ( String similarAuthor : similarAuthors )
 		{
 			
-			N = 0;
-			int[] toptopicsVs = new int[10];
-			while ( N < 10 )
+			int Nvs = 0;
+			int[] toptopicsVs = new int[numTopics];
+
+			for ( int i = 0; i < numTopics; i++ )
 			{
-				int index = -1;
-				double max = authorsTopic.get( similarAuthor.split( "->" )[0] ).get( 0 );
-				
-				for ( int i = 1; i < authorsTopic.size(); i++ )
+				if ( authorsTopic.get( similarAuthor.split( "->" )[0] ).get( i ) >= 0.1 )
 				{
-					if ( authorsTopic.get( similarAuthor.split( "->" )[0] ).get( i ) >= max )
-					{
-						max = authorsTopic.get( similarAuthor.split( "->" )[0] ).get( i );
-						index = i;
-					}
+					toptopicsVs[i] = 1;
+					Nvs++;
 				}
-				authorsTopic.get( similarAuthor.split( "->" )[0] ).set( index, -1.0 );
-				toptopicsVs[index] = 1;
-				N++;
 			}
+
 
 			// compare author with similarAuthors
 			List<String> topicAuthor = new ArrayList<String>();
-			for ( int j = 0; j < 10; j++ )
+			for ( int j = 0; j < toptopics.length; j++ )
 			{
 				if ((toptopics[j] == 1) && (toptopics[j]==toptopicsVs[j])){
-					topicAuthor.add( topics.get( j ) + "_-_" + 0 );
+					topicAuthor.add( topics.get( j ) + "_-_" + N / Nvs );
 				}
 			}
 
@@ -1874,7 +1871,7 @@ public class Ngram implements NGrams
 		}
 
 		// call the method to calculate the similarities
-		similarEntities = getTopicLevelSimilarity( model, id, maxResult, similarityMeasure, numTopics );
+		similarEntities = getTopicLevelSimilarityTopMinDelta( model, id, maxResult, similarityMeasure, numTopics );
 
 		return similarEntities;
 	}
@@ -1993,11 +1990,11 @@ public class Ngram implements NGrams
 			{
 				// differentiate between unigrams and n-grams
 				if (unigrams){
-					weightedWords.put( wordweight.split( "-" )[0], (double) Math.round( ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( topicWeight, 2 ) ) ) );
+					weightedWords.put( wordweight.split( "-" )[0], (double) Math.round( ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( topicWeight, 2 ) ) ) * 1000000 );
 				}
 				else
 				{
-					weightedWords.put( wordweight.split( "-" )[0].replaceAll( "_", " " ), (double) Math.round( ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( topicWeight, 2 ) ) ) );
+					weightedWords.put( wordweight.split( "-" )[0].replaceAll( "_", " " ), (double) Math.round( ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( topicWeight, 2 ) ) ) * 1000000 );
 				}
 			}
 
@@ -2033,35 +2030,31 @@ public class Ngram implements NGrams
 			String topicWordsWeights = topic.split( "_-_" )[0];
 			// add the weight factor for each element
 			double topicWeight = Double.parseDouble( topic.split( "_-_" )[1] );
-			// if ( topicWeight >= 1 / numTopics )
-			// {
-			// topicWeight *= 1000;
-			// }
-			//
-			// else if ( ( 0.8 / numTopics ) <= topicWeight && topicWeight <
-			// numTopics )
-			// {
-			// topicWeight *= 500;
-			// }
-			// else if ( ( 0.6 / numTopics ) <= topicWeight && topicWeight < (
-			// 0.8 / numTopics ) )
-			// {
-			// topicWeight *= 200;
-			// }
-			// else if ( ( 0.4 / numTopics ) <= topicWeight && topicWeight < (
-			// 0.6 / numTopics ) )
-			// {
-			// topicWeight *= 100;
-			// }
-			// else if ( ( 0.2 / numTopics ) <= topicWeight && topicWeight < (
-			// 0.4 / numTopics ) )
-			// {
-			// topicWeight *= 10;
-			// }
-			// else
-			// {
-			// continue;
-			// }
+			if ( topicWeight >= 1 / numTopics )
+			{
+				topicWeight *= 1000;
+			}
+
+			else if ( ( 0.8 / numTopics ) <= topicWeight && topicWeight < numTopics )
+			{
+				topicWeight *= 500;
+			}
+			else if ( ( 0.6 / numTopics ) <= topicWeight && topicWeight < ( 0.8 / numTopics ) )
+			{
+				topicWeight *= 200;
+			}
+			else if ( ( 0.4 / numTopics ) <= topicWeight && topicWeight < ( 0.6 / numTopics ) )
+			{
+				topicWeight *= 100;
+			}
+			else if ( ( 0.2 / numTopics ) <= topicWeight && topicWeight < ( 0.4 / numTopics ) )
+			{
+				topicWeight *= 10;
+			}
+			else
+			{
+				continue;
+			}
 
 			for ( String wordweight : topicWordsWeights.split( " " ) )
 			{
