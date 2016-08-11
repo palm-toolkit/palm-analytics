@@ -2103,6 +2103,7 @@ public class Ngram implements NGrams
 	{
 
 		HashMap<String, List<String>> topics = new HashMap<String, List<String>>();
+		List<String> mergedResults = new ArrayList<String>();
 		TopicalNGrams model;
 		// create model for each of the authors that we have
 		for ( String author : authorIds )
@@ -2122,7 +2123,6 @@ public class Ngram implements NGrams
 			{
 				// for the created model get the specific topic distribution for
 				// the given publicationId
-
 				if ( unigrams )
 				{
 					if ( wordweight )
@@ -2133,7 +2133,8 @@ public class Ngram implements NGrams
 							List<String> partialresult = new ArrayList<String>( element.getValue() );
 							temporalResult.addAll( partialresult );
 						}
-						topics.put( publicationId, temporalResult );
+						mergedResults.addAll( temporalResult );
+						// topics.put( publicationId, temporalResult );
 					}
 					else
 					{
@@ -2143,8 +2144,11 @@ public class Ngram implements NGrams
 						List<String> partialresult = new ArrayList<String>(element.getValue());
 						temporalResult.addAll(partialresult);
 					}
-					topics.put( publicationId, temporalResult );
+						mergedResults.addAll( temporalResult );
+						// topics.put( author, temporalResult );
 					}
+
+					topics.put( publicationId, mergedResults );
 				}
 				else
 				{
@@ -2156,7 +2160,8 @@ public class Ngram implements NGrams
 							List<String> partialresult = new ArrayList<String>( element.getValue() );
 							temporalResult.addAll( partialresult );
 						}
-						topics.put( publicationId, temporalResult );
+						mergedResults.addAll( temporalResult );
+						// topics.put( publicationId, temporalResult );
 					}
 					else
 					{
@@ -2166,8 +2171,9 @@ public class Ngram implements NGrams
 							List<String> partialresult = new ArrayList<String>( element.getValue() );
 							temporalResult.addAll( partialresult );
 					}
-					topics.put( publicationId, temporalResult );
+						mergedResults.addAll( temporalResult );
 					}
+					topics.put( publicationId, mergedResults );
 				}
 			}
 			catch ( Exception e )
