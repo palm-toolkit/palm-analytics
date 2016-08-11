@@ -9,9 +9,12 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
@@ -25,24 +28,33 @@ public class Ngram implements NGrams
 {
 	public String path = "C:/Users/Piro/Desktop/";
 	// c442983a-0099-4d6d-89b1-6cfc57fa6138
-	public TopicalNGrams tng = createModel( path, "Author-Test", "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10 );
+	public TopicalNGrams tng;// = createModel( path, "Author-Test",
+	// "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10 );
 
 	@Test
 	public void test() throws Exception
 	{	
 		try{
 
-			for ( String a : getListTopicsNgrams( tng, 5, true ) )
-			{
-				System.out.println( a );
-			}
-			for ( String a : getListTopicsNgrams( tng, 5, true ) )
-			{
-				for (String b : a.split( " " )){
-					System.out.println(b.split( "-" )[0] +  " -> " + 0.01* Double.parseDouble(b.split( "-" )[1]) );
-				}
-			}
+			// for ( String a : getListTopicsNgrams( tng, 5, true ) )
+			// {
+			// System.out.println( a );
+			// }
+			// for ( String a : getListTopicsNgrams( tng, 5, true ) )
+			// {
+			// for (String b : a.split( " " )){
+			// System.out.println(b.split( "-" )[0] + " -> " + 0.01*
+			// Double.parseDouble(b.split( "-" )[1]) );
+			// }
+			// }
 			
+			HashMap<String, Double> topic = runweightedTopicComposition( path, "Author-Test", "c442983a-0099-4d6d-89b1-6cfc57fa6138", 20, 10, 5, true, false );
+			for ( Entry<String, Double> e : topic.entrySet() )
+			{
+				System.out.println( e.getKey() );
+				System.out.println( e.getValue() );
+			}
+
 			// tng =
 			// call the TopicalNGrams methods with the following parameters by Blei
 			// numTopics=100 , alpha = 1.0, beta = 0.001, gamma = 0.1, delta = 0.001, delta1 = 0.2, delta2=1000.0
@@ -1404,7 +1416,7 @@ public class Ngram implements NGrams
 
 	public HashMap<String, List<String>> getTopicLevelSimilarityTopMinDelta( TopicalNGrams model, String id, int maxresult, int simialrityMeasure, int numTopics )
 	{
-		HashMap<String, List<String>> resultMap = new HashMap<String, List<String>>();
+		LinkedHashMap<String, List<String>> resultMap = new LinkedHashMap<String, List<String>>();
 
 		// will hold the list of authors followed by the % of similarity
 		List<String> similarAuthors = new ArrayList<String>();
@@ -1416,11 +1428,8 @@ public class Ngram implements NGrams
 		authorsTopic = getDoumentTopicProportion( model );
 
 		// list of topics string
-		List<String> topics = new ArrayList<String>();
+		List<String> topics = new ArrayList<String>( numTopics );
 		topics = getListTopicsNgrams( model, 10, false );
-
-		// declare an array to track the topic similarity for each author
-		double[][] topicSimilarity = new double[maxresult][model.numTopics];
 
 		// get the list of topic proportions for author id
 		List<Double> topicAuthorId = new ArrayList<Double>();
@@ -1430,7 +1439,7 @@ public class Ngram implements NGrams
 		int[] toptopics = new int[numTopics];
 		for ( int i = 0; i < topicAuthorId.size(); i++ )
 		{
-			if ( topicAuthorId.get( i ) >= 0.1 )
+			if ( topicAuthorId.get( i ) >= 0.015 )
 			{
 				toptopics[i] = 1;
 				N++;
@@ -1446,7 +1455,7 @@ public class Ngram implements NGrams
 
 			for ( int i = 0; i < numTopics; i++ )
 			{
-				if ( authorsTopic.get( similarAuthor.split( "->" )[0] ).get( i ) >= 0.1 )
+				if ( authorsTopic.get( similarAuthor.split( "->" )[0] ).get( i ) >= 0.015 )
 				{
 					toptopicsVs[i] = 1;
 					Nvs++;
@@ -1459,7 +1468,7 @@ public class Ngram implements NGrams
 			for ( int j = 0; j < toptopics.length; j++ )
 			{
 				if ((toptopics[j] == 1) && (toptopics[j]==toptopicsVs[j])){
-					topicAuthor.add( topics.get( j ) + "_-_" + N / Nvs );
+					topicAuthor.add( topics.get( j ) + "_-_" + Nvs / N );
 				}
 			}
 
@@ -1469,7 +1478,7 @@ public class Ngram implements NGrams
 			for ( String entity : topicAuthor )
 				topicLevelSimilarity.add( entity );
 
-			resultMap.put( similarAuthor, topicLevelSimilarity );
+			resultMap.put( similarAuthor.split( "->" )[0] + "->" + Double.parseDouble( similarAuthor.split( "->" )[1] ) * Nvs / N, topicLevelSimilarity );
 
 		}
 
@@ -1955,7 +1964,8 @@ public class Ngram implements NGrams
 
 			String topicWordsWeights = topic.split( "_-_" )[0];
 			// add the weight factor for each element
-			double topicWeight = Double.parseDouble( topic.split( "_-_" )[1] );
+			// double topicWeight = Double.parseDouble( topic.split( "_-_" )[1]
+			// );
 			// if ( topicWeight >= 1 / numTopics )
 			// {
 			// topicWeight *= 1000;
@@ -1990,17 +2000,30 @@ public class Ngram implements NGrams
 			{
 				// differentiate between unigrams and n-grams
 				if (unigrams){
-					weightedWords.put( wordweight.split( "-" )[0], (double) Math.round( ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( topicWeight, 2 ) ) ) * 1000000 );
+					weightedWords.put( wordweight.split( "-" )[0], (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 1000000 );
 				}
 				else
 				{
-					weightedWords.put( wordweight.split( "-" )[0].replaceAll( "_", " " ), (double) Math.round( ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( topicWeight, 2 ) ) ) * 1000000 );
+					weightedWords.put( wordweight.split( "-" )[0].replace( "_", " " ), (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 1000000 );
 				}
 			}
-
 		}
-		
-		return weightedWords;
+
+		weightedWords = (LinkedHashMap<String, Double>) sortByValue( weightedWords );
+		// get the top 10 * numTopics words
+		int N = 0;
+		LinkedHashMap<String, Double> results = new LinkedHashMap<String, Double>();
+		for ( Entry<String, Double> element : weightedWords.entrySet() )
+		{
+			results.put( element.getKey(), element.getValue() );
+			N++;
+
+			if ( N >= 10 * numTopics )
+			{
+				break;
+			}
+		}
+		return results;
 	}
 
 	// method used to get the topic composition as weighted words/phrases Tag
@@ -2155,4 +2178,22 @@ public class Ngram implements NGrams
 		return topics;
 	}
 
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue( Map<K, V> map )
+	{
+		List<Map.Entry<K, V>> list = new LinkedList<>( map.entrySet() );
+		Collections.sort( list, new Comparator<Map.Entry<K, V>>()
+		{
+			@Override
+			public int compare( Map.Entry<K, V> o1, Map.Entry<K, V> o2 )
+			{
+				return ( o2.getValue() ).compareTo( o1.getValue() );
+			}
+		} );
+		Map<K, V> result = new LinkedHashMap<>();
+		for ( Map.Entry<K, V> entry : list )
+		{
+			result.put( entry.getKey(), entry.getValue() );
+		}
+		return result;
+	}
 }
