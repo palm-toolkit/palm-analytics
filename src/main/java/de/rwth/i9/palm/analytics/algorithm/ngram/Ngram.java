@@ -521,7 +521,7 @@ public class Ngram implements NGrams
 		try
 		{
 			trained = getInstanceDataDirectoryLevel( path, purpose, entityId );
-			ngram.estimate( trained, 100, 1, 0, null, new Randoms() );
+			ngram.estimate( trained, 500, 1, 0, null, new Randoms() );
 		}
 		catch ( IOException e )
 		{
@@ -2012,13 +2012,23 @@ public class Ngram implements NGrams
 		weightedWords = (LinkedHashMap<String, Double>) sortByValue( weightedWords );
 		// get the top 10 * numTopics words
 		int N = 0;
+		int iterations = 0;
+		if ( numTopics < 6 )
+		{
+			iterations = numTopics * 10;
+		}
+		else
+		{
+			iterations = numTopics * 5;
+		}
+
 		LinkedHashMap<String, Double> results = new LinkedHashMap<String, Double>();
 		for ( Entry<String, Double> element : weightedWords.entrySet() )
 		{
 			results.put( element.getKey(), element.getValue() );
 			N++;
 
-			if ( N >= 10 * numTopics )
+			if ( N >= iterations )
 			{
 				break;
 			}
