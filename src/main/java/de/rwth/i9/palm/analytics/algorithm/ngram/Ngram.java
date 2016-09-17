@@ -48,7 +48,7 @@ public class Ngram implements NGrams
 			// }
 			// }
 			
-			HashMap<String, Double> topic = runweightedTopicComposition( path, "Author-Test", "c442983a-0099-4d6d-89b1-6cfc57fa6138", 20, 10, 5, true, false );
+			HashMap<String, Double> topic = runweightedTopicComposition( path, "Author-Test", "c442983a-0099-4d6d-89b1-6cfc57fa618", 20, 10, 5, true, false );
 			for ( Entry<String, Double> e : topic.entrySet() )
 			{
 				System.out.println( e.getKey() );
