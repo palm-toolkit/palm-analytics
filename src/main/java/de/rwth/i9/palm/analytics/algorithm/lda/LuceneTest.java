@@ -35,7 +35,7 @@
 //
 //		Directory indexDirectory;
 //		try {
-//		//	indexDirectory = FSDirectory.open( "C:/Users/Piro/Desktop/Years/Years/2014.txt" );
+//		//	indexDirectory = FSDirectory.open( "C:/Users/Albi/Desktop/Years/Years/2014.txt" );
 //
 //			EnglishAnalyzer germanAnalyzer = new EnglishAnalyzer(null);
 //

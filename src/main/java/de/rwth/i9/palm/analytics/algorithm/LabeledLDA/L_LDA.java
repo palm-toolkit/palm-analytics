@@ -18,7 +18,7 @@ public class L_LDA
 			{	
 				
 				try{
-					String path = "C:/Users/Piro/Desktop/";
+					String path = "C:/Users/Albi/Desktop/";
 					
 					LabeledLDA llda = createModel(path, "labeledLDA", "Label", 10, 10);
 					
@@ -52,8 +52,8 @@ public class L_LDA
 				 // 5. Define the labels and use them as input files.
  
 				ProcessBuilder builder = new ProcessBuilder(
-			            "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-file --input C:\\Users\\Piro\\Desktop\\"+ purpose + "\\" + purpose + "\\" + docname + ".txt" 
-			            + " --output C:\\Users\\Piro\\Desktop\\" + purpose + "\\" + docname + ".seq" 
+			            "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-file --input C:\\Users\\Albi\\Desktop\\"+ purpose + "\\" + purpose + "\\" + docname + ".txt" 
+			            + " --output C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + docname + ".seq" 
 			            + " --remove-stopwords --label-as-features --keep-sequence "
 			            + " --line-regex \"([^\\t]+)\\t([^\\t]+)\\t(.*)\"");
 				builder.redirectErrorStream(true);

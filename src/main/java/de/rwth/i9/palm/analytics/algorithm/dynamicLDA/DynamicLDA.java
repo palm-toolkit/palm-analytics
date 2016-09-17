@@ -28,7 +28,7 @@ import de.rwth.i9.palm.analytics.algorithm.lda.importData;
 
 public class DynamicLDA implements DynamicTopicModel
 {	
-	public String path = "C:\\Users\\Piro\\Desktop\\Years\\";
+	public String path = "C:\\Users\\Albi\\Desktop\\Years\\";
 	public ParallelTopicModel years = createModel(path, "Years", 11 , 10);
 	public TemporalTopicModel tot;
 	
