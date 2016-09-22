@@ -521,7 +521,7 @@ public class Ngram implements NGrams
 		try
 		{
 			trained = getInstanceDataDirectoryLevel( path, purpose, entityId );
-			ngram.estimate( trained, 500, 1, 0, null, new Randoms() );
+			ngram.estimate( trained, 100, 1, 0, null, new Randoms() );
 		}
 		catch ( IOException e )
 		{
@@ -544,7 +544,7 @@ public class Ngram implements NGrams
 			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + entityId + ".mallet" ) );
 
 		if ( !trained.isEmpty() )
-			ngram.estimate( trained, 200, 1, 0, "C:/Users/Albi/Desktop/Model.txt", new Randoms() );
+			ngram.estimate( trained, 100, 1, 0, "C:/Users/Albi/Desktop/Model.txt", new Randoms() );
 		else
 			return null;
 
@@ -2028,7 +2028,7 @@ public class Ngram implements NGrams
 			results.put( element.getKey(), element.getValue() );
 			N++;
 
-			if ( N >= iterations )
+			if ( N >= 30 )
 			{
 				break;
 			}
