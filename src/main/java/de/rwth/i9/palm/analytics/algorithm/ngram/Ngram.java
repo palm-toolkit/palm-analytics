@@ -2046,65 +2046,38 @@ public class Ngram implements NGrams
 		// use the model to get the list of topics and the weighted
 		topicProportions = runTopicsFromListofEntities( path, purpose, authorIds, id, numTopics, maxnumTopics, numWords, createmodel, unigrams, true ).get( id );
 
-		// do the split _-_ to get the topic weight and topic
-		// do the split of the topic " " to get the words and weight
-		// multiply the topic weight and word weight
-		// double[] proportion = new double[topicProportions.size()];
-		// int i = 0;
-		// for ( String topic : topicProportions )
-		// {
-		// proportion[i] = Double.parseDouble( topic.split( "_-_" )[1] );
-		// i++;
-		// }
-
 		for ( String topic : topicProportions )
 		{
 
 			String topicWordsWeights = topic.split( "_-_" )[0];
 			// add the weight factor for each element
-			double topicWeight = Double.parseDouble( topic.split( "_-_" )[1] );
-			if ( topicWeight >= 1 / numTopics )
-			{
-				topicWeight *= 1000;
-			}
-
-			else if ( ( 0.8 / numTopics ) <= topicWeight && topicWeight < numTopics )
-			{
-				topicWeight *= 500;
-			}
-			else if ( ( 0.6 / numTopics ) <= topicWeight && topicWeight < ( 0.8 / numTopics ) )
-			{
-				topicWeight *= 200;
-			}
-			else if ( ( 0.4 / numTopics ) <= topicWeight && topicWeight < ( 0.6 / numTopics ) )
-			{
-				topicWeight *= 100;
-			}
-			else if ( ( 0.2 / numTopics ) <= topicWeight && topicWeight < ( 0.4 / numTopics ) )
-			{
-				topicWeight *= 10;
-			}
-			else
-			{
-				continue;
-			}
 
 			for ( String wordweight : topicWordsWeights.split( " " ) )
 			{
 				// differentiate between unigrams and n-grams
-				if ( unigrams )
-				{
-					weightedWords.put( wordweight.split( "-" )[0], (double) Math.round( ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( topicWeight, 2 ) ) ) );
+				if (unigrams){
+					weightedWords.put( wordweight.split( "-" )[0], (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 100000 );
 				}
 				else
 				{
-					weightedWords.put( wordweight.split( "-" )[0].replaceAll( "_", " " ), (double) Math.round( ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( topicWeight, 2 ) ) ) );
+					weightedWords.put( wordweight.split( "-" )[0].replace( "_", " " ), (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 100000 );
+				}
+			}
+		}
+			weightedWords = (LinkedHashMap<String, Double>) sortByValue( weightedWords );
+			int N = 0;
+			LinkedHashMap<String, Double> results = new LinkedHashMap<String, Double>();
+			for ( Entry<String, Double> element : weightedWords.entrySet() )
+			{
+				if ( N < 10 ){
+					results.put( element.getKey(), element.getValue() );
+					N++;
+				}else{
+					break;
 				}
 			}
 
-		}
-
-		return weightedWords;
+		return results;
 	}
 
 	// get the list of topics followed by their proportions from a list of
