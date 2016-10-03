@@ -521,7 +521,7 @@ public class Ngram implements NGrams
 		try
 		{
 			trained = getInstanceDataDirectoryLevel( path, purpose, entityId );
-			ngram.estimate( trained, 500, 1, 0, null, new Randoms() );
+			ngram.estimate( trained, 100, 1, 0, null, new Randoms() );
 		}
 		catch ( IOException e )
 		{
@@ -530,63 +530,6 @@ public class Ngram implements NGrams
 
 		return ngram;
 		}
-	
-	// create a model of reference using training corpus for Similarity
-	public TopicalNGrams createModelforSimilarity( String path, String purpose, String entityId, int numTopics )
-	{
-		int numFiles;
-
-		// get the number of files available for each level of hierarchy, it
-		// influences the number of topics
-		if ( entityId.isEmpty() )
-		{
-			numFiles = new File( path + "/" + purpose + "/" + purpose ).listFiles().length;
-			if ( numFiles == 0 )
-			{
-				return null;
-			}
-		}
-		else
-		{
-			numFiles = new File( path + "/" + purpose + "/" + entityId ).listFiles().length;
-			if ( numFiles == 0 )
-			{
-				return null;
-			}
-		}
-
-		// by heuristics decide on maximal number of Topics the model will
-		// contain dependent on number of files
-		if ( numFiles > 100 )
-		{
-			numTopics = 100;
-		}
-		else if ( numFiles < 10 )
-		{
-			numTopics = numFiles;
-		}
-		else
-		{
-			// default number of topics
-
-		}
-
-		TopicalNGrams ngram = new TopicalNGrams( numTopics, 50.0, 0.01, 0.01, 0.03, 0.2, 1000 );
-		InstanceList trained;
-		try
-		{
-			trained = getInstanceDataDirectoryLevel( path, purpose, entityId );
-			ngram.estimate( trained, 10, 1, 0, null, new Randoms() );
-		}
-		catch ( IOException e )
-		{
-			e.printStackTrace();
-		}
-
-		return ngram;
-		}
-	
-	
 
 	// method to create a model based on an already existing instancelist
 	public TopicalNGrams useTrainedData( String path, String purpose, String entityId, int numTopics )
@@ -602,26 +545,6 @@ public class Ngram implements NGrams
 
 		if ( !trained.isEmpty() )
 			ngram.estimate( trained, 100, 1, 0, "C:/Users/Albi/Desktop/Model.txt", new Randoms() );
-		else
-			return null;
-
-		return ngram;
-	}
-	
-	// method to create a model based on an already existing instancelist
-	public TopicalNGrams useTrainedDataforSimilarity( String path, String purpose, String entityId, int numTopics )
-	{
-		TopicalNGrams ngram = new TopicalNGrams( numTopics, 50.0, 0.01, 0.01, 0.03, 0.2, 1000 );
-		InstanceList trained;
-		if ( entityId == "" )
-		{
-			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet" ) );
-		}
-		else
-			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + entityId + ".mallet" ) );
-
-		if ( !trained.isEmpty() )
-			ngram.estimate( trained, 10, 1, 0, "C:/Users/Albi/Desktop/Model.txt", new Randoms() );
 		else
 			return null;
 
@@ -1924,11 +1847,11 @@ public class Ngram implements NGrams
 		if ( createModel )
 		{
 			// create a new model
-			model = createModelforSimilarity( path, purpose, "", numTopics );
+			model = createModel( path, purpose, "", numTopics );
 		}
 		else
 		{
-			model = useTrainedDataforSimilarity( path, purpose, "", numTopics );
+			model = useTrainedData( path, purpose, "", numTopics );
 		}
 
 		// call the method to calculate the similarities
@@ -2026,9 +1949,53 @@ public class Ngram implements NGrams
 		// use the model to get the list of topics and the weighted
 		topicProportions = getTopicProportionEntityLevel( model, unigrams, numWords, true );
 
+		// do the split _-_ to get the topic weight and topic
+		// do the split of the topic " " to get the words and weight
+		// multiply the topic weight and word weight
+		// double[] proportion = new double[topicProportions.size()];
+		// int i = 0;
+		// for ( String topic : topicProportions )
+		// {
+		// proportion[i] = Double.parseDouble( topic.split( "_-_" )[1] );
+		// i++;
+		// }
+
 		for (String topic : topicProportions){
 
 			String topicWordsWeights = topic.split( "_-_" )[0];
+			// add the weight factor for each element
+			// double topicWeight = Double.parseDouble( topic.split( "_-_" )[1]
+			// );
+			// if ( topicWeight >= 1 / numTopics )
+			// {
+			// topicWeight *= 1000;
+			// }
+			//
+			// else if ( ( 0.8 / numTopics ) <= topicWeight && topicWeight <
+			// numTopics )
+			// {
+			// topicWeight *= 500;
+			// }
+			// else if ( ( 0.6 / numTopics ) <= topicWeight && topicWeight < (
+			// 0.8 / numTopics ) )
+			// {
+			// topicWeight *= 200;
+			// }
+			// else if ( ( 0.4 / numTopics ) <= topicWeight && topicWeight < (
+			// 0.6 / numTopics ) )
+			// {
+			// topicWeight *= 100;
+			// }
+			// else if ( ( 0.2 / numTopics ) <= topicWeight && topicWeight < (
+			// 0.4 / numTopics ) )
+			// {
+			// topicWeight *= 10;
+			// }
+			// else
+			// {
+			// continue;
+			// }
+
 			for ( String wordweight : topicWordsWeights.split( " " ) )
 			{
 				// differentiate between unigrams and n-grams

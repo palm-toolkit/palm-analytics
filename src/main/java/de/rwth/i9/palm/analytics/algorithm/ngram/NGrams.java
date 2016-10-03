@@ -58,38 +58,7 @@ public interface NGrams
 	 * @throws IOException
 	 */
 	public TopicalNGrams createModel( String path, String purpose, String specify, int numTopics ) throws IOException;
-	
-	/**
-	 * 
-	 * @param path
-	 * @param purpose
-	 * @param entityId
-	 * @param numTopics
-	 * @return
-	 */
-	public TopicalNGrams createModelforSimilarity( String path, String purpose, String entityId, int numTopics );
-	
-	/**
-	 * 
-	 * @param path
-	 * @param purpose
-	 * @param entityId
-	 * @param numTopics
-	 * @return
-	 */
-	public TopicalNGrams useTrainedData( String path, String purpose, String entityId, int numTopics );
-	
-	/**
-	 * 
-	 * @param path
-	 * @param purpose
-	 * @param entityId
-	 * @param numTopics
-	 * @return
-	 */
-	public TopicalNGrams useTrainedDataforSimilarity( String path, String purpose, String entityId, int numTopics );
-	
-	
+
 	/**
 	 * 
 	 * @param m
