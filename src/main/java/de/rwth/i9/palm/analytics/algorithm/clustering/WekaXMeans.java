@@ -10,7 +10,7 @@ public class WekaXMeans
 
 	static public XMeans run( int k, Instances data ) throws Exception
 	{
-		xmeans.setMinNumClusters( 5 );
+		xmeans.setMinNumClusters( 3 );
 		xmeans.setMaxNumClusters( 20 );
 		xmeans.setSeed( k );
 		xmeans.setUseKDTree( true );
@@ -18,6 +18,7 @@ public class WekaXMeans
 		xmeans.setDistanceF( new EuclideanDistance() );
 		xmeans.buildClusterer( data );
 		xmeans.postExecution();
+
 		return xmeans;
 	}
 }
