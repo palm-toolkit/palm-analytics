@@ -1963,38 +1963,6 @@ public class Ngram implements NGrams
 		for (String topic : topicProportions){
 
 			String topicWordsWeights = topic.split( "_-_" )[0];
-			// add the weight factor for each element
-			// double topicWeight = Double.parseDouble( topic.split( "_-_" )[1]
-			// );
-			// if ( topicWeight >= 1 / numTopics )
-			// {
-			// topicWeight *= 1000;
-			// }
-			//
-			// else if ( ( 0.8 / numTopics ) <= topicWeight && topicWeight <
-			// numTopics )
-			// {
-			// topicWeight *= 500;
-			// }
-			// else if ( ( 0.6 / numTopics ) <= topicWeight && topicWeight < (
-			// 0.8 / numTopics ) )
-			// {
-			// topicWeight *= 200;
-			// }
-			// else if ( ( 0.4 / numTopics ) <= topicWeight && topicWeight < (
-			// 0.6 / numTopics ) )
-			// {
-			// topicWeight *= 100;
-			// }
-			// else if ( ( 0.2 / numTopics ) <= topicWeight && topicWeight < (
-			// 0.4 / numTopics ) )
-			// {
-			// topicWeight *= 10;
-			// }
-			// else
-			// {
-			// continue;
-			// }
 
 			for ( String wordweight : topicWordsWeights.split( " " ) )
 			{
