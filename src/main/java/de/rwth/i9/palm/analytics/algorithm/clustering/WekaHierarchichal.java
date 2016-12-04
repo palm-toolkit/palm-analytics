@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import weka.clusterers.HierarchicalClusterer;
 import weka.core.Instances;
-import weka.core.ManhattanDistance;
 
 @Component
 @Transactional
@@ -15,13 +14,13 @@ public class WekaHierarchichal
 
 	String[] options = new String[4];
 
-	public HierarchicalClusterer run( Instances data ) throws Exception
+	public HierarchicalClusterer run( String noOfClustersVal, Instances data ) throws Exception
 	{
 		// clusterer.setDistanceFunction( new ChebyshevDistance() );
 		// clusterer.setDistanceFunction( new MinkowskiDistance() );
-		clusterer.setNumClusters( 3 );
+		clusterer.setNumClusters( Integer.parseInt( noOfClustersVal ) );
 		//clusterer.setDistanceFunction( new FilteredDistance() );
-		clusterer.setDistanceFunction( new ManhattanDistance() );
+		// clusterer.setDistanceFunction( new ManhattanDistance() );
 		clusterer.buildClusterer( data );
 		return clusterer;
 	}
