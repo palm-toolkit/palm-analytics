@@ -3,18 +3,18 @@ package de.rwth.i9.palm.analytics.algorithm.clustering;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import weka.clusterers.DBSCAN;
+import weka.clusterers.FarthestFirst;
 import weka.core.Instances;
 
 @Component
 @Transactional
-public class WekaDBSCAN
+public class WekaFarthestFirst
 {
-	private static DBSCAN clusterer = new DBSCAN();
+	private static FarthestFirst clusterer = new FarthestFirst();
 
 	String[] options = new String[4];
 
-	public DBSCAN run( Instances data ) throws Exception
+	public FarthestFirst run( String seedVal, String noOfClustersVal, Instances data ) throws Exception
 	{
 		// clusterer.setEpsilon( 8 );
 		// clusterer.setMinPoints( 0 );
@@ -23,8 +23,10 @@ public class WekaDBSCAN
 		// clusterer.setDatabase_distanceType(
 		// "weka.clusterers.forOPTICSAndDBScan.DataObjects.ManhattanDataObject"
 		// );
-		clusterer.setEpsilon( 8.0 );
-		clusterer.setMinPoints( 0 );
+		// clusterer.setEpsilon( 4.0 );
+		// clusterer.setMinPoints( 0 );
+		clusterer.setSeed( Integer.parseInt( seedVal ) );
+		clusterer.setNumClusters( Integer.parseInt( noOfClustersVal ) );
 		clusterer.buildClusterer( data );
 		// System.out.println( data );
 		//
