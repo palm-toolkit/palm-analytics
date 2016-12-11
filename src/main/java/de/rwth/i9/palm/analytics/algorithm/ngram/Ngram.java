@@ -48,12 +48,12 @@ public class Ngram implements NGrams
 			// }
 			// }
 			
-			HashMap<String, Double> topic = runweightedTopicComposition( path, "Author-Test", "c442983a-0099-4d6d-89b1-6cfc57fa618", 20, 10, 5, true, false );
-			for ( Entry<String, Double> e : topic.entrySet() )
-			{
-				System.out.println( e.getKey() );
-				System.out.println( e.getValue() );
-			}
+//			HashMap<String, Double> topic = runweightedTopicComposition( path, "Author-Test", "c442983a-0099-4d6d-89b1-6cfc57fa618", 20, 10, 5, true, false );
+//			for ( Entry<String, Double> e : topic.entrySet() )
+//			{
+//				System.out.println( e.getKey() );
+//				System.out.println( e.getValue() );
+//			}
 
 			// tng =
 			// call the TopicalNGrams methods with the following parameters by Blei
@@ -477,7 +477,62 @@ public class Ngram implements NGrams
 	}
 
 	// create a model of reference using training corpus
-	public TopicalNGrams createModel( String path, String purpose, String entityId, int numTopics )
+	public TopicalNGrams createModel( String path, String purpose, String entityId, int numTopics ) throws NullPointerException 
+	{
+		int numFiles;
+
+		// get the number of files available for each level of hierarchy, it
+		// influences the number of topics
+		if ( entityId.isEmpty() )
+		{
+			numFiles = new File( path + "/" + purpose + "/" + purpose ).listFiles().length;
+			if ( numFiles == 0 )
+			{
+				return null;
+			}
+		}
+		else
+		{
+			numFiles = new File( path + "/" + purpose + "/" + entityId ).listFiles().length;
+			if ( numFiles == 0 )
+			{
+				return null;
+			}
+		}
+
+		// by heuristics decide on maximal number of Topics the model will
+		// contain dependent on number of files
+		if ( numFiles > 100 )
+		{
+			numTopics = 100;
+		}
+		else if ( numFiles < 10 )
+		{
+			numTopics = numFiles - 1;
+		}
+		else
+		{
+			//numTopics = 5;
+
+		}
+
+		TopicalNGrams ngram = new TopicalNGrams( numTopics, 50.0, 0.01, 0.01, 0.03, 0.2, 1000 );
+		InstanceList trained;
+		try
+		{
+			trained = getInstanceDataDirectoryLevel( path, purpose, entityId );
+			ngram.estimate( trained, 100, 1, 0, null, new Randoms() );
+		}
+		catch ( IOException e )
+		{
+			e.printStackTrace();
+		}
+
+		return ngram;
+		}
+	
+	// create a model of reference using training corpus
+	public TopicalNGrams createModelRevised( String path, String purpose, String entityId, int numTopics )
 	{
 		int numFiles;
 
@@ -521,7 +576,7 @@ public class Ngram implements NGrams
 		try
 		{
 			trained = getInstanceDataDirectoryLevel( path, purpose, entityId );
-			ngram.estimate( trained, 100, 1, 0, null, new Randoms() );
+			ngram.estimate( trained, 50, 1, 0, null, new Randoms() );
 		}
 		catch ( IOException e )
 		{
@@ -544,7 +599,27 @@ public class Ngram implements NGrams
 			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + entityId + ".mallet" ) );
 
 		if ( !trained.isEmpty() )
-			ngram.estimate( trained, 100, 1, 0, "C:/Users/Albi/Desktop/Model.txt", new Randoms() );
+			ngram.estimate( trained, 100, 1, 0, null, new Randoms() );
+		else
+			return null;
+
+		return ngram;
+	}
+	
+	// method to create a model based on an already existing instancelist
+	public TopicalNGrams useTrainedDataRevised( String path, String purpose, String entityId, int numTopics )
+	{
+		TopicalNGrams ngram = new TopicalNGrams( numTopics, 50.0, 0.01, 0.01, 0.03, 0.2, 1000 );
+		InstanceList trained;
+		if ( entityId == "" )
+		{
+			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet" ) );
+		}
+		else
+			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + entityId + ".mallet" ) );
+
+		if ( !trained.isEmpty() )
+			ngram.estimate( trained, 50, 1, 0, "C:/Users/Albi/Desktop/Model.txt", new Randoms() );
 		else
 			return null;
 
@@ -1847,11 +1922,11 @@ public class Ngram implements NGrams
 		if ( createModel )
 		{
 			// create a new model
-			model = createModel( path, purpose, "", numTopics );
+			model = createModelRevised( path, purpose, "", numTopics );
 		}
 		else
 		{
-			model = useTrainedData( path, purpose, "", numTopics );
+			model = useTrainedDataRevised( path, purpose, "", numTopics );
 		}
 
 		// call the method to calculate the similarities
@@ -1968,11 +2043,13 @@ public class Ngram implements NGrams
 			{
 				// differentiate between unigrams and n-grams
 				if (unigrams){
-					weightedWords.put( wordweight.split( "-" )[0], (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 1000000 );
+					if ( !wordweight.split( "-" )[0].isEmpty())
+						weightedWords.put( wordweight.split( "-" )[0], (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 1000000 );
 				}
 				else
 				{
-					weightedWords.put( wordweight.split( "-" )[0].replace( "_", " " ), (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 1000000 );
+					if ( !wordweight.split( "-" )[0].isEmpty())
+						weightedWords.put( wordweight.split( "-" )[0].replace( "_", " " ), (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 1000000 );
 				}
 			}
 		}
@@ -2024,11 +2101,13 @@ public class Ngram implements NGrams
 			{
 				// differentiate between unigrams and n-grams
 				if (unigrams){
-					weightedWords.put( wordweight.split( "-" )[0], (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 100000 );
+					if (! wordweight.split( "-" )[0].isEmpty())
+						weightedWords.put( wordweight.split( "-" )[0], (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 100000 );
 				}
 				else
 				{
-					weightedWords.put( wordweight.split( "-" )[0].replace( "_", " " ), (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 100000 );
+					if (! wordweight.split( "-" )[0].isEmpty())
+						weightedWords.put( wordweight.split( "-" )[0].replace( "_", " " ), (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 100000 );
 				}
 			}
 		}
