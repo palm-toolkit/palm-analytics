@@ -26,7 +26,7 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
 import de.rwth.i9.palm.analytics.algorithm.lda.importData;
 
-public class DynamicLDA implements DynamicTopicModel
+public class DynamicTopicModelImpl implements DynamicTopicModel
 {	
 	public String path = "C:\\Users\\Albi\\Desktop\\Years\\";
 	public ParallelTopicModel years = createModel(path, "Years", 11 , 10);

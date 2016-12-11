@@ -32,7 +32,7 @@ public class kMeansClustering
 
 		try
 		{	
-			kMeans( 2000, 3 );
+			kMeans( 10, 5 );
 
 		}
 		catch ( Exception e )
@@ -356,6 +356,7 @@ public class kMeansClustering
 			System.out.println();
 		}
 		newcentroids = new double[centroids.length][centroids[0].length];
+
 		// one of the stopping criteria (finishing the number of the number of
 		// iterations planned to converge)
 		// continue as long as the stopping criteria is not fulfilled

@@ -1,5 +1,5 @@
 
-package de.rwth.i9.palm.analytics.algorithm.ngram;
+package NgramsTest;
 
 import java.util.ArrayList;
 import java.util.List;

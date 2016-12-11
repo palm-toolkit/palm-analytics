@@ -1,4 +1,4 @@
-package de.rwth.i9.palm.analytics.algorithm.ngram;
+package NgramsTest;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
+import org.junit.Test;
+
 import cc.mallet.types.InstanceList;
 import cc.mallet.util.Randoms;
 
@@ -25,8 +27,349 @@ import cc.mallet.util.Randoms;
 public class Ngram implements NGrams
 {
 	public String path = "C:/Users/Albi/Desktop/";
-	public TopicalNGrams tng;
+	// c442983a-0099-4d6d-89b1-6cfc57fa6138
+	public TopicalNGrams tng;// = createModel( path, "Author-Test",
+	// "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10 );
 
+	@Test
+	public void test() throws Exception
+	{	
+		try{
+
+			// for ( String a : getListTopicsNgrams( tng, 5, true ) )
+			// {
+			// System.out.println( a );
+			// }
+			// for ( String a : getListTopicsNgrams( tng, 5, true ) )
+			// {
+			// for (String b : a.split( " " )){
+			// System.out.println(b.split( "-" )[0] + " -> " + 0.01*
+			// Double.parseDouble(b.split( "-" )[1]) );
+			// }
+			// }
+			
+//			HashMap<String, Double> topic = runweightedTopicComposition( path, "Author-Test", "c442983a-0099-4d6d-89b1-6cfc57fa618", 20, 10, 5, true, false );
+//			for ( Entry<String, Double> e : topic.entrySet() )
+//			{
+//				System.out.println( e.getKey() );
+//				System.out.println( e.getValue() );
+//			}
+
+			// tng =
+			// call the TopicalNGrams methods with the following parameters by Blei
+			// numTopics=100 , alpha = 1.0, beta = 0.001, gamma = 0.1, delta = 0.001, delta1 = 0.2, delta2=1000.0
+
+
+			// get the list of unigrams & ngrams
+
+			// tng.printTopWords( 10, true );
+			 
+			// long start = System.nanoTime();
+			// System.out.println( "________________________GET THE TOPICS AS
+			// UNIGRAMS__________________________" );
+			// String[] u = getStringTopicsUnigrams( tng, 10, true );
+			// for ( String h : u )
+			// {
+			// System.out.println( h );
+			// }
+			// long end = System.nanoTime();
+			// System.out.println( "Time for getting unigrams: [" + ( end /
+			// Math.pow( 10, 9 ) - start / Math.pow( 10, 9 ) ) + " sec]" );
+
+			// start = System.nanoTime();
+			// System.out.println( "________________________GET THE TOPICS AS
+			// N-GRAMS__________________________" );
+			// String[] n = getStringTopicsNgrams( tng, 10, false );
+			// for ( String h : n )
+			// {
+			// System.out.println( h );
+			// }
+			// end = System.nanoTime();
+			// System.out.println( "Time for getting Ngrams: [" + ( end /
+			// Math.pow( 10, 9 ) - start / Math.pow( 10, 9 ) ) + " sec]" );
+			//
+			// start = System.nanoTime();
+			// System.out.println( "________________________GET THE TOP X TOPICS
+			// FOLLOWED BY THEIR PROPORTIONS__________________________" );
+			// String[] d = getStringDocumentTopicIndex( tng, 0.0, 10, true );
+			// for ( String h : d )
+			// {
+			// System.out.println( h );
+			// }
+			// end = System.nanoTime();
+			// System.out.println( "Time for getting x - Topics: [" + ( end /
+			// Math.pow( 10, 9 ) - start / Math.pow( 10, 9 ) ) + " sec]" );
+			//
+			// start = System.nanoTime();
+			// System.out.println( "________________________GET THE TOPIC
+			// ASSIGNMENT AS N-GRAMS CONTENT __________________________" );
+			// for ( int i = 0; i < tng.topics.length; i++ )
+			// {
+			// for ( Entry<String, List<String>> entry : getTopicNgramsDocument(
+			// i, 10, 0.0, tng.numTopics, 10, true ).entrySet() )
+			// {
+			// System.out.println( ( entry.getKey() ) + " ->-> " +
+			// entry.getValue() );
+			// }
+			// }
+			// end = System.nanoTime();
+			// System.out.println( "Time for getting Topic Assigned presented as
+			// N-grams: [" + ( end / Math.pow( 10, 9 ) - start / Math.pow( 10, 9
+			// ) ) + " sec]" );
+			 
+			 // used for all the doucuments instead of having a single one
+			// for ( Entry<String, List<String>> e : getTopicNGramsAllDocuments(
+			// tng, -1, 0.0, tng.numTopics, 10, false ).entrySet() )
+			// {
+			// System.out.println( ( e.getKey() ) + " ->-> " + e.getValue() );
+			// }
+			
+			// Test of the method regarding finding the id
+			// System.out.println( maptoRealDatabaseID(
+			// "07397ed7-3deb-442f-a297-bdb5b476d3e6" ) );
+			// for ( Entry<String, List<String>> entry : getTopicNgramsDocument(
+			// maptoRealDatabaseID( "07397ed7-3deb-442f-a297-bdb5b476d3e6" ),
+			// -1, 0.0, tng.numTopics, 10, true ).entrySet() )
+			// {
+			// System.out.println( ( entry.getKey() ) + " ->-> " +
+			// entry.getValue() );
+			// }
+
+// 			TO BE TESTED
+//			System.out.println( "________________________GET THE TOPIC ASSIGNMENT and PROPORTIONS FOR EACH ID __________________________" );
+//			for ( Entry<String, LinkedHashMap<String, Double>> e : getDocumentTopicDetailMap( tng, -1, 0.0, 100, 10, false ).entrySet() )
+//			{
+//				System.out.println( "Author Id -> " + e.getKey() );
+//				for ( Entry<String, Double> p : e.getValue().entrySet() )
+//				{
+//					System.out.println( p.getKey() + " -> " + p.getValue() );
+//				}
+//				System.out.println();
+//			}
+
+			// start = System.nanoTime();
+			// System.out.println( "________________________GET THE TOPIC
+			// ASSIGNMENT AS UNIGRAMS CONTENT __________________________" );
+			// for ( int i = 0; i < tng.topics.length; i++ )
+			// {
+			// for ( Entry<String, List<String>> entry :
+			// getTopicUnigramsDocument( i, 10, 0.0, tng.numTopics, 10, true
+			// ).entrySet() )
+			// {
+			// System.out.println( ( entry.getKey() ) + " ->-> " +
+			// entry.getValue() );
+			// }
+			// }
+			// end = System.nanoTime();
+			// System.out.println( "Time for getting Topic Assigned presented as
+			// Unigrams: [" + ( end / Math.pow( 10, 9 ) - start / Math.pow( 10,
+			// 9 ) ) + " sec]" );
+			//
+			// // similar thing as above but used to get all the documents
+			// // informations as above
+			//
+			// start = System.nanoTime();
+//			System.out.println( "________________________GET THE TOPICASSIGNMENT AND PROPORTIONS NOT ORDERED__________________________" );
+//			 for ( Entry<String, List<Double>> entry :
+//			 getDoumentTopicProportion().entrySet() )
+//			 {
+//			 System.out.println( ( entry.getKey() ) );
+//			 System.out.println( " **** " );
+//			 for ( Double z : entry.getValue() )
+//			 {
+//			 System.out.println( z );
+			// }
+			// }
+			// end = System.nanoTime();
+			//
+			// System.out.println(
+			// "_____________________________________________________________________________________"
+			// );
+			// System.out.println( "TEST THE SIMILARITY RETRIEVAL METHOD" );
+			// for ( Entry<String, List<String>> entry : calculateSimilarity( 3,
+			// 3 ).entrySet() )
+			// {
+			// System.out.println( "Similar to :" + entry.getKey() );
+			// int i = 1;
+			// for ( String value : entry.getValue() )
+			// {
+			// System.out.println( i + ". " + value );
+			// i++;
+			// }
+			// }
+
+			// System.out.println(
+			// "_____________________________________________________________________________________"
+			// );
+			// System.out.println( "TEST GET SIMILAR ENTITIES METHOD" );
+			// for ( String value : similarEntities(
+			// "c442983a-0099-4d6d-89b1-6cfc57fa6138", 5, 3 ) )
+			// {
+			// System.out.println( value );
+			// }
+
+	// System.out.println(
+	// "_____________________________________________________________________________________"
+	// );
+	// System.out.println( "TEST THE Entity Level Topic Proportion" );
+	// for ( String topic : getTopicProportionEntityLevel( tng, true, 10, false
+	// ) )
+	// {
+	// System.out.println( topic.split( "_-_" )[0] + " -> " + topic.split( "_-_"
+	// )[1] );
+	// }
+
+			// System.out.println(
+			// "_____________________________________________________________________________________"
+			// );
+			// System.out.println( "TEST THE Entity Level Topic Proportion" );
+			// for ( String topic : getTopicProportionEntityLevel( tng, true,
+			// 10, false ) )
+			// {
+			// System.out.println( topic.split( "_-_" )[0] + " -> " +
+			// topic.split( "_-_" )[1] );
+			// }
+
+			// System.out.println(
+			// "_____________________________________________________________________________________"
+			// );
+			// System.out.println( "TEST THE OVERALL map" );
+			// for ( Entry<String, List<String>> entry :
+			// getTopicUnigramsAllDocuments( tng, 10, 0.0, tng.numTopics, 5,
+			// true ).entrySet() )
+			// {
+			// System.out.println( entry.getKey() + "-->" + entry.getValue() );
+			// }
+			//
+			// System.out.println(
+			// "_____________________________________________________________________________________"
+			// );
+			// System.out.println( "TEST THE OVERALL PROPORTION" );
+			// for ( Entry<String, List<Double>> entry :
+			// tng.documentAllTopicsasMap().entrySet() )
+			// {
+			// System.out.println( entry.getKey() + "-->" + entry.getValue() );
+			// }
+			//
+			// System.out.println(
+			// "_____________________________________________________________________________________"
+			// );
+			// System.out.println( "TEST THE OVERALL PROPORTION INVERSE" );
+			// for ( Entry<String, List<Double>> entry :
+			// tng.documentTransposedAllTopicsasMap().entrySet() )
+			// {
+			// System.out.println( entry.getKey() + "-->" + entry.getValue() );
+			// }
+
+			// System.out.println(
+			// "_____________________________________________________________________________________"
+			// );
+			// System.out.println( "TEST THE OVERALL ORDERED" );
+			// for ( Entry<String, List<String>> entry :
+			// getEvolutionofTopicOverTime( 0, 5, false ).entrySet() )
+			// {
+			// System.out.println( entry.getKey() + "-->" + entry.getValue() );
+			// }
+
+			// System.out.println(
+			// "_____________________________________________________________________________________"
+			// );
+			// System.out.println( "TEST THE Topic Evolution" );
+			// for ( Entry<String, List<String>> entry :
+			// runDiscreteTopicEvolution( path, "Year-Test",
+			// "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10, 10, 10, true, false,
+			// true ).entrySet() )
+			// {
+			// System.out.println( entry.getKey() + "-->" + entry.getValue() );
+			// }
+
+			// // run the method to get topic proportions for each doc.
+			// // printDocTopicprobs(tng, path, "Authors", "Trainer");
+			//
+			// System.out.println(
+			// "_____________________________________________________________________________________"
+			// );
+
+			// System.out.println( "________________________RUN THE
+			// TOPICCOMPOSITION NEW APPROACH__________________________" );
+			// // c442983a-0099-4d6d-89b1-6cfc57fa6138
+			// for ( Entry<String, List<String>> entry : runTopicComposition(
+			// "c442983a-0099-4d6d-89b1-6cfc57fa6138", path, "Author-Test", 20,
+			// 10, 10, false, true, false ).entrySet() )
+			// {
+			// System.out.println( ( entry.getKey() ) );
+			// System.out.println( " **** " );
+			// for ( String z : entry.getValue() )
+			// {
+			// System.out.println( z );
+			// }
+			// }
+
+			// System.out.println( "TESTING THE TAG CLOUD MAP" );
+			// for ( Entry<String, Double> weight : runweightedTopicComposition(
+			// path, "Publications", "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10,
+			// 10, 10, true, true ).entrySet() )
+			// {
+			// System.out.println( weight.getKey() + " --> " + weight.getValue()
+			// );
+			// }
+
+			// System.out.println( "TESTING THE TOPIC LEVEL CONTRIBUTION" );
+			// for ( Entry<String, List<String>> entry :
+			// getTopicLevelSimilarity( tng,
+			// "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10, 3, 10 ).entrySet()
+			// )// runSimilarEntities("fd201481-1fe6-498f-9878-7e511e40e236",
+			// // path,
+			// // "Publications",
+			// // 10,10,
+			// // 3,
+			// // true
+			// // )
+			// // )
+			// {
+			// System.out.println( entry.getKey() );
+			// for ( String a : entry.getValue() )
+			// System.out.println( a );
+			//
+			// }
+
+			// for ( String entry : similarEntities( tng,
+			// "a2900553-2ad8-4092-8c41-5760b9eae7dd", 10, 3 ) )
+			// {
+			// System.out.println( entry );
+			// }
+
+			// System.out.println( "TESTING THE TOPIC LEVEL2 CONTRIBUTION" );
+			// for ( Entry<String, HashMap<String, List<String>>> entry :
+			// calculateSimilarityContributors( tng, 3, 10 ).entrySet() )
+			// {
+			// System.out.println( entry.getKey() );
+			// for ( Entry<String, List<String>> entry1 :
+			// entry.getValue().entrySet() )
+			// {
+			// System.out.println( entry1.getKey() + "--> " + entry1.getValue()
+			// );
+			// }
+			// }
+
+	// System.out.println( "TEST The topic Composition High Level" );
+	// for ( Entry<String, List<String>> s : runTopicCompositionHighLevel(
+	// "36be2ba3-e3f7-4805-aac6-f0bb6dd105ed", path, "Publications", 10, 10, 10,
+	// true, false, false ).entrySet() )
+	// {
+	// System.out.println( s.getKey() + "-->" + s.getValue() );
+	// }
+
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			}
+	}
+	
+	// USE CMD or the other class ImportDataNgram http://stackoverflow.com/questions/15464111/run-cmd-commands-through-java
+	// purpose - {Authors, Publications, Conferences, Years} specify - {Trainer, Infer}
+	
 	public InstanceList getInstanceDataDirectoryLevel( String path, String purpose, String entityId ) throws IOException
 	{
 		 // Get the data from a directory and convert it into mallet format

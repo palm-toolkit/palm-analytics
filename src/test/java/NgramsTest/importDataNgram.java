@@ -1,4 +1,4 @@
-package de.rwth.i9.palm.analytics.algorithm.ngram;
+package NgramsTest;
 
 import java.io.File;
 import java.io.FileFilter;
