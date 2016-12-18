@@ -80,6 +80,14 @@ public class Ngram implements NGrams
 	// create instanceList for each of the authors in order to run the Topical
 	// ngrams for each of them
 	// generate the unique set of topics for each of the authors
+	/**
+	 * 
+	 * @param path
+	 * @param purpose
+	 * @param entityId
+	 * @return list of instances 
+	 * @throws IOException
+	 */
 	public InstanceList getInstanceDataFileLevel( String path, String purpose, String entityId ) throws IOException
 	{
 		// Get the data from a directory and convert it into mallet format
@@ -108,32 +116,34 @@ public class Ngram implements NGrams
 		return training;
 	}
 
-	// method to create a specific Yearly method
-	// public TopicalNGrams createTemporalModel( String path, int numTopics )
-	// {
-	// temporaltng = createModel( path, "Years", "Trainer", numTopics );
-	// return temporaltng;
-	// }
-
-	// set the number of topics to the model and returns a model constructed by
-	// the given number
+	/**
+	 * Set the number of topics covering our corpora
+	 */
 	public TopicalNGrams setNumberTopics( int numTopics )
 	{
 		TopicalNGrams m = new TopicalNGrams(numTopics, 50.0, 0.01, 0.01, 0.03, 0.2, 1000);
 			return m;
 	}
 	
+	/**
+	 * Get the number of topics from an already created model
+	 */
 	public int getNumTopics()
 	{
 		return tng.numTopics;
 	}
 
+	/**
+	 * Get the number of instances of a model
+	 */
 	public int getNumInstances()
 	{
 		return tng.ilist.size();
 	}
 
-	// create a model of reference using training corpus
+	/**
+	 * Create a model under a specific path
+	 */
 	public TopicalNGrams createModel( String path, String purpose, String entityId, int numTopics ) throws NullPointerException 
 	{
 		int numFiles;
@@ -188,7 +198,10 @@ public class Ngram implements NGrams
 		return ngram;
 		}
 	
-	// create a model of reference using training corpus
+	/**
+	 * Create a model with variable number of topics 
+	 * Number of topics depending on number of files (instances)
+	 */
 	public TopicalNGrams createModelRevised( String path, String purpose, String entityId, int numTopics )
 	{
 		int numFiles;
@@ -243,7 +256,9 @@ public class Ngram implements NGrams
 		return ngram;
 		}
 
-	// method to create a model based on an already existing instancelist
+	/**
+	 * Use the already existing models to start topic estimation
+	 */
 	public TopicalNGrams useTrainedData( String path, String purpose, String entityId, int numTopics )
 	{
 		TopicalNGrams ngram = new TopicalNGrams( numTopics, 50.0, 0.01, 0.01, 0.03, 0.2, 1000 );
@@ -263,7 +278,9 @@ public class Ngram implements NGrams
 		return ngram;
 	}
 	
-	// method to create a model based on an already existing instancelist
+	/**
+	 * Not used method
+	 */
 	public TopicalNGrams useTrainedDataRevised( String path, String purpose, String entityId, int numTopics )
 	{
 		TopicalNGrams ngram = new TopicalNGrams( numTopics, 50.0, 0.01, 0.01, 0.03, 0.2, 1000 );
@@ -283,7 +300,9 @@ public class Ngram implements NGrams
 		return ngram;
 	}
 
-	// purpose - {Authors, Publications, Conferences, Years} ; specify - {Trainer, Infer} File version
+	/**
+	 * Not used method
+	 */
 	public void printDocTopicprobs(TopicalNGrams m,String path, String purpose, String specify){
 			try
 			{	
@@ -295,7 +314,9 @@ public class Ngram implements NGrams
 				e.printStackTrace(); }
 				}
 		
-	// returns an array of Strings with each element a topic followed by its bag of ngrams 
+	/**
+	 * Returns a string of topics and proportions
+	 */
 	public String[] getStringDocumentTopicIndex (TopicalNGrams m, double threshold, int max, boolean weight){
 		String[] document = m.documentTopics( threshold, max, weight ).split( "\n");
 	return document;
@@ -1888,5 +1909,11 @@ public class Ngram implements NGrams
 			result.put( entry.getKey(), entry.getValue() );
 		}
 		return result;
+	}
+	
+	public Boolean dateCheckCriteria(String path, String purpose) throws IOException{
+		fileDateCheck create = new fileDateCheck();
+		
+		return create.createNewModel(path + "/" + purpose);
 	}
 }

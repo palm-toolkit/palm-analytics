@@ -450,4 +450,13 @@ public interface NGrams
 	 * @return
 	 */
 	public HashMap<String, List<String>> getTopicLevelSimilarityTopMinDelta( TopicalNGrams model, String id, int maxresult, int simialrityMeasure, int numTopics );
+
+	/**
+	 * 
+	 * @param path
+	 * @param purpose
+	 * @return
+	 * @throws IOException
+	 */
+	public Boolean dateCheckCriteria(String path, String purpose) throws IOException;
 }
