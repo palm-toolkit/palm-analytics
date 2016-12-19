@@ -458,5 +458,5 @@ public interface NGrams
 	 * @return
 	 * @throws IOException
 	 */
-	public Boolean dateCheckCriteria(String path, String purpose) throws IOException;
+	public Boolean dateCheckCriteria(String path, String purpose, String Id) throws IOException;
 }

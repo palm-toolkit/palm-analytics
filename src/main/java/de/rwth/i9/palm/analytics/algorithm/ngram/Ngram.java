@@ -1911,9 +1911,9 @@ public class Ngram implements NGrams
 		return result;
 	}
 	
-	public Boolean dateCheckCriteria(String path, String purpose) throws IOException{
+	public Boolean dateCheckCriteria(String path, String purpose, String Id) throws IOException{
 		fileDateCheck create = new fileDateCheck();
 		
-		return create.createNewModel(path + "/" + purpose);
+		return create.createNewModel(path + "/" + purpose + "/MALLET/" + Id + ".mallet");
 	}
 }
