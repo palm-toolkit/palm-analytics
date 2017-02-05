@@ -24,7 +24,12 @@ import cc.mallet.util.Randoms;
 
 public class Ngram implements NGrams
 {
-	public String path = "C:/Users/Albi/Desktop/";
+	// path for Windows: 
+	// public String path = "C:/Users/Albi/Desktop/";
+	
+	// path on Mac
+	public String path = "/Users/pirolena/Desktop/";
+	
 	public TopicalNGrams tng;
 
 	public InstanceList getInstanceDataDirectoryLevel( String path, String purpose, String entityId ) throws IOException
@@ -39,7 +44,11 @@ public class Ngram implements NGrams
 
 		if ( entityId.isEmpty() )
 		{
-			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-dir --input C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + purpose + " --keep-sequence-bigrams --remove-stopwords --extra-stopwords C:\\mallet\\stoplists\\extra-stoplist.txt" + " --output C:\\Users\\Albi\\Desktop\\" + purpose + "\\MALLET\\" + purpose + "-N-" + purpose + ".mallet" );
+			// Windows ProcessBuilder 
+			// ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-dir --input C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + purpose + " --keep-sequence-bigrams --remove-stopwords --extra-stopwords C:\\mallet\\stoplists\\extra-stoplist.txt" + " --output C:\\Users\\Albi\\Desktop\\" + purpose + "\\MALLET\\" + purpose + "-N-" + purpose + ".mallet" );
+			
+			// Mac ProcessBuilder
+			ProcessBuilder builder = new ProcessBuilder("cd /Users/Documents/mallet && bin/mallet import-dir --input " + path + "/" + purpose + "/" + purpose + " --keep-sequence-bigrams --remove-stopwords --extra-stopwords /Users/pirolena/Documents/mallet/stoplists/extra-stoplist.txt" + " --output /Users/pirolena/Desktop/" + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet");
 			builder.redirectErrorStream( true );
 			Process p = builder.start();
 			BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
@@ -58,7 +67,12 @@ public class Ngram implements NGrams
 		}
 		else
 		{
-			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-dir --input C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + entityId + " --keep-sequence-bigrams --remove-stopwords --stoplist-file C:\\mallet\\stoplists\\extra-stoplist.txt --output C:\\Users\\Albi\\Desktop\\" + purpose + "\\MALLET\\" + entityId + ".mallet" );
+			// ProcessBuilder Windows
+			//ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-dir --input C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + entityId + " --keep-sequence-bigrams --remove-stopwords --stoplist-file C:\\mallet\\stoplists\\extra-stoplist.txt --output C:\\Users\\Albi\\Desktop\\" + purpose + "\\MALLET\\" + entityId + ".mallet" );
+			
+			//ProcessBuilder Mac
+			ProcessBuilder builder = new ProcessBuilder("cd /Users/pirolena/Documents/mallet && bin/mallet import-dir --input " + path + "/" + purpose + "/" + purpose + " --keep-sequence-bigrams --remove-stopwords --extra-stopwords /Users/pirolena/Documents/mallet/stoplists/extra-stoplist.txt" + " --output /Users/pirolena/Desktop/" + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet");
+			
 			builder.redirectErrorStream( true );
 			Process p = builder.start();
 			BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
@@ -98,7 +112,13 @@ public class Ngram implements NGrams
 		// 3. TokenSequenceLowercase
 		// 4. TokenSequenceRemoveStopwords
 		// 5. TokenSequence2FeatureSequenceBigrams
-		ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-file --input C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + purpose + "\\" + entityId + ".txt" + " --keep-sequence-bigrams --remove-stopwords " + "--output C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + purpose + "-N-grams" + ".mallet" );
+		
+		// builder on windows
+		// ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-file --input C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + purpose + "\\" + entityId + ".txt" + " --keep-sequence-bigrams --remove-stopwords " + "--output C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + purpose + "-N-grams" + ".mallet" );
+		
+		// builder on mac
+		ProcessBuilder builder = new ProcessBuilder( "cd /Users/pirolena/Documents/mallet/ && bin\\mallet import-file --input " + path + "/" + purpose + "/" + purpose + "/" + entityId + ".txt" + " --keep-sequence-bigrams --remove-stopwords " + "--output " + path + "/" + purpose + "/" + purpose + "-N-grams" + ".mallet" );
+		
 		builder.redirectErrorStream( true );
 		Process p = builder.start();
 		BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
@@ -430,6 +450,9 @@ public class Ngram implements NGrams
 		
 
 	// gets some random files from path/purpose and pastes them on path/purpose/specify specify = Trainer
+	/**
+	 * Not used method
+	 */
 	public void getRandomTrainerFiles(String path, String purpose){
 		int count = 20;
 		String[] trainer = new File (path + purpose + "/" + purpose).list();
@@ -1735,14 +1758,11 @@ public class Ngram implements NGrams
 		weightedWords = (LinkedHashMap<String, Double>) sortByValue( weightedWords );
 		// get the top 10 * numTopics words
 		int N = 0;
-		int iterations = 0;
 		if ( numTopics < 6 )
 		{
-			iterations = numTopics * 10;
 		}
 		else
 		{
-			iterations = numTopics * 5;
 		}
 
 		LinkedHashMap<String, Double> results = new LinkedHashMap<String, Double>();
