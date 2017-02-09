@@ -48,20 +48,26 @@ public class Ngram implements NGrams
 			// ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-dir --input C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + purpose + " --keep-sequence-bigrams --remove-stopwords --extra-stopwords C:\\mallet\\stoplists\\extra-stoplist.txt" + " --output C:\\Users\\Albi\\Desktop\\" + purpose + "\\MALLET\\" + purpose + "-N-" + purpose + ".mallet" );
 			
 			// Mac ProcessBuilder
-			ProcessBuilder builder = new ProcessBuilder("cd /Users/Documents/mallet && bin/mallet import-dir --input " + path + "/" + purpose + "/" + purpose + " --keep-sequence-bigrams --remove-stopwords --extra-stopwords /Users/pirolena/Documents/mallet/stoplists/extra-stoplist.txt" + " --output /Users/pirolena/Desktop/" + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet");
-			builder.redirectErrorStream( true );
-			Process p = builder.start();
-			BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
-			String line;
-
-			while ( true )
-			{
-				line = r.readLine();
-				if ( line == null )
-				{
-					break;
-				}
+			Process p = Runtime.getRuntime().exec(new String []{"/bin/bash", "-c", "/Users/pirolena/Documents/mallet/bin/mallet import-dir --input " + path + purpose + "/" + purpose + " --keep-sequence-bigrams --remove-stopwords --extra-stopwords /Users/pirolena/Documents/mallet/stoplists/extra-stoplist.txt --output /Users/pirolena/Desktop/" + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet"});
+			try {
+				p.waitFor();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
+			
+//			builder.redirectErrorStream( true );
+//			Process p = builder.start();
+//			BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
+//			String line;
+//
+//			while ( true )
+//			{
+//				line = r.readLine();
+//				if ( line == null )
+//				{
+//					break;
+//				}
+//			}
 			InstanceList training = InstanceList.load( new File( path + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet" ) );
 			return training;
 		}
@@ -71,21 +77,25 @@ public class Ngram implements NGrams
 			//ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-dir --input C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + entityId + " --keep-sequence-bigrams --remove-stopwords --stoplist-file C:\\mallet\\stoplists\\extra-stoplist.txt --output C:\\Users\\Albi\\Desktop\\" + purpose + "\\MALLET\\" + entityId + ".mallet" );
 			
 			//ProcessBuilder Mac
-			ProcessBuilder builder = new ProcessBuilder("cd /Users/pirolena/Documents/mallet && bin/mallet import-dir --input " + path + "/" + purpose + "/" + purpose + " --keep-sequence-bigrams --remove-stopwords --extra-stopwords /Users/pirolena/Documents/mallet/stoplists/extra-stoplist.txt" + " --output /Users/pirolena/Desktop/" + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet");
-			
-			builder.redirectErrorStream( true );
-			Process p = builder.start();
-			BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
-			String line;
-
-			while ( true )
-			{
-				line = r.readLine();
-				if ( line == null )
-				{
-					break;
-				}
+			Process p = Runtime.getRuntime().exec(new String []{"/bin/bash", "-c"," /Users/pirolena/Documents/mallet/bin/mallet import-dir --input " + path  + purpose + "/" + purpose + " --keep-sequence-bigrams --remove-stopwords --extra-stopwords /Users/pirolena/Documents/mallet/stoplists/extra-stoplist.txt" + " --output /Users/pirolena/Desktop/" + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet"});
+			try {
+				p.waitFor();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
+//			builder.redirectErrorStream( true );
+//			Process p = builder.start();
+//			BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
+//			String line;
+//
+//			while ( true )
+//			{
+//				line = r.readLine();
+//				if ( line == null )
+//				{
+//					break;
+//				}
+//			}
 			InstanceList training = InstanceList.load( new File( path + purpose + "/MALLET/" + entityId + ".mallet" ) );
 			return training;
 		}
@@ -117,21 +127,25 @@ public class Ngram implements NGrams
 		// ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-file --input C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + purpose + "\\" + entityId + ".txt" + " --keep-sequence-bigrams --remove-stopwords " + "--output C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + purpose + "-N-grams" + ".mallet" );
 		
 		// builder on mac
-		ProcessBuilder builder = new ProcessBuilder( "cd /Users/pirolena/Documents/mallet/ && bin\\mallet import-file --input " + path + "/" + purpose + "/" + purpose + "/" + entityId + ".txt" + " --keep-sequence-bigrams --remove-stopwords " + "--output " + path + "/" + purpose + "/" + purpose + "-N-grams" + ".mallet" );
-		
-		builder.redirectErrorStream( true );
-		Process p = builder.start();
-		BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
-		String line;
-
-		while ( true )
-		{
-			line = r.readLine();
-			if ( line == null )
-			{
-				break;
-			}
+		Process p = Runtime.getRuntime().exec(new String []{"/bin/bash", "-c", "cd /Users/pirolena/Documents/mallet/bin/mallet import-file --input " + path  + purpose + "/" + purpose + "/" + entityId + ".txt" + " --keep-sequence-bigrams --remove-stopwords " + "--output " + path  + purpose + "/" + purpose + "-N-grams" + ".mallet"} );
+		try {
+			p.waitFor();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+//		builder.redirectErrorStream( true );
+//		Process p = builder.start();
+//		BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
+//		String line;
+//
+//		while ( true )
+//		{
+//			line = r.readLine();
+//			if ( line == null )
+//			{
+//				break;
+//			}
+//		}
 		InstanceList training = InstanceList.load( new File( path + purpose + "/" + purpose + "-N-Grams" + entityId + ".mallet" ) );
 		return training;
 	}
@@ -172,7 +186,7 @@ public class Ngram implements NGrams
 		// influences the number of topics
 		if ( entityId.isEmpty() )
 		{
-			numFiles = new File( path + "/" + purpose + "/" + purpose ).listFiles().length;
+			numFiles = new File( path  + purpose + "/" + purpose ).listFiles().length;
 			if ( numFiles == 0 )
 			{
 				return null;
@@ -180,7 +194,7 @@ public class Ngram implements NGrams
 		}
 		else
 		{
-			numFiles = new File( path + "/" + purpose + "/" + entityId ).listFiles().length;
+			numFiles = new File( path  + purpose + "/" + entityId ).listFiles().length;
 			if ( numFiles == 0 )
 			{
 				return null;
@@ -230,7 +244,7 @@ public class Ngram implements NGrams
 		// influences the number of topics
 		if ( entityId.isEmpty() )
 		{
-			numFiles = new File( path + "/" + purpose + "/" + purpose ).listFiles().length;
+			numFiles = new File( path  + purpose + "/" + purpose ).listFiles().length;
 			if ( numFiles == 0 )
 			{
 				return null;
@@ -238,7 +252,7 @@ public class Ngram implements NGrams
 		}
 		else
 		{
-			numFiles = new File( path + "/" + purpose + "/" + entityId ).listFiles().length;
+			numFiles = new File( path  + purpose + "/" + entityId ).listFiles().length;
 			if ( numFiles == 0 )
 			{
 				return null;
@@ -502,7 +516,11 @@ public class Ngram implements NGrams
 			        topicDist[maxindex] = 0;
 
 		}
-		h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		// Windows
+		// h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		
+		// Mac
+		h.put( model.ilist.get( docID ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
 			return h;
 		}
 
@@ -546,7 +564,12 @@ public class Ngram implements NGrams
 			topicDist[maxindex] = 0;
 
 		}
-		h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		// Windows
+		// h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		
+		// Mac
+		h.put( model.ilist.get( docID ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		
 		return h;
 	}
 
@@ -629,8 +652,13 @@ public class Ngram implements NGrams
 			}
 			topicDist[maxindex] = 0;
 		}
-		      
-		h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		
+		// Windows
+		// h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		
+		// Mac
+		h.put( model.ilist.get( docID ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		
 		return h;
 	}
 
@@ -674,7 +702,12 @@ public class Ngram implements NGrams
 			topicDist[maxindex] = 0;
 		}
 
-		h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		// Windows
+		// h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		
+		// Mac
+		h.put( model.ilist.get( docID ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		
 		return h;
 	}
 
@@ -734,7 +767,12 @@ public class Ngram implements NGrams
 			int i = 0;
 			for ( Double topic : topicMapping.getValue() )
 			{
-				topdoc.add( ( model.ilist.get( i ) ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "_-_" + topic );
+				// Windows
+				// topdoc.add( ( model.ilist.get( i ) ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "_-_" + topic );
+				
+				// Mac
+				topdoc.add( ( model.ilist.get( i ) ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ) + "_-_" + topic );
+				
 				i++;
 			}
 			topicevolution.put( topics.get( Integer.parseInt( topicMapping.getKey().toString() ) ), topdoc );
@@ -826,7 +864,12 @@ public class Ngram implements NGrams
 						}
 					}
 				}
-				similarIds.add( tng.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
+				// Windows
+				// similarIds.add( tng.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
+				
+				// Mac
+				similarIds.add( tng.ilist.get( index ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
+				
 				if ( similarityMeasure != 3 )
 				{
 					similarityMatrix[i][index] = -1;
@@ -838,7 +881,12 @@ public class Ngram implements NGrams
 
 				N++;
 			}
-			distance.put( tng.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+			// Windows
+			// distance.put( tng.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+		
+			// Mac
+			distance.put( tng.ilist.get( i ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+			
 		}
 		return distance;
 	}
@@ -963,8 +1011,12 @@ public class Ngram implements NGrams
 				{
 					similarIds.add( topics.get( t ) + "_-_" + trackTopicSimilarity[i][t] );
 				}
+				
+				//Windows
+				// topicContributor.put( model.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
 
-				topicContributor.put( model.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+				// Mac
+				topicContributor.put( model.ilist.get( index ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
 
 				if ( similarityMeasure != 3 )
 				{
@@ -977,7 +1029,12 @@ public class Ngram implements NGrams
 
 				N++;
 			}
-			resultMap.put( model.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topicContributor );
+			
+			// Windows
+			// resultMap.put( model.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topicContributor );
+		
+			// Mac
+			resultMap.put( model.ilist.get( i ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ), topicContributor );
 		}
 		return resultMap;
 	}
@@ -1062,7 +1119,12 @@ public class Ngram implements NGrams
 						}
 					}
 				}
-				similarIds.add( model.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
+				// Windows
+				// similarIds.add( model.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
+				
+				// Mac
+				similarIds.add( model.ilist.get( index ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
+				
 				if ( similarityMeasure != 3 )
 				{
 					similarityMatrix[i][index] = -1;
@@ -1074,7 +1136,11 @@ public class Ngram implements NGrams
 
 				N++;
 			}
-			distance.put( model.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+			// Windows
+			// distance.put( model.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+			
+			// Mac
+			distance.put( model.ilist.get( i ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
 		}
 		return distance;
 	}
@@ -1357,11 +1423,21 @@ public class Ngram implements NGrams
 						index = j;
 					}
 				}
-				similarIds.put( tng.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), max );
+				
+				// Windows
+				// similarIds.put( tng.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), max );
+				
+				// Mac
+				similarIds.put( tng.ilist.get( index ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ), max );
+				
 				similarityMatrix[i][index] = -1;
 				N++;
 			}
-			distance.put( tng.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+			// Windows
+			//distance.put( tng.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+			
+			// Mac
+			distance.put( tng.ilist.get( i ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
 		}
 		return distance;
 	}
@@ -1485,7 +1561,12 @@ public class Ngram implements NGrams
 		int docID = -1;
 		for ( int i = 0; i < model.ilist.size(); i++ )
 		{
-			String trial = model.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" );
+			// Windows
+			//String trial = model.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" );
+			
+			// Mac
+			String trial = model.ilist.get( i ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" );
+			
 			if ( id.equals( trial ) )
 			{
 				docID = i;
@@ -1695,7 +1776,12 @@ public class Ngram implements NGrams
 			int i = 0;
 			for ( Double topic : topicMapping.getValue() )
 			{
-				topdoc.add( ( model.ilist.get( i ) ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "_-_" + topic );
+				// Windows
+				// topdoc.add( ( model.ilist.get( i ) ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "_-_" + topic );
+				
+				// Mac
+				topdoc.add( ( model.ilist.get( i ) ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ) + "_-_" + topic );
+				
 				i++;
 			}
 			topicEvolution.put( topics.get( Integer.parseInt( topicMapping.getKey().toString() ) ), topdoc );
@@ -1934,6 +2020,6 @@ public class Ngram implements NGrams
 	public Boolean dateCheckCriteria(String path, String purpose, String Id) throws IOException{
 		fileDateCheck create = new fileDateCheck();
 		
-		return create.createNewModel(path + "/" + purpose + "/MALLET/" + Id + ".mallet");
+		return create.createNewModel(path  + purpose + "/MALLET/" + Id + ".mallet");
 	}
 }
