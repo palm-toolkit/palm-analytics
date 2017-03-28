@@ -566,10 +566,13 @@ import cc.mallet.util.Randoms;
 		     // out.append (di); out.append (" ");
 		    	
 		    // Windows
-		    //  out.append (ilist.get(di).getSource().toString().replace( "\\",";").split( ";" )[6].replace( ".txt", "" )); out.append (" ");
+			out.append( ilist.get( di ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) );
+			out.append( " " );
 		    
 	    	// Mac
-		    	out.append (ilist.get(di).getSource().toString().replace( "/",";").split( ";" )[6].replace( ".txt", "" )); out.append (" ");
+			// out.append (ilist.get(di).getSource().toString().replace(
+			// "/",";").split( ";" )[6].replace( ".txt", "" )); out.append ("
+			// ");
 		    	docLen = topics[di].length;
 		      for (int ti = 0; ti < numTopics; ti++)
 		        topicDist[ti] = (((float)docTopicCounts[di][ti])/docLen);
@@ -614,10 +617,11 @@ import cc.mallet.util.Randoms;
 			}
 			
 			// Windows
-//			m.put( ilist.get( di ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), list );
+			m.put( ilist.get( di ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), list );
 			
 			// Mac
-			m.put( ilist.get( di ).getSource().toString().replace( "/", ";" ).split( ";" )[6].replace( ".txt", "" ), list );
+			// m.put( ilist.get( di ).getSource().toString().replace( "/", ";"
+			// ).split( ";" )[6].replace( ".txt", "" ), list );
 		}
 		    return m;
 	}
@@ -682,10 +686,13 @@ import cc.mallet.util.Randoms;
 		      // out.append (di); out.append (" ");
 		    	
 		    // Windows
-//		    out.append (ilist.get(di).getSource().toString().replace( "\\",";").split( ";" )[6].replace( ".txt", "" )); out.append (" --");
+			out.append( ilist.get( di ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) );
+			out.append( " --" );
 		    
 		    // Mac
-		    out.append (ilist.get(di).getSource().toString().replace( "/",";").split( ";" )[6].replace( ".txt", "" )); out.append (" --");
+			// out.append (ilist.get(di).getSource().toString().replace(
+			// "/",";").split( ";" )[6].replace( ".txt", "" )); out.append ("
+			// --");
 		      docLen = topics[di].length;
 		      for (int ti = 0; ti < numTopics; ti++){
 		        topicDist[ti] = (((float)docTopicCounts[di][ti])/docLen);

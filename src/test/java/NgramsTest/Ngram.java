@@ -26,7 +26,7 @@ import cc.mallet.util.Randoms;
 
 public class Ngram implements NGrams
 {
-	public String path = "C:/Users/Albi/Desktop/";
+	public String path = "C:/Users/Administrator/Desktop/";
 	// c442983a-0099-4d6d-89b1-6cfc57fa6138
 	public TopicalNGrams tng;// = createModel( path, "Author-Test",
 	// "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10 );
@@ -619,7 +619,7 @@ public class Ngram implements NGrams
 			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + entityId + ".mallet" ) );
 
 		if ( !trained.isEmpty() )
-			ngram.estimate( trained, 50, 1, 0, "C:/Users/Albi/Desktop/Model.txt", new Randoms() );
+			ngram.estimate( trained, 50, 1, 0, "C:/Users/Administrator/Desktop/Model.txt", new Randoms() );
 		else
 			return null;
 

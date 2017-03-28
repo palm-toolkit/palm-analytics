@@ -2,13 +2,9 @@ package NgramsTest;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class fileCreationDateCheck {
@@ -16,8 +12,8 @@ public class fileCreationDateCheck {
 	
 	public static void main(String[] args) throws IOException {
 		
-		String d = "C:/Users/Albi/Desktops";
-		String f = "C:/Users/Albi/Desktop/Test.txt";
+		String d = "C:/Users/Administrator/Desktops";
+		String f = "C:/Users/Administrator/Desktop/Test.txt";
 		
 		// path checker
 		if (checkPath(d))

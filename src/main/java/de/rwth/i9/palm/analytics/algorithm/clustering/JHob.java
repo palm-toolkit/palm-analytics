@@ -2,7 +2,7 @@ package de.rwth.i9.palm.analytics.algorithm.clustering;
 
 import java.util.List;
 import java.util.Map;
-	
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.util.ToolRunner;
@@ -37,10 +37,10 @@ public final class JHob extends AbstractJob {
 			  ToolRunner.run(new Configuration(), new JHob(), args);
 			    } else {
 				  log.info("Running with default arguments");
-				  Path output = new Path("C:/Users/Albi/Desktop/output.txt");
+			Path output = new Path( "C:/Users/Administrator/Desktop/output.txt" );
 				  Configuration conf = new Configuration();
 				      HadoopUtil.delete(conf, output);
-				      run(conf, new Path("C:/Users/Albi/Desktop/test.txt"), output, new EuclideanDistanceMeasure(), 6, 0.5, 10);
+			run( conf, new Path( "C:/Users/Administrator/Desktop/test.txt" ), output, new EuclideanDistanceMeasure(), 6, 0.5, 10 );
 				    }
 			  }
 	  

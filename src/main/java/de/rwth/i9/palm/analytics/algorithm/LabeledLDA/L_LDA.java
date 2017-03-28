@@ -18,7 +18,7 @@ public class L_LDA
 			{	
 				
 				try{
-					String path = "C:/Users/Albi/Desktop/";
+			String path = "C:/Users/Administrator/Desktop/";
 					
 					LabeledLDA llda = createModel(path, "labeledLDA", "Label", 10, 10);
 					

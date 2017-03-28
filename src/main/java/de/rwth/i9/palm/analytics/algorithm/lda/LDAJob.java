@@ -24,7 +24,7 @@ public class LDAJob implements Lda
 	{
 	
 	try {
-			 String path = "C:/Users/Albi/Desktop/";
+			String path = "C:/Users/Administrator/Desktop/";
 			//
 			// // create the respective models for authors, publications
 			 ParallelTopicModel authors = createModel(path, "Authors", "Authors", 50, 10);
