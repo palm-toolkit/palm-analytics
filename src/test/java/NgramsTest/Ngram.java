@@ -22,14 +22,14 @@ import org.junit.Test;
 
 import cc.mallet.types.InstanceList;
 import cc.mallet.util.Randoms;
+import de.rwth.i9.palm.analytics.util.TopicMiningConstants;
 
 
 public class Ngram implements NGrams
 {
-	public String path = "C:/Users/Administrator/Desktop/";
-	// c442983a-0099-4d6d-89b1-6cfc57fa6138
+	public String path = TopicMiningConstants.USER_DESKTOP_PATH; // c442983a-0099-4d6d-89b1-6cfc57fa6138
 	public TopicalNGrams tng;// = createModel( path, "Author-Test",
-	// "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10 );
+								// "c442983a-0099-4d6d-89b1-6cfc57fa6138", 10 );
 
 	@Test
 	public void test() throws Exception
@@ -382,7 +382,9 @@ public class Ngram implements NGrams
 
 		if ( entityId.isEmpty() )
 		{
-			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-dir --input C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + purpose + " --keep-sequence-bigrams --remove-stopwords --extra-stopwords C:\\mallet\\stoplists\\extra-stoplist.txt" + " --output C:\\Users\\Albi\\Desktop\\" + purpose + "\\MALLET\\" + purpose + "-N-" + purpose + ".mallet" );
+			String processBuilder_command = TopicMiningConstants.USER_PROCESS_COMMAND_INPUT + purpose + "\\" + purpose + TopicMiningConstants.USER_PROCESS_COMMAND_OUTPUT + purpose + "\\MALLET\\" + purpose + "-N-" + purpose + ".mallet";
+
+			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", processBuilder_command);
 			builder.redirectErrorStream( true );
 			Process p = builder.start();
 			BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
@@ -401,7 +403,9 @@ public class Ngram implements NGrams
 		}
 		else
 		{
-			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-dir --input C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + entityId + " --keep-sequence-bigrams --remove-stopwords --stoplist-file C:\\mallet\\stoplists\\extra-stoplist.txt --output C:\\Users\\Albi\\Desktop\\" + purpose + "\\MALLET\\" + entityId + ".mallet" );
+			String processBuilder_command = TopicMiningConstants.USER_PROCESS_COMMAND_INPUT + purpose + "\\" + entityId + TopicMiningConstants.USER_PROCESS_COMMAND_WITHOUT_STOPWORDS_OUTPUT + purpose + "\\MALLET\\" + entityId + ".mallet";
+
+			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", processBuilder_command );
 			builder.redirectErrorStream( true );
 			Process p = builder.start();
 			BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
@@ -433,7 +437,9 @@ public class Ngram implements NGrams
 		// 3. TokenSequenceLowercase
 		// 4. TokenSequenceRemoveStopwords
 		// 5. TokenSequence2FeatureSequenceBigrams
-		ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd \"C:\\mallet\"&& bin\\mallet import-file --input C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + purpose + "\\" + entityId + ".txt" + " --keep-sequence-bigrams --remove-stopwords " + "--output C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + purpose + "-N-grams" + ".mallet" );
+		String processBuilder_command = TopicMiningConstants.USER_PROCESS_COMMAND_INPUT + purpose + "\\" + purpose + "\\" + entityId + ".txt" + TopicMiningConstants.USER_PROCESS_COMMAND_WITHOUT_STOPWORDS_OUTPUT + purpose + "\\" + purpose + "-N-grams" + ".mallet";
+
+		ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", processBuilder_command );
 		builder.redirectErrorStream( true );
 		Process p = builder.start();
 		BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );

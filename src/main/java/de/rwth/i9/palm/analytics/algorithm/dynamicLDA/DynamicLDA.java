@@ -25,11 +25,11 @@ import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
 import de.rwth.i9.palm.analytics.algorithm.lda.importData;
+import de.rwth.i9.palm.analytics.util.TopicMiningConstants;
 
 public class DynamicLDA implements DynamicTopicModel
 {	
-	public String path = "C:\\Users\\Albi\\Desktop\\Years\\";
-	public ParallelTopicModel years = createModel(path, "Years", 11 , 10);
+	public ParallelTopicModel years = createModel( TopicMiningConstants.USER_YEARS_FOLDER_PATH, "Years", 11, 10 );
 	public TemporalTopicModel tot;
 	
 	@Test
