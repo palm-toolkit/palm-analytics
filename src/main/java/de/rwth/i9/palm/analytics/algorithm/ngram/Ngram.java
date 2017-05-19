@@ -121,7 +121,7 @@ public class Ngram implements NGrams
 					break;
 				}
 			}
-			File entityFile = new File( path + purpose + "\\MALLET\\" + purpose + "-N-" + entityId + ".mallet" );
+			File entityFile = new File( path + purpose + "\\\\MALLET\\\\" + purpose + "-N-" + entityId + ".mallet" );
 
 			InstanceList training = InstanceList.load( entityFile );
 			return training;
@@ -333,7 +333,7 @@ public class Ngram implements NGrams
 			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet" ) );
 		}
 		else
-			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + entityId + ".mallet" ) );
+			trained = InstanceList.load( new File( path + purpose + "\\\\MALLET\\\\" + purpose + "-N-" + entityId + ".mallet" ) );
 
 		if ( !trained.isEmpty() )
 			ngram.estimate( trained, 100, 1, 0, null, new Randoms() );
@@ -1199,22 +1199,24 @@ public class Ngram implements NGrams
 					}
 				}
 				// Windows
-				similarIds.add( model.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
+				if ( index != -1 )
+				{
+					similarIds.add( model.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
 
 				// Mac
 				// similarIds.add( model.ilist.get( index
 				// ).getSource().toString().replace( "/", ";" ).split( ";"
 				// )[6].replace( ".txt", "" ) + "->" + max );
 
-				if ( similarityMeasure != 3 )
-				{
-					similarityMatrix[i][index] = -1;
+					if ( similarityMeasure != 3 )
+					{
+						similarityMatrix[i][index] = -1;
+					}
+					else
+					{
+						similarityMatrix[i][index] = +2;
+					}
 				}
-				else
-				{
-					similarityMatrix[i][index] = +2;
-				}
-
 				N++;
 			}
 			// Windows
@@ -1931,12 +1933,12 @@ public class Ngram implements NGrams
 				if ( unigrams )
 				{
 					if ( !wordweight.split( "-" )[0].isEmpty() )
-						weightedWords.put( wordweight.split( "-" )[0], (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 1000000 );
+						weightedWords.put( wordweight.split( "-" )[0], (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 100000 );
 				}
 				else
 				{
 					if ( !wordweight.split( "-" )[0].isEmpty() )
-						weightedWords.put( wordweight.split( "-" )[0].replace( "_", " " ), (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 1000000 );
+						weightedWords.put( wordweight.split( "-" )[0].replace( "_", " " ), (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 100000 );
 				}
 			}
 		}

@@ -610,6 +610,8 @@ import cc.mallet.util.Randoms;
 		{
 			List<Double> list = new ArrayList<Double>();
 			docLen = topics[di].length;
+			if ( numTopics > topics.length )
+				numTopics = topics.length;
 			for ( int ti = 0; ti < numTopics; ti++ )
 			{
 				topicDist[ti] = ( ( (float) docTopicCounts[di][ti] ) / docLen );

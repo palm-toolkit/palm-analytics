@@ -86,27 +86,29 @@ public final class JHob extends AbstractJob {
 		  }
 	  
 	  /**
-	   * Run the kmeans clustering job on an input dataset using the given the number of clusters k and iteration
-	   * parameters. All output data will be written to the output directory, which will be initially deleted if it exists.
-   * The clustered points will reside in the path <output>/clustered-points. By default, the job expects a file
-	   * containing equal length space delimited data that resides in a directory named "testdata", and writes output to a
-	   * directory named "output".
-	   * 
-	   * @param conf
-	   *          the Configuration to use
-	   * @param input
-	   *          the String denoting the input directory path
-   * @param output
-	   *          the String denoting the output directory path
-   * @param measure
-	   *          the DistanceMeasure to use
-	   * @param k
-   *          the number of clusters in Kmeans
-   * @param convergenceDelta
-	   *          the double convergence criteria for iterations
-	   * @param maxIterations
-  *          the int maximum number of iterations
-	   */
+	 * Run the kmeans clustering job on an input dataset using the given the
+	 * number of clusters k and iteration parameters. All output data will be
+	 * written to the output directory, which will be initially deleted if it
+	 * exists. The clustered points will reside in the path
+	 * <output>/clustered-points. By default, the job expects a file containing
+	 * equal length space delimited data that resides in a directory named
+	 * "testdata", and writes output to a directory named "output".
+	 * 
+	 * @param conf
+	 *            the Configuration to use
+	 * @param input
+	 *            the String denoting the input directory path
+	 * @param output
+	 *            the String denoting the output directory path
+	 * @param measure
+	 *            the DistanceMeasure to use
+	 * @param k
+	 *            the number of clusters in Kmeans
+	 * @param convergenceDelta
+	 *            the double convergence criteria for iterations
+	 * @param maxIterations
+	 *            the int maximum number of iterations
+	 */
  public static void run(Configuration conf, Path input, Path output, DistanceMeasure measure, int k,
      double convergenceDelta, int maxIterations) throws Exception {
 			    Path directoryContainingConvertedInput = new Path(output, DIRECTORY_CONTAINING_CONVERTED_INPUT);
