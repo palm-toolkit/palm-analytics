@@ -238,9 +238,13 @@ public class Ngram implements NGrams
 		{
 			numTopics = 100;
 		}
-		else if ( numFiles < 10 )
+		else if ( numFiles < 10 && numFiles > 1 )
 		{
 			numTopics = numFiles - 1;
+		}
+		else if ( numFiles <= 1 )
+		{
+			numTopics = 1;
 		}
 		else
 		{
@@ -358,7 +362,7 @@ public class Ngram implements NGrams
 			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + entityId + ".mallet" ) );
 
 		if ( !trained.isEmpty() )
-			ngram.estimate( trained, 50, 1, 0, "C:/Users/Administrator/Desktop/Model.txt", new Randoms() );
+			ngram.estimate( trained, 50, 1, 0, path + "Model.txt", new Randoms() );
 		else
 			return null;
 
@@ -1343,13 +1347,13 @@ public class Ngram implements NGrams
 
 	}
 
-	public HashMap<String, List<String>> getTopicLevelSimilarityTopMinDelta( TopicalNGrams model, String id, int maxresult, int simialrityMeasure, int numTopics )
+	public HashMap<String, List<String>> getTopicLevelSimilarityTopMinDelta( TopicalNGrams model, String id, int maxresult, int similarityMeasure, int numTopics )
 	{
 		LinkedHashMap<String, List<String>> resultMap = new LinkedHashMap<String, List<String>>();
 
 		// will hold the list of authors followed by the % of similarity
 		List<String> similarAuthors = new ArrayList<String>();
-		similarAuthors = similarEntities( model, id, maxresult, 3 );
+		similarAuthors = similarEntities( model, id, maxresult, similarityMeasure );
 
 		// will hold the author-ids similar to the specified by id, and the list
 		// of topics_-_%
@@ -1933,12 +1937,12 @@ public class Ngram implements NGrams
 				if ( unigrams )
 				{
 					if ( !wordweight.split( "-" )[0].isEmpty() )
-						weightedWords.put( wordweight.split( "-" )[0], (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 100000 );
+						weightedWords.put( wordweight.split( "-" )[0], (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 1000000 );
 				}
 				else
 				{
 					if ( !wordweight.split( "-" )[0].isEmpty() )
-						weightedWords.put( wordweight.split( "-" )[0].replace( "_", " " ), (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 100000 );
+						weightedWords.put( wordweight.split( "-" )[0].replace( "_", " " ), (double) ( Double.parseDouble( wordweight.split( "-" )[1] ) * Math.pow( Double.parseDouble( topic.split( "_-_" )[1] ), 2 ) ) * 1000000 );
 				}
 			}
 		}
