@@ -553,42 +553,46 @@ public class Ngram implements NGrams
 		List<String> topics = getListTopicsNgrams( model, numWords, false );
 		int docLen;
 		double topicDist[] = new double[model.numTopics];
-		docLen = model.topics[docID].length;
-		for ( int ti = 0; ti < numTopics; ti++ )
-			topicDist[ti] = ( ( (float) model.docTopicCounts[docID][ti] ) / docLen );
-		if ( max < 0 )
-			max = numTopics;
-		for ( int tp = 0; tp < max; tp++ )
+		if ( docID != -1 )
 		{
-			double maxvalue = 0;
-			int maxindex = -1;
+			docLen = model.topics[docID].length;
 			for ( int ti = 0; ti < numTopics; ti++ )
-				if ( topicDist[ti] > maxvalue )
+				topicDist[ti] = ( ( (float) model.docTopicCounts[docID][ti] ) / docLen );
+			if ( max < 0 )
+				max = numTopics;
+			for ( int tp = 0; tp < max; tp++ )
+			{
+				double maxvalue = 0;
+				int maxindex = -1;
+				for ( int ti = 0; ti < numTopics; ti++ )
+					if ( topicDist[ti] > maxvalue )
+					{
+						maxvalue = topicDist[ti];
+						maxindex = ti;
+					}
+				if ( maxindex == -1 || topicDist[maxindex] < threshold )
+					break;
+				if ( weight )
 				{
-					maxvalue = topicDist[ti];
-					maxindex = ti;
+					// (maxindex+" "+topicDist[maxindex]+" ");
+
+					topdoc.add( topics.get( maxindex ) + " _-_ " + topicDist[maxindex] );
 				}
-			if ( maxindex == -1 || topicDist[maxindex] < threshold )
-				break;
-			if ( weight )
-			{
-				// (maxindex+" "+topicDist[maxindex]+" ");
+				else
+				{
+					topdoc.add( topics.get( maxindex ) );
+				}
+				topicDist[maxindex] = 0;
 
-				topdoc.add( topics.get( maxindex ) + " _-_ " + topicDist[maxindex] );
 			}
-			else
-			{
-				topdoc.add( topics.get( maxindex ) );
-			}
-			topicDist[maxindex] = 0;
+			// Windows
+			h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
 
+			// Mac
+			// h.put( model.ilist.get( docID ).getSource().toString().replace(
+			// "/",
+			// ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
 		}
-		// Windows
-		h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
-
-		// Mac
-		// h.put( model.ilist.get( docID ).getSource().toString().replace( "/",
-		// ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
 		return h;
 	}
 
@@ -694,42 +698,45 @@ public class Ngram implements NGrams
 
 		int docLen;
 		double topicDist[] = new double[model.numTopics];
-		docLen = model.topics[docID].length;
-		for ( int ti = 0; ti < numTopics; ti++ )
-			topicDist[ti] = ( ( (float) model.docTopicCounts[docID][ti] ) / docLen );
-		if ( max < 0 )
-			max = numTopics;
-		for ( int tp = 0; tp < max; tp++ )
+		if ( docID != -1 )
 		{
-			double maxvalue = 0;
-			int maxindex = -1;
+			docLen = model.topics[docID].length;
 			for ( int ti = 0; ti < numTopics; ti++ )
-				if ( topicDist[ti] > maxvalue )
+				topicDist[ti] = ( ( (float) model.docTopicCounts[docID][ti] ) / docLen );
+			if ( max < 0 )
+				max = numTopics;
+			for ( int tp = 0; tp < max; tp++ )
+			{
+				double maxvalue = 0;
+				int maxindex = -1;
+				for ( int ti = 0; ti < numTopics; ti++ )
+					if ( topicDist[ti] > maxvalue )
+					{
+						maxvalue = topicDist[ti];
+						maxindex = ti;
+					}
+				if ( maxindex == -1 || topicDist[maxindex] < threshold )
+					break;
+				// (maxindex+" "+topicDist[maxindex]+" ");
+				if ( weight )
 				{
-					maxvalue = topicDist[ti];
-					maxindex = ti;
+					topdoc.add( topics.get( maxindex ) + " _-_ " + topicDist[maxindex] );
 				}
-			if ( maxindex == -1 || topicDist[maxindex] < threshold )
-				break;
-			// (maxindex+" "+topicDist[maxindex]+" ");
-			if ( weight )
-			{
-				topdoc.add( topics.get( maxindex ) + " _-_ " + topicDist[maxindex] );
+				else
+				{
+					topdoc.add( topics.get( maxindex ) );
+				}
+				topicDist[maxindex] = 0;
 			}
-			else
-			{
-				topdoc.add( topics.get( maxindex ) );
-			}
-			topicDist[maxindex] = 0;
+
+			// Windows
+			h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+
+			// Mac
+			// h.put( model.ilist.get( docID ).getSource().toString().replace(
+			// "/",
+			// ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
 		}
-
-		// Windows
-		h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
-
-		// Mac
-		// h.put( model.ilist.get( docID ).getSource().toString().replace( "/",
-		// ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
-
 		return h;
 	}
 
