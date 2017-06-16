@@ -342,6 +342,8 @@ public interface NGrams
 	 */
 	public List<String> runSimilarEntities( String id, String path, String purpose, int numTopics, int maxResult, int similarityMeasure, boolean createModel );
 
+	public HashMap<String, List<String>> runSimilarEntitiesContributorsTopicLevel( String id, String path, String purpose, int numTopics, int maxresult, int similarityMeasure, boolean createModel );
+
 	/**
 	 * 
 	 * @param id
@@ -459,4 +461,5 @@ public interface NGrams
 	 * @throws IOException
 	 */
 	public Boolean dateCheckCriteria(String path, String purpose, String Id) throws IOException;
+
 }

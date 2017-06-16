@@ -606,42 +606,47 @@ public class Ngram implements NGrams
 		List<String> topics = getListTopicsNgrams( model, numWords, true );
 		int docLen;
 		double topicDist[] = new double[model.numTopics];
-		docLen = model.topics[docID].length;
-		for ( int ti = 0; ti < numTopics; ti++ )
-			topicDist[ti] = ( ( (float) model.docTopicCounts[docID][ti] ) / docLen );
-		if ( max < 0 )
-			max = numTopics;
-		for ( int tp = 0; tp < max; tp++ )
+		if ( docID > -1 )
 		{
-			double maxvalue = 0;
-			int maxindex = -1;
+			docLen = model.topics[docID].length;
 			for ( int ti = 0; ti < numTopics; ti++ )
-				if ( topicDist[ti] > maxvalue )
+				topicDist[ti] = ( ( (float) model.docTopicCounts[docID][ti] ) / docLen );
+			if ( max < 0 )
+				max = numTopics;
+			for ( int tp = 0; tp < max; tp++ )
+			{
+				double maxvalue = 0;
+				int maxindex = -1;
+				for ( int ti = 0; ti < numTopics; ti++ )
+					if ( topicDist[ti] > maxvalue )
+					{
+						maxvalue = topicDist[ti];
+						maxindex = ti;
+					}
+				if ( maxindex == -1 || topicDist[maxindex] < threshold )
+					break;
+				if ( weight )
 				{
-					maxvalue = topicDist[ti];
-					maxindex = ti;
-				}
-			if ( maxindex == -1 || topicDist[maxindex] < threshold )
-				break;
-			if ( weight )
-			{
-				// (maxindex+" "+topicDist[maxindex]+" ");
+					// (maxindex+" "+topicDist[maxindex]+" ");
 
-				topdoc.add( topics.get( maxindex ) + " _-_ " + topicDist[maxindex] );
+					topdoc.add( topics.get( maxindex ) + " _-_ " + topicDist[maxindex] );
+				}
+				else
+				{
+					topdoc.add( topics.get( maxindex ) );
+				}
+				topicDist[maxindex] = 0;
+
 			}
-			else
-			{
-				topdoc.add( topics.get( maxindex ) );
-			}
-			topicDist[maxindex] = 0;
+			// Windows
+			h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+
+			// Mac
+			// h.put( model.ilist.get( docID ).getSource().toString().replace(
+			// "/",
+			// ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
 
 		}
-		// Windows
-		h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
-
-		// Mac
-		// h.put( model.ilist.get( docID ).getSource().toString().replace( "/",
-		// ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
 
 		return h;
 	}
@@ -987,7 +992,7 @@ public class Ngram implements NGrams
 		// result map
 		HashMap<String, HashMap<String, List<String>>> resultMap = new HashMap<String, HashMap<String, List<String>>>();
 		HashMap<String, List<String>> topicContributor = new LinkedHashMap<String, List<String>>();
-		List<String> topics = getListTopicsUnigrams( model, 10, false );
+		List<String> topics = getListTopicsNgrams( model, 10, false );
 		HashMap<String, List<Double>> topicProportions = new HashMap<String, List<Double>>();
 		topicProportions = getDoumentTopicProportion( model );
 
@@ -1098,6 +1103,8 @@ public class Ngram implements NGrams
 					similarIds.add( topics.get( t ) + "_-_" + trackTopicSimilarity[i][t] );
 				}
 
+				if ( index > -1 )
+				{
 				// Windows
 				topicContributor.put( model.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
 
@@ -1113,6 +1120,7 @@ public class Ngram implements NGrams
 				else
 				{
 					similarityMatrix[i][index] = +2;
+				}
 				}
 
 				N++;
@@ -2139,5 +2147,30 @@ public class Ngram implements NGrams
 		fileDateCheck create = new fileDateCheck();
 
 		return create.createNewModel( path + purpose + "/MALLET/" + Id + ".mallet" );
+	}
+
+	// method used to calculate the similarity measure between authors
+	// the general view is taken into consideration for this calculation instead
+	// of individual one
+	public HashMap<String, List<String>> runSimilarEntitiesContributorsTopicLevel( String id, String path, String purpose, int numTopics, int maxResult, int similarityMeasure, boolean createModel )
+	{
+		HashMap<String, List<String>> similarEntities = new HashMap<String, List<String>>();
+		TopicalNGrams model;
+
+		// check if we need to create an existing model or not
+		if ( createModel )
+		{
+			// create a new model
+			model = createModelRevised( path, purpose, "", numTopics );
+		}
+		else
+		{
+			model = useTrainedDataRevised( path, purpose, "", numTopics );
+		}
+
+		// call the method to calculate the similarities
+		similarEntities = similarEntitiesTopicLevel( model, id, maxResult, similarityMeasure );
+
+		return similarEntities;
 	}
 }
