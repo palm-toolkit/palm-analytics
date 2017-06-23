@@ -225,10 +225,17 @@ public class Ngram implements NGrams
 		}
 		else
 		{
-			numFiles = new File( path + purpose + "/" + entityId ).listFiles().length;
-			if ( numFiles == 0 )
+			try
 			{
-				return null;
+				numFiles = new File( path + purpose + "/" + entityId ).listFiles().length;
+				if ( numFiles == 0 )
+				{
+					return null;
+				}
+			}
+			catch ( Exception ex )
+			{
+				return new TopicalNGrams( 0, 50.0, 0.01, 0.01, 0.03, 0.2, 1000 );
 			}
 		}
 
@@ -1387,7 +1394,7 @@ public class Ngram implements NGrams
 		int[] toptopics = new int[numTopics];
 		for ( int i = 0; i < topicAuthorId.size(); i++ )
 		{
-			if ( topicAuthorId.get( i ) >= 0.015 )
+			if ( topicAuthorId.get( i ) >= 0.015 && i < toptopics.length )
 			{
 				toptopics[i] = 1;
 				N++;
@@ -1674,6 +1681,9 @@ public class Ngram implements NGrams
 	public int maptoRealDatabaseID( String id, TopicalNGrams model ) throws Exception
 	{
 		int docID = -1;
+		if ( model.ilist == null )
+			return docID;
+
 		for ( int i = 0; i < model.ilist.size(); i++ )
 		{
 			// Windows
@@ -2047,7 +2057,6 @@ public class Ngram implements NGrams
 		// create model for each of the authors that we have
 		for ( String author : authorIds )
 		{
-
 			// decide to create model or not
 			if ( createmodel )
 			{
