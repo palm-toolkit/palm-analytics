@@ -29,6 +29,7 @@ import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.FeatureSequenceWithBigrams;
 import cc.mallet.types.InstanceList;
 import cc.mallet.util.Randoms;
+import de.rwth.i9.palm.analytics.util.TopicMiningConstants;
 	
 	/**
 	 * Like Latent Dirichlet Allocation, but with integrated phrase discovery.
@@ -566,7 +567,7 @@ import cc.mallet.util.Randoms;
 		     // out.append (di); out.append (" ");
 		    	
 		    // Windows
-			out.append( ilist.get( di ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) );
+			out.append( ilist.get( di ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ) );
 			out.append( " " );
 		    
 	    	// Mac
@@ -619,7 +620,7 @@ import cc.mallet.util.Randoms;
 			}
 			
 			// Windows
-			m.put( ilist.get( di ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), list );
+			m.put( ilist.get( di ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), list );
 			
 			// Mac
 			// m.put( ilist.get( di ).getSource().toString().replace( "/", ";"
@@ -688,7 +689,7 @@ import cc.mallet.util.Randoms;
 		      // out.append (di); out.append (" ");
 		    	
 		    // Windows
-			out.append( ilist.get( di ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) );
+			out.append( ilist.get( di ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ) );
 			out.append( " --" );
 		    
 		    // Mac

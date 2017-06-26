@@ -40,7 +40,7 @@ public class Ngram implements NGrams
 
 		if ( entityId.isEmpty() )
 		{
-			String processBuilder_command = TopicMiningConstants.USER_PROCESS_COMMAND_INPUT + purpose + "\\" + purpose + TopicMiningConstants.USER_PROCESS_COMMAND_OUTPUT + purpose + "\\MALLET\\" + purpose + "-N-" + purpose + ".mallet";
+			String processBuilder_command = TopicMiningConstants.USER_PROCESS_COMMAND_INPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + TopicMiningConstants.USER_PROCESS_COMMAND_OUTPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "-N-" + purpose + ".mallet";
 
 			// Windows ProcessBuilder
 			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", processBuilder_command );
@@ -58,7 +58,8 @@ public class Ngram implements NGrams
 			// Win
 			// ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", "cd
 			// \"C:\\mallet\"&& bin\\mallet import-dir --input
-			// C:\\Users\\Albi\\Desktop\\" + purpose + "\\" + purpose + "
+			// C:\\Users\\Albi\\Desktop\\" + purpose +
+			// TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "
 			// --keep-sequence-bigrams --remove-stopwords --extra-stopwords
 			// C:\\mallet\\stoplists\\extra-stoplist.txt" + " --output
 			// C:\\Users\\Albi\\Desktop\\" + purpose + "\\MALLET\\" + purpose +
@@ -69,7 +70,9 @@ public class Ngram implements NGrams
 			// import-dir --input " + path + purpose + "/" + purpose + "
 			// --keep-sequence-bigrams --remove-stopwords --extra-stopwords
 			// /Users/pirolena/Documents/mallet/stoplists/extra-stoplist.txt
-			// --output /Users/pirolena/Desktop/" + purpose + "/MALLET/" +
+			// --output /Users/pirolena/Desktop/" + purpose +
+			// TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" +
+			// TopicMiningConstants.USER_PATH_DELIMIATOR +
 			// purpose + "-N-" + purpose + ".mallet"});
 
 			builder.redirectErrorStream( true );
@@ -85,12 +88,12 @@ public class Ngram implements NGrams
 					break;
 				}
 			}
-			InstanceList training = InstanceList.load( new File( path + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet" ) );
+			InstanceList training = InstanceList.load( new File( path + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "-N-" + purpose + ".mallet" ) );
 			return training;
 		}
 		else
 		{
-			String processBuilder_command = TopicMiningConstants.USER_PROCESS_COMMAND_INPUT + purpose + "\\" + entityId + TopicMiningConstants.USER_PROCESS_COMMAND_OUTPUT + purpose + "\\MALLET\\" + purpose + "-N-" + entityId + ".mallet";
+			String processBuilder_command = TopicMiningConstants.USER_PROCESS_COMMAND_INPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + entityId + TopicMiningConstants.USER_PROCESS_COMMAND_OUTPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "-N-" + entityId + ".mallet";
 
 			// ProcessBuilder Windows
 			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", processBuilder_command );
@@ -121,7 +124,7 @@ public class Ngram implements NGrams
 					break;
 				}
 			}
-			File entityFile = new File( path + purpose + "\\\\MALLET\\\\" + purpose + "-N-" + entityId + ".mallet" );
+			File entityFile = new File( path + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "-N-" + entityId + ".mallet" );
 
 			InstanceList training = InstanceList.load( entityFile );
 			return training;
@@ -151,7 +154,7 @@ public class Ngram implements NGrams
 		// 5. TokenSequence2FeatureSequenceBigrams
 
 		// builder on windows
-		String processBuilder_command = TopicMiningConstants.USER_PROCESS_COMMAND_INPUT + purpose + "\\" + purpose + "\\" + entityId + ".txt" + TopicMiningConstants.USER_PROCESS_COMMAND_WITHOUT_STOPWORDS_OUTPUT + purpose + "\\MALLET\\" + purpose + "-N-grams" + purpose + ".mallet";
+		String processBuilder_command = TopicMiningConstants.USER_PROCESS_COMMAND_INPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + entityId + ".txt" + TopicMiningConstants.USER_PROCESS_COMMAND_WITHOUT_STOPWORDS_OUTPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "-N-grams" + purpose + ".mallet";
 
 		ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", processBuilder_command );
 
@@ -341,10 +344,13 @@ public class Ngram implements NGrams
 		InstanceList trained;
 		if ( entityId == "" )
 		{
-			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet" ) );
+			trained = InstanceList.load( new File( path + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "-N-" + purpose + ".mallet" ) );
 		}
 		else
-			trained = InstanceList.load( new File( path + purpose + "\\\\MALLET\\\\" + purpose + "-N-" + entityId + ".mallet" ) );
+			trained = InstanceList.load( new File( path + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "-N-" + entityId + ".mallet" ) );
+
+		// trained = InstanceList.load( new File( path + purpose +
+		// "\\\\MALLET\\\\" + purpose + "-N-" + entityId + ".mallet" ) );
 
 		if ( !trained.isEmpty() )
 			ngram.estimate( trained, 100, 1, 0, null, new Randoms() );
@@ -363,10 +369,10 @@ public class Ngram implements NGrams
 		InstanceList trained;
 		if ( entityId == "" )
 		{
-			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + purpose + "-N-" + purpose + ".mallet" ) );
+			trained = InstanceList.load( new File( path + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "-N-" + purpose + ".mallet" ) );
 		}
 		else
-			trained = InstanceList.load( new File( path + purpose + "/MALLET/" + entityId + ".mallet" ) );
+			trained = InstanceList.load( new File( path + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + entityId + ".mallet" ) );
 
 		if ( !trained.isEmpty() )
 			ngram.estimate( trained, 50, 1, 0, path + "Model.txt", new Randoms() );
@@ -593,7 +599,7 @@ public class Ngram implements NGrams
 
 			}
 			// Windows
-			h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+			h.put( model.ilist.get( docID ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
 
 			// Mac
 			// h.put( model.ilist.get( docID ).getSource().toString().replace(
@@ -646,7 +652,7 @@ public class Ngram implements NGrams
 
 			}
 			// Windows
-			h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+			h.put( model.ilist.get( docID ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
 
 			// Mac
 			// h.put( model.ilist.get( docID ).getSource().toString().replace(
@@ -742,7 +748,7 @@ public class Ngram implements NGrams
 			}
 
 			// Windows
-			h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+			h.put( model.ilist.get( docID ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
 
 			// Mac
 			// h.put( model.ilist.get( docID ).getSource().toString().replace(
@@ -793,7 +799,7 @@ public class Ngram implements NGrams
 		}
 
 		// Windows
-		h.put( model.ilist.get( docID ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
+		h.put( model.ilist.get( docID ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), topdoc );
 
 		// Mac
 		// h.put( model.ilist.get( docID ).getSource().toString().replace( "/",
@@ -859,7 +865,7 @@ public class Ngram implements NGrams
 			for ( Double topic : topicMapping.getValue() )
 			{
 				// Windows
-				topdoc.add( ( model.ilist.get( i ) ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "_-_" + topic );
+				topdoc.add( ( model.ilist.get( i ) ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ) + "_-_" + topic );
 
 				// Mac
 				// topdoc.add( ( model.ilist.get( i )
@@ -960,7 +966,7 @@ public class Ngram implements NGrams
 					}
 				}
 				// Windows
-				similarIds.add( tng.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
+				similarIds.add( tng.ilist.get( index ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
 
 				// Mac
 				// similarIds.add( tng.ilist.get( index
@@ -979,7 +985,7 @@ public class Ngram implements NGrams
 				N++;
 			}
 			// Windows
-			distance.put( tng.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+			distance.put( tng.ilist.get( i ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
 
 			// Mac
 			// distance.put( tng.ilist.get( i ).getSource().toString().replace(
@@ -1113,7 +1119,7 @@ public class Ngram implements NGrams
 				if ( index > -1 )
 				{
 				// Windows
-				topicContributor.put( model.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+					topicContributor.put( model.ilist.get( index ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
 
 				// Mac
 				// topicContributor.put( model.ilist.get( index
@@ -1134,7 +1140,7 @@ public class Ngram implements NGrams
 			}
 
 			// Windows
-			resultMap.put( model.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), topicContributor );
+			resultMap.put( model.ilist.get( i ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), topicContributor );
 
 			// Mac
 			// resultMap.put( model.ilist.get( i
@@ -1227,7 +1233,7 @@ public class Ngram implements NGrams
 				// Windows
 				if ( index != -1 )
 				{
-					similarIds.add( model.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
+					similarIds.add( model.ilist.get( index ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
 
 				// Mac
 				// similarIds.add( model.ilist.get( index
@@ -1246,7 +1252,7 @@ public class Ngram implements NGrams
 				N++;
 			}
 			// Windows
-			distance.put( model.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+			distance.put( model.ilist.get( i ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
 
 			// Mac
 			// distance.put( model.ilist.get( i
@@ -1538,7 +1544,7 @@ public class Ngram implements NGrams
 				}
 
 				// Windows
-				similarIds.put( tng.ilist.get( index ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), max );
+				similarIds.put( tng.ilist.get( index ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), max );
 
 				// Mac
 				// similarIds.put( tng.ilist.get( index
@@ -1549,7 +1555,7 @@ public class Ngram implements NGrams
 				N++;
 			}
 			// Windows
-			distance.put( tng.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
+			distance.put( tng.ilist.get( i ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
 
 			// Mac
 			// distance.put( tng.ilist.get( i ).getSource().toString().replace(
@@ -1687,7 +1693,7 @@ public class Ngram implements NGrams
 		for ( int i = 0; i < model.ilist.size(); i++ )
 		{
 			// Windows
-			String trial = model.ilist.get( i ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" );
+			String trial = model.ilist.get( i ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" );
 
 			// Mac
 			// String trial = model.ilist.get( i
@@ -1853,6 +1859,8 @@ public class Ngram implements NGrams
 		TopicalNGrams model;
 
 		// check if we need to create an existing model or not
+		System.out.println( "runDiscreteTopicEvolution CREATE MODEL:" + createModel );
+		createModel = false;
 		if ( createModel )
 		{
 			// create a new model
@@ -1876,6 +1884,9 @@ public class Ngram implements NGrams
 		List<String> topics;
 		// create model based on the per year documents of each author
 		TopicalNGrams model;
+
+		System.out.println( "runDiscreteTopicEvolution CREATE MODEL:" + createmodel );
+		createmodel = false;
 		if ( createmodel )
 		{
 			model = createModel( path, purpose, id, numTopics );
@@ -1904,7 +1915,7 @@ public class Ngram implements NGrams
 			for ( Double topic : topicMapping.getValue() )
 			{
 				// Windows
-				topdoc.add( ( model.ilist.get( i ) ).getSource().toString().replace( "\\", ";" ).split( ";" )[6].replace( ".txt", "" ) + "_-_" + topic );
+				topdoc.add( ( model.ilist.get( i ) ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ) + "_-_" + topic );
 
 				// Mac
 				// topdoc.add( ( model.ilist.get( i )
@@ -2155,7 +2166,7 @@ public class Ngram implements NGrams
 	{
 		fileDateCheck create = new fileDateCheck();
 
-		return create.createNewModel( path + purpose + "/MALLET/" + purpose + "-N-" + Id + ".mallet" );
+		return create.createNewModel( path + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "-N-" + Id + ".mallet" );
 	}
 
 	// method used to calculate the similarity measure between authors
