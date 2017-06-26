@@ -2155,7 +2155,7 @@ public class Ngram implements NGrams
 	{
 		fileDateCheck create = new fileDateCheck();
 
-		return create.createNewModel( path + purpose + "/MALLET/" + Id + ".mallet" );
+		return create.createNewModel( path + purpose + "/MALLET/" + purpose + "-N-" + Id + ".mallet" );
 	}
 
 	// method used to calculate the similarity measure between authors
