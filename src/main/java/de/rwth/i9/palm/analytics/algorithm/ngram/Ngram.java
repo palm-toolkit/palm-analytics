@@ -1157,11 +1157,10 @@ public class Ngram implements NGrams
 		topicProportions = getDoumentTopicProportion( model );
 
 		similarityMeasures similarity = new similarityMeasures();
-		double[][] similarityMatrix = new double[model.ilist.size()][model.ilist.size()];
+		// double[] similarityMatrix = new double[model.ilist.size()];
 
 		// create the matrix which will hold the distances of each document from
 		// all the other documents
-		int k = 0;
 		for ( Entry<String, List<Double>> entry : topicProportions.entrySet() )
 		{
 			int i = 0;
@@ -1189,77 +1188,60 @@ public class Ngram implements NGrams
 
 				i++;
 			}
-			similarityMatrix[k] = similarityperElement;
-			k++;
+
+			distance.put( model.ilist.get( i ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), findTopSimilarElements( similarityperElement, model, similarityMeasure, maxresult ) );
 		}
 
+		return distance;
+	}
+
+	private List<String> findTopSimilarElements( double[] similarityperElement, TopicalNGrams model, int similarityMeasure, int maxresult )
+	{
 		if ( maxresult > model.ilist.size() )
 			maxresult = model.ilist.size();
 
-		// for each document find the top similar elements, take their id, and
-		// put them to the resultMap
+		// the list of similar elements
+		List<String> similarIds = new ArrayList<String>();
+		int N = 0; // number of maximums you will have to find
+		int index = -1;
 
-		for ( int i = 0; i < similarityMatrix.length; i++ )
+		while ( N < maxresult )
 		{
-			// the list of similar elements
-			List<String> similarIds = new ArrayList<String>();
-			// number of maximums you will have to find
-			int N = 0;
-
-			int index = -1;
-			while ( N < maxresult )
+			double max = similarityperElement[0];
+			// find the maximum in array
+			for ( int j = 0; j < similarityperElement.length; j++ )
 			{
-				double max = similarityMatrix[i][0];
-				// find the maximum in array
-				for ( int j = 0; j < similarityMatrix[i].length; j++ )
+				if ( similarityMeasure != 3 )
 				{
-					if ( similarityMeasure != 3 )
+					if ( similarityperElement[j] >= max )
 					{
-						if ( similarityMatrix[i][j] >= max )
-						{
-							max = similarityMatrix[i][j];
-							index = j;
-						}
-					}
-					else
-					{
-						if ( similarityMatrix[i][j] <= max )
-						{
-							max = similarityMatrix[i][j];
-							index = j;
-						}
+						max = similarityperElement[j];
+						index = j;
 					}
 				}
-				// Windows
-				if ( index != -1 )
+				else
 				{
-					similarIds.add( model.ilist.get( index ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
-
-				// Mac
-				// similarIds.add( model.ilist.get( index
-				// ).getSource().toString().replace( "/", ";" ).split( ";"
-				// )[6].replace( ".txt", "" ) + "->" + max );
-
-					if ( similarityMeasure != 3 )
+					if ( similarityperElement[j] <= max )
 					{
-						similarityMatrix[i][index] = -1;
-					}
-					else
-					{
-						similarityMatrix[i][index] = +2;
+						max = similarityperElement[j];
+						index = j;
 					}
 				}
-				N++;
 			}
-			// Windows
-			distance.put( model.ilist.get( i ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), similarIds );
 
-			// Mac
-			// distance.put( model.ilist.get( i
-			// ).getSource().toString().replace( "/", ";" ).split( ";"
-			// )[6].replace( ".txt", "" ), similarIds );
+			if ( index != -1 )
+			{
+				similarIds.add( model.ilist.get( index ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ) + "->" + max );
+
+				if ( similarityMeasure != 3 )
+					similarityperElement[index] = -1;
+				else
+					similarityperElement[index] = +2;
+			}
+
+			N++;
 		}
-		return distance;
+		return similarIds;
 	}
 
 	// returns the List of top similar entities (author, publication etc)
