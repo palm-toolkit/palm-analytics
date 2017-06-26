@@ -1154,6 +1154,8 @@ public class Ngram implements NGrams
 	{
 		HashMap<String, List<String>> distance = new HashMap<String, List<String>>();
 		HashMap<String, List<Double>> topicProportions = new HashMap<String, List<Double>>();
+		int k = 0;
+
 		topicProportions = getDoumentTopicProportion( model );
 
 		similarityMeasures similarity = new similarityMeasures();
@@ -1189,7 +1191,8 @@ public class Ngram implements NGrams
 				i++;
 			}
 
-			distance.put( model.ilist.get( i ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), findTopSimilarElements( similarityperElement, model, similarityMeasure, maxresult ) );
+			distance.put( model.ilist.get( k ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), findTopSimilarElements( similarityperElement, model, similarityMeasure, maxresult ) );
+			k++;
 		}
 
 		return distance;
