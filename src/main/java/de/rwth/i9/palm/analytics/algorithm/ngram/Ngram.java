@@ -43,16 +43,21 @@ public class Ngram implements NGrams
 			String processBuilder_command = TopicMiningConstants.USER_PROCESS_COMMAND_INPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + TopicMiningConstants.USER_PROCESS_COMMAND_OUTPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "-N-" + purpose + ".mallet";
 
 			// Windows ProcessBuilder
-			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", processBuilder_command );
+			// ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c",
+			// processBuilder_command );
+			// builder.redirectErrorStream( true );
+			// Process p = builder.start();
 
 			// MAC Process
-			// Process p = Runtime.getRuntime().exec(new String []{"/bin/bash",
-			// "-c", processBuilder_command });
-			// try {
-			// p.waitFor();
-			// } catch (InterruptedException e) {
-			// e.printStackTrace();
-			// }
+			Process p = Runtime.getRuntime().exec( new String[] { "/bin/bash", "-c", processBuilder_command } );
+			try
+			{
+				p.waitFor();
+			}
+			catch ( InterruptedException e )
+			{
+				e.printStackTrace();
+			}
 			// ------------------
 
 			// Win
@@ -75,8 +80,7 @@ public class Ngram implements NGrams
 			// TopicMiningConstants.USER_PATH_DELIMIATOR +
 			// purpose + "-N-" + purpose + ".mallet"});
 
-			builder.redirectErrorStream( true );
-			Process p = builder.start();
+
 			BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
 			String line;
 
@@ -96,23 +100,25 @@ public class Ngram implements NGrams
 			String processBuilder_command = TopicMiningConstants.USER_PROCESS_COMMAND_INPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + entityId + TopicMiningConstants.USER_PROCESS_COMMAND_OUTPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "-N-" + entityId + ".mallet";
 
 			// ProcessBuilder Windows
-			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", processBuilder_command );
+			// ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c",
+			// processBuilder_command );
+			// builder.redirectErrorStream( true );
+			//
+			// Process p = builder.start();
 
 			// ProcessBuilder Mac
-			// Process p = Runtime.getRuntime().exec( new String[] {
-			// "/bin/bash", "-c", processBuilder_command});
-			// try
-			// {
-			// p.waitFor();
-			// }
-			// catch ( InterruptedException e )
-			// {
-			// e.printStackTrace();
-			// }
+			Process p = Runtime.getRuntime().exec( new String[] { "/bin/bash", "-c", processBuilder_command } );
+			try
+			{
+				p.waitFor();
+			}
+			catch ( InterruptedException e )
+			{
+				e.printStackTrace();
+			}
 			// -----------------
 
-			builder.redirectErrorStream( true );
-			Process p = builder.start();
+
 			BufferedReader r = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
 			String line;
 
@@ -220,7 +226,7 @@ public class Ngram implements NGrams
 		// influences the number of topics
 		if ( entityId.isEmpty() )
 		{
-			numFiles = new File( path + purpose + "/" + purpose ).listFiles().length;
+			numFiles = new File( path + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose ).listFiles().length;
 			if ( numFiles == 0 )
 			{
 				return null;
@@ -230,7 +236,7 @@ public class Ngram implements NGrams
 		{
 			try
 			{
-				numFiles = new File( path + purpose + "/" + entityId ).listFiles().length;
+				numFiles = new File( path + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + entityId ).listFiles().length;
 				if ( numFiles == 0 )
 				{
 					return null;
@@ -1845,7 +1851,7 @@ public class Ngram implements NGrams
 
 		// check if we need to create an existing model or not
 		System.out.println( "runDiscreteTopicEvolution CREATE MODEL:" + createModel );
-		createModel = false;
+
 		if ( createModel )
 		{
 			// create a new model
