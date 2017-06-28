@@ -15,8 +15,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Map.Entry;
 
 import cc.mallet.types.InstanceList;
 import cc.mallet.util.Randoms;
@@ -2057,7 +2057,7 @@ public class Ngram implements NGrams
 		List<String> mergedResults = new ArrayList<String>();
 		TopicalNGrams model;
 
-		createmodel = false;
+
 		// create model for each of the authors that we have
 		for ( String author : authorIds )
 		{
