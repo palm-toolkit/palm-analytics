@@ -2050,6 +2050,8 @@ public class Ngram implements NGrams
 		HashMap<String, List<String>> topics = new HashMap<String, List<String>>();
 		List<String> mergedResults = new ArrayList<String>();
 		TopicalNGrams model;
+
+		createmodel = false;
 		// create model for each of the authors that we have
 		for ( String author : authorIds )
 		{
