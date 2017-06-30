@@ -2061,6 +2061,15 @@ public class Ngram implements NGrams
 		// create model for each of the authors that we have
 		for ( String author : authorIds )
 		{
+			try
+			{
+				createmodel = dateCheckCriteria( path, "Authors", author );
+			}
+			catch ( IOException e1 )
+			{
+				createmodel = true;
+				e1.printStackTrace();
+			}
 			// decide to create model or not
 			if ( createmodel )
 			{
