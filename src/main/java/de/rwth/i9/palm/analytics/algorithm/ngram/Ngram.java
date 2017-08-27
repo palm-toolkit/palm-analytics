@@ -15,8 +15,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import cc.mallet.types.InstanceList;
 import cc.mallet.util.Randoms;
@@ -43,21 +43,21 @@ public class Ngram implements NGrams
 			String processBuilder_command = TopicMiningConstants.USER_PROCESS_COMMAND_INPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + TopicMiningConstants.USER_PROCESS_COMMAND_OUTPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "-N-" + purpose + ".mallet";
 
 			// Windows ProcessBuilder
-			// ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c",
-			// processBuilder_command );
-			// builder.redirectErrorStream( true );
-			// Process p = builder.start();
+			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", processBuilder_command );
+			builder.redirectErrorStream( true );
+			Process p = builder.start();
 
 			// MAC Process
-			Process p = Runtime.getRuntime().exec( new String[] { "/bin/bash", "-c", processBuilder_command } );
-			try
-			{
-				p.waitFor();
-			}
-			catch ( InterruptedException e )
-			{
-				e.printStackTrace();
-			}
+			// Process p = Runtime.getRuntime().exec( new String[] {
+			// "/bin/bash", "-c", processBuilder_command } );
+//			try
+//			{
+//				p.waitFor();
+//			}
+//			catch ( InterruptedException e )
+//			{
+//				e.printStackTrace();
+//			}
 			// ------------------
 
 			// Win
@@ -100,22 +100,22 @@ public class Ngram implements NGrams
 			String processBuilder_command = TopicMiningConstants.USER_PROCESS_COMMAND_INPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + entityId + TopicMiningConstants.USER_PROCESS_COMMAND_OUTPUT + purpose + TopicMiningConstants.USER_PATH_DELIMIATOR + "MALLET" + TopicMiningConstants.USER_PATH_DELIMIATOR + purpose + "-N-" + entityId + ".mallet";
 
 			// ProcessBuilder Windows
-			// ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c",
-			// processBuilder_command );
-			// builder.redirectErrorStream( true );
-			//
-			// Process p = builder.start();
+			ProcessBuilder builder = new ProcessBuilder( "cmd.exe", "/c", processBuilder_command );
+			builder.redirectErrorStream( true );
+
+			Process p = builder.start();
 
 			// ProcessBuilder Mac
-			Process p = Runtime.getRuntime().exec( new String[] { "/bin/bash", "-c", processBuilder_command } );
-			try
-			{
-				p.waitFor();
-			}
-			catch ( InterruptedException e )
-			{
-				e.printStackTrace();
-			}
+//			Process p = Runtime.getRuntime().exec( new String[] {
+//			"/bin/bash", "-c", processBuilder_command } );
+//			try
+//			{
+//				p.waitFor();
+//			}
+//			catch ( InterruptedException e )
+//			{
+//				e.printStackTrace();
+//			}
 			// -----------------
 
 
@@ -1876,8 +1876,6 @@ public class Ngram implements NGrams
 		// create model based on the per year documents of each author
 		TopicalNGrams model;
 
-		System.out.println( "runDiscreteTopicEvolution CREATE MODEL:" + createmodel );
-		createmodel = false;
 		if ( createmodel )
 		{
 			model = createModel( path, purpose, id, numTopics );
