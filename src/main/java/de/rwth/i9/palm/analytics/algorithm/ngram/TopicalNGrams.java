@@ -619,12 +619,7 @@ import de.rwth.i9.palm.analytics.util.TopicMiningConstants;
 				list.add( topicDist[ti] );
 			}
 			
-			// Windows
-			m.put( ilist.get( di ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), list );
-			
-			// Mac
-			// m.put( ilist.get( di ).getSource().toString().replace( "/", ";"
-			// ).split( ";" )[6].replace( ".txt", "" ), list );
+			m.put( ilist.get( di ).getSource().toString().replace( TopicMiningConstants.USER_PATH_DELIMIATOR, ";" ).split( ";" )[6].replace( ".txt", "" ), list );			
 		}
 		    return m;
 	}
