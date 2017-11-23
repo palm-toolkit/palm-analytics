@@ -26,7 +26,7 @@ public class kMeansClustering
 	public Ngram ngrams = new Ngram();
 	public int numIterations = 500;
 
-	@Test
+	//@Test
 	public void test() throws Exception
 	{
 
