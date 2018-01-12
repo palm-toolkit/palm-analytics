@@ -1,7 +1,6 @@
 
-package de.rwth.i9.palm.analytics.algorithm.ngram;
+package de.rwth.i9.palm.analytics.algorithm.topicModelingClustering;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class similarityMeasures
@@ -21,8 +20,7 @@ public class similarityMeasures
 	// cos = a*b/|a|*|b| = sum(a*b)/sqrt(a^2)*sqrt(b^2)
 	public double cosineSimilarity(double[] a, double[] b){
 		double sum = 0.0, s1 = 0.0, s2 = 0.0;
-		for ( int i = 0; i < ( ( a.length >= b.length ) ? a.length : b.length ); i++ )
-		{
+		for (int i=0; i < ((a.length > b.length) ? a.length:b.length); i++){
 			s1 += Math.pow( a[i],2 );
 			s2 += Math.pow( b[i], 2 );
 			sum += a[i] * b[i];
@@ -32,8 +30,7 @@ public class similarityMeasures
 	
 	public double cosineSimilarity(List<Double> a, List<Double> b){
 		double sum = 0.0, s1 = 0.0, s2 = 0.0;
-		for ( int i = 0; i < ( ( a.size() >= b.size() ) ? a.size() : b.size() ); i++ )
-		{
+		for (int i=0; i < ((a.size() > b.size()) ? a.size() : b.size()); i++){
 			s1 += Math.pow(a.get( i ),2 );
 			s2 += Math.pow( b.get( i ), 2 );
 			sum += a.get( i ) * b.get(i);
@@ -44,8 +41,7 @@ public class similarityMeasures
 	// eucl = |a-b| = sqrt ( a-b ) ^2 
 	public double sqrtEuclidianSimilarity(double[] a, double[] b){
 		double sum = 0.0;
-		for ( int i = 0; i < ( ( a.length >= b.length ) ? a.length : b.length ); i++ )
-		{
+		for (int i=0; i < ((a.length>b.length) ? a.length : b.length);i++ ){
 			sum += Math.pow( (a[i] - b[i]), 2 );
 		}
 		return Math.sqrt(sum);
@@ -53,8 +49,7 @@ public class similarityMeasures
 	
 	public double sqrtEuclidianSimilarity(List<Double> a, List<Double> b){
 		double sum = 0.0;
-		for ( int i = 0; i < ( ( a.size() >= b.size() ) ? a.size() : b.size() ); i++ )
-		{
+		for (int i=0; i < ((a.size()>b.size()) ? a.size() : b.size());i++ ){
 			sum += Math.pow( (a.get( i ) - b.get(i)), 2 );
 		}
 		return Math.sqrt(sum);
@@ -63,8 +58,7 @@ public class similarityMeasures
 	// relEntropy = sum ( a * log (a/b) )
 	public double relativeEntropySimilarity(double[] a, double[] b){
 		double sum = 0.0;
-		for ( int i = 0; i < ( ( a.length >= b.length ) ? a.length : b.length ); i++ )
-		{
+		for (int i = 0; i < ((a.length > b.length) ? a.length : b.length); i++){
 			if (b[i]!=0) {
 				sum += a[i] * Math.log( a[i]/b[i]);
 			} else {
@@ -76,8 +70,7 @@ public class similarityMeasures
 	
 	public double relativeEntropySimilarity(List<Double> a, List<Double> b){
 		double sum = 0.0;
-		for ( int i = 0; i < ( ( a.size() >= b.size() ) ? a.size() : b.size() ); i++ )
-		{
+		for (int i = 0; i < ((a.size() > b.size()) ? a.size() : b.size()); i++){
 			if (b.get(i)!= 0){
 				sum += a.get( i ) * Math.log( a.get( i )/b.get( i ));
 			} else {
@@ -93,8 +86,7 @@ public class similarityMeasures
 	public double pearsonCorrelation(double[] a, double[] b){
 		double suma = 0.0, sumb = 0.0, suma2 = 0.0, sumb2 = 0.0, prod =0.0;
 		double corr = 0.0;
-		for ( int i = 0; i < ( ( a.length >= b.length ) ? a.length : b.length ); i++ )
-		{
+		for (int i = 0; i < ((a.length > b.length) ? a.length : b.length); i++){
 			suma += a[i];
 			sumb += b[i];
 			suma2 += Math.pow(a[i], 2);
@@ -112,8 +104,7 @@ public class similarityMeasures
 	public double pearsonCorrelation(List<Double> a, List<Double> b){
 		double suma = 0.0, sumb = 0.0, suma2 = 0.0, sumb2 = 0.0, prod =0.0;
 		double corr = 0.0;
-		for ( int i = 0; i < ( ( a.size() >= b.size() ) ? a.size() : b.size() ); i++ )
-		{
+		for (int i = 0; i < ((a.size() > b.size()) ? a.size() : b.size()); i++){
 			suma += a.get( i );
 			sumb += b.get( i );
 			suma2 += Math.pow(a.get( i ), 2);
@@ -126,39 +117,5 @@ public class similarityMeasures
 			corr = ((b.size() * prod - suma*sumb)/ (Math.sqrt( b.size() * suma2 - Math.pow( suma, 2 )) * Math.sqrt( b.size() * sumb2 - Math.pow( sumb, 2 ))));
 		}
 		return corr;
-	}
-
-	// get the top x similar indices of elements between two Lists of doubles
-	public List<Integer> manhattanTopicLevelDistance(List<Double> a, List<Double> b, int count){
-		// return the number of count top different topics
-		List<Integer> indexoftopSimilarTopics = new ArrayList<Integer>();
-		int index = -1;
-		double[] diferenceArray = new double[a.size() >= b.size() ? a.size() : b.size()];
-		if ( count <= a.size() && count <= b.size() )
-		{
-			for ( int i = 0; i < ( ( a.size() >= b.size() ) ? a.size() : b.size() ); i++ )
-			{
-				diferenceArray[i] = Math.abs( a.get( i ) - b.get( i ) );
-			}
-		}
-		// get the indices of top count elements
-		while ( count > 0 )
-		{
-			double max = diferenceArray[0];
-			for ( int i = 0; i < diferenceArray.length; i++ )
-			{
-				// find the maximum in array
-				if ( diferenceArray[i] >= max )
-				{
-					max = diferenceArray[i];
-					index = i;
-				}
-			}
-			indexoftopSimilarTopics.add( index );
-			diferenceArray[index] = -1;
-			count--;
-		}
-		return indexoftopSimilarTopics;
-		
 	}
 }

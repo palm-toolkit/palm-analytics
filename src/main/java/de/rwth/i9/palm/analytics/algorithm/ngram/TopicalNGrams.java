@@ -42,7 +42,8 @@ import cc.mallet.util.Randoms;
 		Alphabet uniAlphabet;
 		Alphabet biAlphabet;
 		double alpha, beta, gamma, delta, tAlpha, vBeta, vGamma, delta1, delta2;
-		InstanceList ilist; // containing FeatureSequenceWithBigrams in the data field of each instance
+	public InstanceList ilist; // containing FeatureSequenceWithBigrams in the
+								// data field of each instance
 		int[][] topics; // {0...T-1}, the topic index, indexed by <document index, sequence index>
 		int[][] grams; // {0,1}, the bigram status, indexed by <document index, sequence index> TODO: Make this boolean?
 		int numTypes; // number of unique unigrams
@@ -436,7 +437,7 @@ import cc.mallet.util.Randoms;
 			Arrays.sort (wp);
 			int numToPrint = Math.min(wp.length, numWords);
 			
-			out.append( "Topic " + ti + ": " );
+			// out.append( "Topic " + ti + ": " );
 			for (int i = 0; i < numToPrint; i++)
 				if (weight){
 					out.append(uniAlphabet.lookupObject(wp[i].wi).toString() + "-" + wp[i].p/tokensPerTopic[ti] + " ");
@@ -500,7 +501,7 @@ import cc.mallet.util.Randoms;
 
 //			out.append (" (unigrams "+numUnitypeTokens+"/"+numUnitypeTypes+" bigrams "+numBitypeTokens+"/"+numBitypeTypes
 //			                  +" phrases "+Math.round(afv.oneNorm())+"/"+numNgrams+")\n         ");
-			out.append( "Topic " + ti + " : " );
+			// out.append( "Topic " + ti + " : " );
 			//System.out.print (" (unique-ngrams="+numNgrams+" ngram-count="+Math.round(afv.oneNorm())+")\n         ");
 			for (int i = 0; i < Math.min(numNgrams, numWords); i++)
 				if (weight){
